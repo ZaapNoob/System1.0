@@ -8,8 +8,8 @@ import Sidebar from "../components/Sidebar";
 // Import dashboard styles
 import "./Dashboard.css";
 
-// Import API base URL
-import API_BASE_URL from "../config/api";
+// Import API configuration
+import API from "../config/api";
 
 // Export Dashboard component
 // Receives the authenticated user object, callback to navigate to profile, and allowed pages
@@ -43,7 +43,7 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
   const loadUserWidgets = async () => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/widgets/get.php?user_id=${user.id}`
+        `${API}/widgets/get.php?user_id=${user.id}`
       );
       
       if (!response.ok) {
@@ -101,7 +101,7 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
     try {
       // Send logout request to backend
       // This removes the session token from the database
-      await fetch("http://localhost/System1.0/api/auth/logout.php", {
+      await fetch(`${API}/auth/logout.php`, {
         method: "POST",
         headers: {
           Authorization: token
@@ -191,6 +191,8 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
         <main className="dashboard-main">
 
         {/* Welcome message */}
+                <div className="left-panel">
+
         <section className="welcome-section">
           <div className="welcome-card">
             <h2>Welcome back, {user?.name}!</h2>
@@ -240,11 +242,11 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
           </div>
 
         </section>
+        </div>
 
         {/* Widgets Section - Only show if widgets are selected */}
         {selectedWidgets.length > 0 && (
           <section className="widgets-section">
-            <h2>📊 Widgets & Content</h2>
 
             <div className="widgets-grid">
               {/* Doctor Widget */}
@@ -255,23 +257,55 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
                   </div>
                   <div className="widget-content">
                     <div className="doctor-widget">
-                      <div className="widget-section">
-                        <h4>📋 Patient Consultations</h4>
-                        <div className="consultation-list">
-                          <div className="consultation-item">
-                            <span className="patient-name">Juan Dela Cruz</span>
-                            <span className="consultation-status">In Progress</span>
-                          </div>
-                          <div className="consultation-item">
-                            <span className="patient-name">Maria Santos</span>
-                            <span className="consultation-status">Completed</span>
-                          </div>
-                          <div className="consultation-item">
-                            <span className="patient-name">Pedro Ramos</span>
-                            <span className="consultation-status">Scheduled</span>
-                          </div>
-                        </div>
-                      </div>
+                      <div className="doctor-summary-grid">
+
+  <div className="doctor-summary-card">
+    <span className="summary-label">Appointments</span>
+  </div>
+
+  <div className="doctor-summary-card">
+    <span className="summary-label">Completed</span>
+  </div>
+
+  <div className="doctor-summary-card">
+    <span className="summary-label">Patients</span>
+  </div>
+
+</div>
+
+                   <div className="widget-section">
+  <h4>📋 Patient Consultations</h4>
+
+  <table className="consultation-table">
+    <thead>
+      <tr>
+        <th>Patient Name</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Juan Dela Cruz</td>
+        <td>
+          <span className="status-badge in-progress">In Progress</span>
+        </td>
+      </tr>
+      <tr>
+        <td>Maria Santos</td>
+        <td>
+          <span className="status-badge completed">Completed</span>
+        </td>
+      </tr>
+      <tr>
+        <td>Pedro Ramos</td>
+        <td>
+          <span className="status-badge scheduled">Scheduled</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
                       <div className="widget-section">
                         <h4>💊 Active Prescriptions</h4>

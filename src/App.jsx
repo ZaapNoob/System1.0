@@ -3,6 +3,9 @@
   // useEffect → run code when the app starts
   import { useEffect, useState } from "react";
 
+  // Import API configuration
+  import API from "./config/api";
+
   // Import Login page component
   import Login from "./pages/Login";
 
@@ -69,7 +72,7 @@
       }
 
       // Call backend to validate token and fetch user data
-      fetch("http://localhost/System1.0/api/me.php", {
+      fetch(`${API}/me.php`, {
         headers: {
           Authorization: token // Send token to backend
         }
@@ -122,7 +125,7 @@
     const loadAllowedPages = async () => {
       try {
         const response = await fetch(
-          `http://localhost/System1.0/api/user-panels-get.php?user_id=${user.id}`
+          `${API}/user-panels-get.php?user_id=${user.id}`
         );
         const pages = await response.json();
         setAllowedPages(pages || []);

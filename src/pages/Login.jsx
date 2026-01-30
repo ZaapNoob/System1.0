@@ -5,8 +5,8 @@ import { useState } from "react";
 // Import CSS file for styling the login page
 import "./login.css";
 
-// Import API base URL configuration
-import API_BASE_URL from "../config/api";
+// Import API configuration
+import API from "../config/api";
 
 // Export the Login component so it can be used in App.jsx
 // onLogin is a function passed from the parent (App) to set the logged-in user
@@ -40,7 +40,7 @@ export default function Login({ onLogin }) {
     console.log("Login attempt with:", { email, password: "***" });
 
     // Send POST request to the backend login API
-    const res = await fetch(`${API_BASE_URL}/auth/login.php`, {
+    const res = await fetch(`${API}/auth/login.php`, {
       method: "POST",
       body: form
     });

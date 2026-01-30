@@ -1,6 +1,16 @@
-// API Configuration
-// Determines the base URL for API calls based on the environment
+/**
+ * API Configuration Module
+ * Centralized API base URL from Vite environment variables
+ * 
+ * Usage:
+ *   import API from './config/api';
+ *   fetch(`${API}/auth/logout.php`, {...})
+ */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost/System1.0/api";
+const API = import.meta.env.VITE_API_BASE_URL || "http://localhost/System1.0/api";
 
-export default API_BASE_URL;
+console.log("=== API Configuration ===");
+console.log("VITE_API_BASE_URL env:", import.meta.env.VITE_API_BASE_URL);
+console.log("Resolved API:", API);
+
+export default API;

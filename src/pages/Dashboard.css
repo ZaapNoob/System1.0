@@ -3,6 +3,7 @@
   background-color: #f5f7fa;
   display: flex;
   flex-direction: row;
+  font-family: 'Inter', sans-serif;
 }
 
 .dashboard-content {
@@ -15,7 +16,7 @@
 .dashboard-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 20px;
+  padding: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -39,14 +40,14 @@
 
 .user-role {
   opacity: 0.9;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .logout-btn {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.5);
   color: white;
-  padding: 8px 16px;
+  padding: 10px 18px;
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s;
@@ -57,19 +58,29 @@
 }
 
 .dashboard-main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 30px 20px;
+  padding: 34px 24px;
   display: grid;
   grid-template-columns: 320px 1fr;
+  gap: 30px;
+  margin: 0;
+  max-width: none;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
   gap: 30px;
 }
 
 .welcome-section {
-  grid-column: 1 / 2;
-  grid-row: 1 / -1;
   background: white;
-  padding: 25px;
+  padding: 28px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   height: fit-content;
@@ -86,13 +97,13 @@
 .welcome-card h2 {
   margin: 0 0 8px 0;
   color: #333;
-  font-size: 18px;
+  font-size: 25px;
 }
 
 .welcome-card p {
   margin: 0 0 20px 0;
   color: #666;
-  font-size: 13px;
+  font-size: 16px;
   padding-bottom: 20px;
   border-bottom: 1px solid #e0e0e0;
 }
@@ -101,11 +112,15 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .stat-card {
   background: #f8f9fa;
-  padding: 12px;
+  padding: 14px;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -114,12 +129,12 @@
 }
 
 .stat-icon {
-  font-size: 24px;
+  font-size: 25px;
 }
 
 .stat-content h3 {
   margin: 0;
-  font-size: 11px;
+  font-size: 17px;
   color: #666;
   text-transform: uppercase;
   font-weight: 600;
@@ -127,7 +142,7 @@
 
 .stat-number {
   margin: 4px 0 0 0;
-  font-size: 18px;
+  font-size: 25px;
   font-weight: bold;
   color: #333;
 }
@@ -137,25 +152,151 @@
    ================================ */
 
 .widgets-section {
+    width: 100%;
+
   background: white;
-  padding: 20px;
+  padding: 24px;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  grid-column: 2 / 3;
 }
 
 .widgets-section h2 {
   margin: 0 0 20px 0;
   color: #333;
+  font-size: 21px;
 }
 
 .widgets-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 20px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+/* ================================
+   Doctor Summary Mini Cards
+   ================================ */
+
+.doctor-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.doctor-summary-card {
+  height: 100px;
+  background: white;
+  border: 1px dashed #dcdcdc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.doctor-summary-card:hover {
+  border-color: #667eea;
+  background: #f5f7ff;
+}
+
+.summary-label {
+  font-size: clamp(12px, 2vw, 18px);
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+
+
+
+
+
+
+
+
+/* ================================
+   Consultation Table
+   ================================ */
+
+.consultation-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.consultation-table thead {
+  background: #f5f7fa;
+}
+
+.consultation-table th {
+  text-align: left;
+  padding: 12px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 17px;
+}
+
+.consultation-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.consultation-table tr:hover {
+  background: #f9fafc;
+}
+
+/* Status badges */
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-badge.in-progress {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-badge.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.scheduled {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+
+
+
+
+
+
+
 .widget-card {
+    width: 100%;
+
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   overflow: hidden;
@@ -174,8 +315,11 @@
 }
 
 .widget-doctor .widget-header {
-  background: linear-gradient(135deg, #667eea 0%, #5568d3 100%);
+  background: none; /* removes the gradient */
+  background-color: transparent; /* or set to white or another color */
+  color: #333; /* change text color if needed */
 }
+
 
 .widget-triage {
   border-left: 4px solid #ff6b6b;
@@ -187,24 +331,26 @@
 
 .widget-header {
   color: white;
-  padding: 15px 20px;
+  padding: 18px 24px;
   margin: 0;
 }
 
 .widget-header h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
 }
 
 .widget-content {
-  padding: 20px;
+  padding: 24px;
   min-height: auto;
   display: block;
 }
 
 /* Doctor Widget Styles */
 .doctor-widget .widget-section {
+      margin-top: 30px; /* adjust the value as needed */
+
   margin-bottom: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid #e0e0e0;
@@ -217,7 +363,7 @@
 .doctor-widget h4 {
   margin: 0 0 12px 0;
   color: #333;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
 }
 
@@ -231,10 +377,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  padding: 12px;
   background: #f5f5f5;
   border-radius: 5px;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .patient-name, .medicine {
@@ -253,7 +399,7 @@
 
 .dosage {
   color: #666;
-  font-size: 12px;
+  font-size: 17px;
 }
 
 /* Triage Widget Styles */
@@ -270,7 +416,7 @@
 .triage-widget h4 {
   margin: 0 0 12px 0;
   color: #333;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -379,7 +525,7 @@
 }
 
 .stat-label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   opacity: 0.9;
 }
