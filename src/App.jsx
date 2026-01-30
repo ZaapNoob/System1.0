@@ -74,7 +74,7 @@
       // Call backend to validate token and fetch user data
       fetch(`${API}/me.php`, {
         headers: {
-          Authorization: token // Send token to backend
+          Authorization: `Bearer ${token}` // Send token in Bearer format
         }
       })
         .then(res => {

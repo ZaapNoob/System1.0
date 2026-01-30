@@ -9,350 +9,19 @@ import API from "../config/api";
 // Import Sidebar component for navigation
 import Sidebar from "../components/Sidebar";
 
+// Import PatientsTable component for displaying patient list
+import PatientsTable from "../components/patients-display/PatientsTable";
+
+// Import usePatients hook for fetching and filtering patients
+import usePatients from "../hooks/usePatients";
+
 // Import patient page styles
 import "./patient.css";
 
 // =======================
 // MODAL: Generate Household
 // =======================
-
-function GenerateHouseholdModal({
-  barangayId,
-  onConfirm,
-  onCancel,
-  error,
-  setError,
-}) {
-  const [householdType, setHouseholdType] = useState("new"); // new | existing
-  const [householdLookupMethod, setHouseholdLookupMethod] = useState("by_facility");
-  const [existingHouseholds, setExistingHouseholds] = useState([]);
-  const [generatedData, setGeneratedData] = useState({
-    facility_household_no: "",
-    household_no: "",
-  });
-  const [generating, setGenerating] = useState(false);
-
-  // =======================
-  // Helpers
-  // =======================
-
-  const resetState = () => {
-    setGeneratedData({ facility_household_no: "", household_no: "" });
-    setExistingHouseholds([]);
-    setError("");
-  };
-
-  const apiFetch = async (url, options = {}) => {
-    const response = await fetch(url, {
-      headers: { "Content-Type": "application/json" },
-      ...options,
-    });
-    const result = await response.json();
-
-    if (!response.ok || result.success === false) {
-      throw new Error(result.error || "API error");
-    }
-    return result;
-  };
-
-  const withLoading = async (fn) => {
-    setGenerating(true);
-    setError("");
-    try {
-      await fn();
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setGenerating(false);
-    }
-  };
-
-  // =======================
-  // Actions
-  // =======================
-
-  const handleGenerateNew = () =>
-    withLoading(async () => {
-      const facilityRes = await apiFetch(
-        `${API}/patients/generate-facility-household.php?barangay_id=${barangayId}`
-      );
-
-      const householdRes = await apiFetch(`${API}/generate-household.php`);
-
-      setGeneratedData({
-        facility_household_no: facilityRes.facility_household_no,
-        household_no: householdRes.household_no,
-      });
-    });
-
-  const handleFetchHouseholdByFacility = () => {
-    if (!generatedData.facility_household_no.trim()) {
-      setError("Please enter a facility household number");
-      return;
-    }
-
-    withLoading(async () => {
-      const res = await apiFetch(
-        `${API}/patients/find-households-by-facility.php?barangay_id=${barangayId}&facility_household_no=${encodeURIComponent(
-          generatedData.facility_household_no
-        )}`
-      );
-
-      setExistingHouseholds(res.households || []);
-      if (!res.households || res.households.length === 0) {
-        setError("No households found for this facility number");
-      }
-    });
-  };
-
-  const handleFetchHouseholdByNumber = () => {
-    if (!generatedData.household_no.trim()) {
-      setError("Please enter a household number");
-      return;
-    }
-
-    withLoading(async () => {
-      const res = await apiFetch(
-        `${API}/patients/find-household.php?barangay_id=${barangayId}&household_no=${encodeURIComponent(
-          generatedData.household_no
-        )}`
-      );
-
-      if (!res.facility_household_no) {
-        setError("No facility household found for this household number");
-        return;
-      }
-
-      setGeneratedData((prev) => ({
-        ...prev,
-        facility_household_no: res.facility_household_no,
-      }));
-    });
-  };
-
-  const handleConfirm = () => {
-    if (
-      (householdType === "new" && !generatedData.facility_household_no) ||
-      (householdType === "existing" &&
-        (!generatedData.facility_household_no || !generatedData.household_no))
-    ) {
-      setError("Please complete household selection");
-      return;
-    }
-
-    onConfirm(
-      generatedData.facility_household_no,
-      generatedData.household_no
-    );
-  };
-
-  // =======================
-  // UI Helpers
-  // =======================
-
-  const InfoBox = ({ type = "success", children }) => {
-    const styles = {
-      success: { backgroundColor: "#e8f5e9", color: "#2e7d32" },
-      error: { backgroundColor: "#ffebee", color: "#c62828" },
-      warning: { backgroundColor: "#fff3cd", color: "#856404" },
-    };
-
-    return (
-      <div
-        style={{
-          padding: "10px",
-          borderRadius: "4px",
-          marginTop: "10px",
-          fontSize: "14px",
-          textAlign: "center",
-          ...styles[type],
-        }}
-      >
-        {children}
-      </div>
-    );
-  };
-
-
-
-
-  // =======================
-  // Render
-  // =======================
-
-  return (
-    <div className="modal-overlay" onClick={onCancel}>
-      <div
-        className="modal-content"
-        onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: "500px" }}
-      >
-        <div className="modal-header">
-          <h4>Household Setup</h4>
-          <button className="modal-close" onClick={onCancel}>
-            ✕
-          </button>
-        </div>
-
-        <div className="modal-body">
-          {error && <InfoBox type="error">{error}</InfoBox>}
-
-          {/* Household Type */}
-          <div className="form-group">
-            <label>Household Type</label>
-            <select
-              value={householdType}
-              onChange={(e) => {
-                setHouseholdType(e.target.value);
-                resetState();
-              }}
-            >
-              <option value="new">New Household</option>
-              <option value="existing">Existing Household</option>
-            </select>
-          </div>
-
-          {/* NEW */}
-          {householdType === "new" && (
-            <>
-              <div className="form-group">
-                <label>Facility Household No.</label>
-                <input readOnly value={generatedData.facility_household_no} />
-              </div>
-
-              <div className="form-group">
-                <label>Household No.</label>
-                <input readOnly value={generatedData.household_no} />
-              </div>
-
-              {!generatedData.facility_household_no ? (
-                <button
-                  className="save-btn"
-                  onClick={handleGenerateNew}
-                  disabled={generating}
-                  style={{ width: "100%" }}
-                >
-                  {generating ? "Generating..." : "🔄 Generate Household Numbers"}
-                </button>
-              ) : (
-                <InfoBox>✓ Household numbers ready</InfoBox>
-              )}
-            </>
-          )}
-
-          {/* EXISTING */}
-          {householdType === "existing" && (
-            <>
-              <div className="form-group">
-                <label>Lookup Method</label>
-                <div style={{ display: "flex", gap: "10px" }}>
-                  {["by_facility", "by_household"].map((m) => (
-                    <label key={m}>
-                      <input
-                        type="radio"
-                        checked={householdLookupMethod === m}
-                        onChange={() => {
-                          setHouseholdLookupMethod(m);
-                          resetState();
-                        }}
-                      />
-                      {m === "by_facility"
-                        ? "By Facility No."
-                        : "By Household No."}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {householdLookupMethod === "by_facility" && (
-                <>
-                  <input
-                    placeholder="Facility Household No."
-                    value={generatedData.facility_household_no}
-                    onChange={(e) =>
-                      setGeneratedData({
-                        facility_household_no: e.target.value,
-                        household_no: "",
-                      })
-                    }
-                  />
-
-                  <button
-                    className="save-btn"
-                    onClick={handleFetchHouseholdByFacility}
-                    disabled={generating}
-                    style={{ width: "100%" }}
-                  >
-                    Search
-                  </button>
-
-                  {existingHouseholds.length > 0 && (
-                    <select
-                      value={generatedData.household_no}
-                      onChange={(e) =>
-                        setGeneratedData((p) => ({
-                          ...p,
-                          household_no: e.target.value,
-                        }))
-                      }
-                    >
-                      <option value="">Select household</option>
-                      {existingHouseholds.map((h) => (
-                        <option key={h}>{h}</option>
-                      ))}
-                    </select>
-                  )}
-                </>
-              )}
-
-              {householdLookupMethod === "by_household" && (
-                <>
-                  <input
-                    placeholder="Household No."
-                    value={generatedData.household_no}
-                    onChange={(e) =>
-                      setGeneratedData((p) => ({
-                        ...p,
-                        household_no: e.target.value,
-                      }))
-                    }
-                  />
-
-                  <button
-                    className="save-btn"
-                    onClick={handleFetchHouseholdByNumber}
-                    disabled={generating}
-                    style={{ width: "100%" }}
-                  >
-                    Search
-                  </button>
-
-                  {generatedData.facility_household_no && (
-                    <InfoBox>
-                      ✓ Facility found:{" "}
-                      {generatedData.facility_household_no}
-                    </InfoBox>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </div>
-
-        <div className="modal-actions">
-          <button className="cancel-btn" onClick={onCancel}>
-            Cancel
-          </button>
-          <button className="save-btn" onClick={handleConfirm}>
-            Confirm & Use
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-
+import GenerateHouseholdModal from "../components/household/GenerateHouseholdModal";
 
 
 
@@ -563,8 +232,21 @@ useEffect(() => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // =======================
-// Input handler
+// WHEN BARANGAY SELECTED
 // =======================
 
 const handleInputChange = (e) => {
@@ -612,6 +294,12 @@ purok_name: normalizePurokName(newPurokName),
     setPurokLoading(false);
   }
 };
+
+
+
+
+
+
 
 // =======================
 // Generate Household (SEPARATE FLOW)
@@ -718,42 +406,17 @@ const handleSavePatient = async () => {
 //  DISPLAYING PATIENTS//
 // =======================
 
-const [patients, setPatients] = useState([]);
-const [loading, setLoading] = useState(false);
-
-const [search, setSearch] = useState("");
-const [statusFilter, setStatusFilter] = useState("");
-const [barangayFilter, setBarangayFilter] = useState("");
-
-
-const fetchPatients = async () => {
-  setLoading(true);
-
-  try {
-    const params = new URLSearchParams();
-    if (search) params.append("search", search);
-    if (statusFilter) params.append("status", statusFilter);
-    if (barangayFilter) params.append("barangay_id", barangayFilter);
-
-    const res = await fetch(
-      `${API}/patients/get_patients.php?${params.toString()}`
-    );
-    const data = await res.json();
-
-    if (data.success) {
-      setPatients(data.data);
-    } else {
-      console.error("API Error:", data.message || data.error);
-    }
-  } catch (err) {
-    console.error("Fetch Error:", err);
-  } finally {
-    setLoading(false);
-  }
-};
-useEffect(() => {
-  fetchPatients();
-}, [search, statusFilter, barangayFilter]);
+const {
+  patients,
+  loading,
+  search,
+  setSearch,
+  statusFilter,
+  setStatusFilter,
+  barangayFilter,
+  setBarangayFilter,
+  refetchPatients
+} = usePatients();
 
 
 
@@ -1151,8 +814,6 @@ onChange={(e) =>
                     barangayId={newPatient.barangay_id}
                     onConfirm={confirmGeneratedHousehold}
                     onCancel={() => setShowGenerateHousehold(false)}
-                    loading={loading}
-                    setLoading={setLoading}
                     error={error}
                     setError={setError}
                   />
