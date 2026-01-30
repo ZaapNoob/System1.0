@@ -9,11 +9,12 @@ import API from "../config/api";
 // Import Sidebar component for navigation
 import Sidebar from "../components/Sidebar";
 
-// Import PatientsTable component for displaying patient list
-import PatientsTable from "../components/patients-display/PatientsTable";
-
 // Import usePatients hook for fetching and filtering patients
 import usePatients from "../hooks/usePatients";
+
+import { apiFetch } from "../utils/api";
+
+
 
 // Import patient page styles
 import "./patient.css";
@@ -106,14 +107,14 @@ const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
 const [showCreatePurok, setShowCreatePurok] = useState(false);
 const [showGenerateHousehold, setShowGenerateHousehold] = useState(false);
 
-const [householdMode, setHouseholdMode] = useState("new"); // "new" | "existing"
 
 const [barangays, setBarangays] = useState([]);
 const [puroks, setPuroks] = useState([]);
 
 const [purokLoading, setPurokLoading] = useState(false);
-const [error, setError] = useState("");
+const [loading, setLoading] = useState(false); // ✅ ADD THIS
 const [successMessage, setSuccessMessage] = useState("");
+const [error, setError] = useState("");
 const [newPurokName, setNewPurokName] = useState("");
 
 // =======================
@@ -155,20 +156,6 @@ const [newPatient, setNewPatient] = useState(initialPatientState);
 // API helper
 // =======================
 
-const apiFetch = async (url, options = {}) => {
-  const response = await fetch(url, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
-
-  const result = await response.json();
-
-  if (!response.ok || result.success === false) {
-    throw new Error(result.error || "API error");
-  }
-
-  return result;
-};
 
 const cleanPayload = (obj) =>
   Object.fromEntries(
@@ -229,6 +216,16 @@ useEffect(() => {
     .catch(console.error);
 }, [newPatient.barangay_id]);
 
+useEffect(() => {
+  if (!newPatient.barangay_id) return;
+
+  setNewPatient(prev => ({
+    ...prev,
+    household_no: "",
+    facility_household_no: "",
+  }));
+
+}, [newPatient.barangay_id]);
 
 
 
@@ -319,15 +316,21 @@ const handleGenerateHouseholdClick = () => {
 };
 
 const confirmGeneratedHousehold = (facilityNo, householdNo) => {
-  setNewPatient((prev) => ({
+  setNewPatient(prev => ({
     ...prev,
     facility_household_no: facilityNo,
     household_no: householdNo,
   }));
+
   setShowGenerateHousehold(false);
-  setSuccessMessage("Household generated successfully");
+
+  setSuccessMessage("Household set successfully");
   setTimeout(() => setSuccessMessage(""), 3000);
 };
+
+
+
+
 
 // =======================
 // Save patient
@@ -337,13 +340,7 @@ const handleSavePatient = async () => {
   setError("");
   setSuccessMessage("");
 
-  // Validate household numbers for new household
-  if (householdMode === "new") {
-    if (!newPatient.household_no || !newPatient.facility_household_no) {
-      setError("Please generate a household first using the Generate Household button");
-      return;
-    }
-  }
+  
 
   const requiredFields = [
     "first_name",
@@ -384,7 +381,6 @@ const handleSavePatient = async () => {
     });
 
     setNewPatient(initialPatientState);
-    setHouseholdMode("new");
 
     setSuccessMessage(
       `Patient created successfully! Code: ${res.data.patient_code}`
@@ -408,7 +404,7 @@ const handleSavePatient = async () => {
 
 const {
   patients,
-  loading,
+ 
   search,
   setSearch,
   statusFilter,
@@ -425,9 +421,13 @@ const {
 
 
 
+// =======================
+// Derived active barangay (FOR MODALS / DISPLAY)
+// =======================
 
-
-
+const activeBarangay = barangays.find(
+  (b) => Number(b.id) === Number(newPatient.barangay_id)
+);
   // -----------------------------------
   // RENDER UI
   // -----------------------------------
@@ -545,7 +545,6 @@ const {
                     onClick={() => {
                       setShowAddForm(false);
                       setNewPatient(initialPatientState);
-                      setHouseholdMode("new");
                       setError("");
                       setSuccessMessage("");
                     }}
@@ -810,13 +809,12 @@ onChange={(e) =>
 
                 {/* Generate Household Modal */}
                 {showGenerateHousehold && (
-                  <GenerateHouseholdModal
-                    barangayId={newPatient.barangay_id}
-                    onConfirm={confirmGeneratedHousehold}
-                    onCancel={() => setShowGenerateHousehold(false)}
-                    error={error}
-                    setError={setError}
-                  />
+               <GenerateHouseholdModal
+    barangayId={newPatient.barangay_id}
+    barangayName={activeBarangay?.name}
+    onConfirm={confirmGeneratedHousehold}
+    onCancel={() => setShowGenerateHousehold(false)}
+  />
                 )}
               </div>
 

@@ -1,4 +1,11 @@
-export default function BaseTable({ columns, data, loading, emptyMessage = "No data found" }) {
+export default function BaseTable({
+  columns,
+  data,
+  loading,
+  emptyMessage = "No data found",
+  onRowClick,
+  selectedRowKey,
+}) {
   return (
     <table className="base-table">
       <thead>
@@ -19,9 +26,20 @@ export default function BaseTable({ columns, data, loading, emptyMessage = "No d
           </tr>
         ) : (
           data.map((row, idx) => (
-            <tr key={idx}>
+            <tr
+              key={idx}
+              onClick={() => onRowClick?.(row)}
+              className={
+                selectedRowKey &&
+                row.household_no === selectedRowKey
+                  ? "selected-row"
+                  : ""
+              }
+            >
               {columns.map((col) => (
-                <td key={col.key}>{col.render ? col.render(row) : row[col.key]}</td>
+                <td key={col.key}>
+                  {col.render ? col.render(row) : row[col.key]}
+                </td>
               ))}
             </tr>
           ))
