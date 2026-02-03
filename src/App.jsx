@@ -21,6 +21,9 @@
   // Import Profile page component
   import Profile from "./pages/Profile";
 
+  // Import ModalProvider
+  import { ModalProvider } from "./components/modal/ModalProvider";
+
 
 
 
@@ -175,12 +178,14 @@
 
     if (currentPage === "patient") {
       return (
-        <Patient 
-          user={user}
-          onNavigateToProfile={() => setCurrentPage("profile")}
-          allowedPages={allowedPages}
-          onNavigate={setCurrentPage}
-        />
+        <ModalProvider>
+          <Patient 
+            user={user}
+            onNavigateToProfile={() => setCurrentPage("profile")}
+            allowedPages={allowedPages}
+            onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
       );
     }
 

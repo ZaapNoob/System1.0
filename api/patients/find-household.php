@@ -20,12 +20,12 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        SELECT DISTINCT facility_household_no
+        SELECT facility_household_no, COUNT(*) as member_count
         FROM patients_db
         WHERE barangay_id = ?
           AND household_no = ?
           AND facility_household_no IS NOT NULL
-        LIMIT 1
+        GROUP BY facility_household_no
     ");
 
     $stmt->execute([$barangay_id, $household_no]);
@@ -33,7 +33,8 @@ try {
 
     echo json_encode([
         'success' => true,
-        'facility_household_no' => $row['facility_household_no'] ?? null
+        'facility_household_no' => $row['facility_household_no'] ?? null,
+        'member_count' => $row['member_count'] ?? 0
     ]);
 } catch (Exception $e) {
     http_response_code(400);

@@ -19,15 +19,10 @@ import { apiFetch } from "../utils/api";
 // Import patient page styles
 import "./patient.css";
 
-// =======================
-// MODAL: Generate Household
-// =======================
-import GenerateHouseholdModal from "../components/household/GenerateHouseholdModal";
+// Import PatientsTable component
+import PatientsTable from "../components/patients-display/PatientsTable";
 
-
-
-
-
+// Export Patient component
 
 // Export Patient component
 // Receives authenticated user (doctor/admin), navigation callback, and allowed pages
@@ -104,8 +99,9 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
 
 const [showAddForm, setShowAddForm] = useState(false);
 const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
+const [isFamilyMember, setIsFamilyMember] = useState(false);
+
 const [showCreatePurok, setShowCreatePurok] = useState(false);
-const [showGenerateHousehold, setShowGenerateHousehold] = useState(false);
 
 
 const [barangays, setBarangays] = useState([]);
@@ -218,14 +214,15 @@ useEffect(() => {
 
 useEffect(() => {
   if (!newPatient.barangay_id) return;
+  if (isFamilyMember) return; // ✅ IMPORTANT
 
   setNewPatient(prev => ({
     ...prev,
     household_no: "",
     facility_household_no: "",
   }));
+}, [newPatient.barangay_id, isFamilyMember]);
 
-}, [newPatient.barangay_id]);
 
 
 
@@ -299,33 +296,37 @@ purok_name: normalizePurokName(newPurokName),
 
 
 // =======================
-// Generate Household (SEPARATE FLOW)
+// Generate Household (AUTO-GENERATE)
 // =======================
 
-const handleGenerateHouseholdClick = () => {
-  console.log("Household button clicked, barangay_id:", newPatient.barangay_id);
-  
+const handleGenerateHouseholdClick = async () => {
   if (!newPatient.barangay_id) {
     setError("Please select a barangay first");
-    console.log("Barangay not selected");
     return;
   }
-  
-  console.log("Opening household modal");
-  setShowGenerateHousehold(true);
-};
 
-const confirmGeneratedHousehold = (facilityNo, householdNo) => {
-  setNewPatient(prev => ({
-    ...prev,
-    facility_household_no: facilityNo,
-    household_no: householdNo,
-  }));
+  try {
+    setLoading(true);
+    setError("");
 
-  setShowGenerateHousehold(false);
+    const facilityRes = await apiFetch(
+      `${API}/patients/generate-facility-household.php?barangay_id=${newPatient.barangay_id}`
+    );
+    const householdRes = await apiFetch(`${API}/generate-household.php`);
 
-  setSuccessMessage("Household set successfully");
-  setTimeout(() => setSuccessMessage(""), 3000);
+    setNewPatient(prev => ({
+      ...prev,
+      facility_household_no: facilityRes.facility_household_no,
+      household_no: householdRes.household_no,
+    }));
+
+    setSuccessMessage("Household generated successfully");
+    setTimeout(() => setSuccessMessage(""), 3000);
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
 };
 
 
@@ -380,11 +381,24 @@ const handleSavePatient = async () => {
       body: JSON.stringify(payload),
     });
 
-    setNewPatient(initialPatientState);
+if (isFamilyMember) {
+  // ✅ Keep household context, reset only personal fields
+  setNewPatient(prev => ({
+    ...initialPatientState,
+    barangay_id: prev.barangay_id,
+    purok_id: prev.purok_id,
+    household_no: prev.household_no,
+    facility_household_no: prev.facility_household_no,
+  }));
+} else {
+  // Normal add patient
+  setNewPatient(initialPatientState);
+}
 
-    setSuccessMessage(
-      `Patient created successfully! Code: ${res.data.patient_code}`
-    );
+setSuccessMessage(
+  `Patient created successfully! Code: ${res.data.patient_code}`
+);
+
 
     setTimeout(() => setSuccessMessage(""), 3000);
   } catch (err) {
@@ -404,13 +418,17 @@ const handleSavePatient = async () => {
 
 const {
   patients,
- 
+  loading: patientsLoading,
   search,
   setSearch,
   statusFilter,
   setStatusFilter,
   barangayFilter,
   setBarangayFilter,
+  genderFilter,
+  setGenderFilter,
+  dobFilter,
+  setDobFilter,
   refetchPatients
 } = usePatients();
 
@@ -468,62 +486,117 @@ const activeBarangay = barangays.find(
         {!showAddForm ? (
         <>
           {/* ================= TABLE VIEW ================= */}
-          <div className="section-header">
-            <h3>Active Patients</h3>
+      <div className="section-header patient-toolbar">
 
-            <button
-              className="add-patient-btn"
-              onClick={() => setShowAddForm(true)}
-            >
-              + Add Patient
-            </button>
-          </div>
+  <h3>Active Patients</h3>
 
-          <table className="patient-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+  <div className="patient-filters">
 
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan="5">Loading patients...</td>
-                </tr>
-              ) : patients.length === 0 ? (
-                <tr>
-                  <td colSpan="5">No patients found</td>
-                </tr>
-              ) : (
-                patients.map((patient) => (
-                  <tr key={patient.id}>
-                    <td>{patient.name}</td>
-                    <td>{patient.age}</td>
-                    <td>{patient.gender}</td>
-                    <td>
-                      <span
-                        className={`status-badge ${getStatusColor(
-                          patient.status
-                        )}`}
-                      >
-                        {formatStatusDisplay(patient.status)}
-                      </span>
-                    </td>
-                    <td>
-                      <button className="view-btn">View</button>
-                                         <button className="view-btn">Edit</button>
-                        
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+    {/* Main search */}
+ <input
+  type="text"
+  className="filter-input"
+  placeholder="Search name, patient code, facility no, household no"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+/>
+
+
+
+  {/* Barangay filter */}
+  <select
+    className="filter-select"
+    value={barangayFilter}
+    onChange={(e) => setBarangayFilter(e.target.value)}
+  >
+    <option value="">All Barangays</option>
+    {barangays.map((b) => (
+      <option key={b.id} value={b.id}>
+        {b.name}
+      </option>
+    ))}
+  </select>
+
+  {/* Gender Filter */}
+<select
+  className="filter-select"
+  value={genderFilter}
+  onChange={(e) => setGenderFilter(e.target.value)}
+>
+  <option value="">All Genders</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+</select>
+
+  {/* Status filter */}
+  <select
+    className="filter-select"
+    value={statusFilter}
+    onChange={(e) => setStatusFilter(e.target.value)}
+  >
+    <option value="">All Status</option>
+    <option value="active">Active</option>
+    <option value="inactive">Inactive</option>
+    <option value="deceased">Deceased</option>
+  </select>
+
+{/* DOB Filter */}
+<input
+  type="date"
+  className="filter-date"
+  title="Date of birth"
+  value={dobFilter}
+  onChange={(e) => setDobFilter(e.target.value)}
+/>
+  </div>
+
+  <button
+    className="add-patient-btn"
+    onClick={() => setShowAddForm(true)}
+  >
+    + Add Patient
+  </button>
+
+</div>
+
+
+       <PatientsTable
+  patients={patients}
+  loading={patientsLoading}
+  getStatusColor={getStatusColor}
+  formatStatusDisplay={formatStatusDisplay}
+  onView={(patient) => console.log("View", patient)}
+  onEdit={(patient) => console.log("Edit", patient)}
+onAddFamilyMember={async (patient) => {
+  try {
+    setLoading(true);
+    setError("");
+
+    const { data } = await apiFetch(
+      `${API}/patients/get-household.php?patient_id=${patient.id}`
+    );
+
+    setIsFamilyMember(true);
+    setShowAddForm(true);
+    setShowAdditionalInfo(true);
+setNewPatient({
+  ...initialPatientState,
+  barangay_id: String(data.barangay_id ?? ""),
+  purok_id: data.purok_id ? String(data.purok_id) : "",
+  household_no: data.household_no ?? "",
+  facility_household_no: data.facility_household_no ?? "",
+});
+
+
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+}}
+
+/>
+
         </>
       ) : (
         <>
@@ -540,17 +613,20 @@ const activeBarangay = barangays.find(
               <div className="patient-basic-card">
                 <div className="section-header">
                   <h3>Add New Patient</h3>
-                  <button
-                    className="cancel-btn"
-                    onClick={() => {
-                      setShowAddForm(false);
-                      setNewPatient(initialPatientState);
-                      setError("");
-                      setSuccessMessage("");
-                    }}
-                  >
-                    Cancel
-                  </button>
+ <button
+  className="cancel-btn"
+  onClick={() => {
+    setShowAddForm(false);
+    setIsFamilyMember(false);
+    setNewPatient(initialPatientState);
+    setError("");
+    setSuccessMessage("");
+  }}
+>
+  Cancel
+</button>
+
+
                 </div>
 
                 {/* NAME */}
@@ -807,15 +883,7 @@ onChange={(e) =>
                   </div>
                 )}
 
-                {/* Generate Household Modal */}
-                {showGenerateHousehold && (
-               <GenerateHouseholdModal
-    barangayId={newPatient.barangay_id}
-    barangayName={activeBarangay?.name}
-    onConfirm={confirmGeneratedHousehold}
-    onCancel={() => setShowGenerateHousehold(false)}
-  />
-                )}
+
               </div>
 
               {/* Error and Success Messages */}
@@ -905,45 +973,59 @@ onChange={(e) =>
           onChange={handleInputChange}
         />
       </div>
+<div className="form-group">
+  <label>Household Setup</label>
 
-      {/* Household Setup - Opens Modal */}
-      <div className="form-group">
-        <label>Household Setup</label>
-        <button
-          type="button"
-          className="save-btn"
-          disabled={!newPatient.barangay_id}
-          onClick={handleGenerateHouseholdClick}
-          style={{ width: "100%", cursor: newPatient.barangay_id ? "pointer" : "not-allowed" }}
-        >
-          {newPatient.facility_household_no ? "✓ Edit Household" : "⚙️ Setup Household"}
-        </button>
-        {!newPatient.barangay_id && (
-          <small style={{ color: "#999", marginTop: "5px", display: "block" }}>
-            Please select a barangay first
-          </small>
+  {/* Show button only if not a family member */}
+  {!isFamilyMember && (
+    <button
+      type="button"
+      className="save-btn"
+      disabled={!newPatient.barangay_id || loading}
+      onClick={handleGenerateHouseholdClick}
+    >
+      {loading
+        ? "Generating..."
+        : newPatient.facility_household_no
+          ? "✓ Regenerate Household"
+          : "⚙️ Generate Household"}
+    </button>
+  )}
+
+  {!newPatient.barangay_id && !isFamilyMember && (
+    <small style={{ color: "#999", marginTop: "5px", display: "block" }}>
+      Please select a barangay first
+    </small>
+  )}
+
+  {/* Display generated household info for everyone */}
+  {newPatient.facility_household_no && (
+    <div
+      style={{
+        marginTop: "10px",
+        padding: "12px",
+        backgroundColor: "#e8f5e9",
+        borderRadius: "6px",
+        color: "#2e7d32",
+        borderLeft: "4px solid #4caf50",
+      }}
+    >
+      <div style={{ fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>
+        Household Information
+      </div>
+      <div style={{ fontSize: "13px" }}>
+        <div>
+          Facility No: <strong>{newPatient.facility_household_no}</strong>
+        </div>
+        {newPatient.household_no && (
+          <div>
+            Household No: <strong>{newPatient.household_no}</strong>
+          </div>
         )}
       </div>
-
-      {/* Display Generated Household Info */}
-      {newPatient.facility_household_no && (
-        <div style={{
-          padding: "15px",
-          backgroundColor: "#e8f5e9",
-          borderRadius: "6px",
-          color: "#2e7d32",
-          marginBottom: "15px",
-          borderLeft: "4px solid #4caf50"
-        }}>
-          <div style={{ marginBottom: "8px", fontSize: "14px", fontWeight: "600" }}>Household Information</div>
-          <div style={{ fontSize: "13px" }}>
-            <div>Facility No: <strong>{newPatient.facility_household_no}</strong></div>
-            {newPatient.household_no && (
-              <div>Household No: <strong>{newPatient.household_no}</strong></div>
-            )}
-          </div>
-        </div>
-      )}
+    </div>
+  )}
+</div>
 
     
     </div>

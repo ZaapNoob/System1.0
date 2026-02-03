@@ -62,18 +62,21 @@ try {
     $where = implode(' AND ', $conditions);
 
     $stmt = $pdo->prepare("
-        SELECT id, first_name, middle_name, last_name, suffix, date_of_birth, gender, philhealth_no, household_no, facility_household_no
-        FROM patients_db
+        SELECT DISTINCT
+            p.household_no, 
+            p.facility_household_no,
+            (SELECT COUNT(*) FROM patients_db WHERE household_no = p.household_no AND facility_household_no = p.facility_household_no) as member_count
+        FROM patients_db p
         WHERE $where
-        ORDER BY last_name, first_name
+        ORDER BY p.household_no, p.facility_household_no
     ");
 
     $stmt->execute($params);
-    $patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $households = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'success' => true,
-        'patients' => $patients
+        'households' => $households
     ]);
 } catch (Exception $e) {
     http_response_code(400);

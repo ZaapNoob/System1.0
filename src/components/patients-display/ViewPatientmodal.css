@@ -1,0 +1,165 @@
+/* ================================
+   VIEW PATIENT MODAL
+   ================================ */
+
+.patient-view-modal {
+  width: 100%;
+  max-width: 900px;
+  padding: 20px 24px;
+  box-sizing: border-box;
+}
+
+.patient-view-modal h3 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+.patient-view-modal h4 {
+  margin: 20px 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ================================
+   PATIENT INFO GRID
+   ================================ */
+
+.view-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px 20px;
+  margin-bottom: 16px;
+}
+
+.view-grid div {
+  background: #f9fafb;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+
+.view-grid strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.view-grid p {
+  margin: 0;
+  font-size: 14px;
+  color: #111;
+}
+
+/* ================================
+   SEPARATOR
+   ================================ */
+
+.patient-view-modal hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 18px 0;
+}
+
+/* ================================
+   FAMILY TABLE
+   ================================ */
+
+.family-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.family-table thead {
+  background: #f3f4f6;
+}
+
+.family-table th,
+.family-table td {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.family-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.family-table td {
+  color: #111;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.family-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ================================
+   STATUS BADGES
+   ================================ */
+
+.family-table .status-badge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Example status colors – match your system */
+.status-active {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-inactive {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.status-deceased {
+  background: #fdecea;
+  color: #c62828;
+}
+
+/* ================================
+   EMPTY / LOADING STATES
+   ================================ */
+
+.patient-view-modal .muted {
+  color: #6b7280;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* ================================
+   MODAL ACTIONS
+   ================================ */
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.modal-actions .cancel-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+}
+
+.modal-actions .cancel-btn:hover {
+  background: #f3f4f6;
+}

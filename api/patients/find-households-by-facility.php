@@ -20,16 +20,17 @@ try {
     }
 
     $stmt = $pdo->prepare("
-        SELECT DISTINCT household_no
+        SELECT household_no, COUNT(*) as member_count
         FROM patients_db
         WHERE barangay_id = ?
           AND facility_household_no = ?
           AND household_no IS NOT NULL
+        GROUP BY household_no
         ORDER BY household_no
     ");
 
     $stmt->execute([$barangay_id, $facility_household_no]);
-    $households = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $households = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([
         'success' => true,

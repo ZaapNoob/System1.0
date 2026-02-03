@@ -1,9 +1,16 @@
+import { useModal } from "../modal/ModalProvider";
+import ViewPatientModal from "./ViewPatientModal";
+
 export default function PatientsTable({
   patients,
   loading,
   getStatusColor,
   formatStatusDisplay,
+  onEdit,
+  onAddFamilyMember,
 }) {
+  const { openModal } = useModal();
+
   return (
     <table className="patient-table">
       <thead>
@@ -11,6 +18,7 @@ export default function PatientsTable({
           <th>Name</th>
           <th>Age</th>
           <th>Gender</th>
+          <th>Barangay</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -19,11 +27,11 @@ export default function PatientsTable({
       <tbody>
         {loading ? (
           <tr>
-            <td colSpan="5">Loading patients...</td>
+            <td colSpan="6">Loading patients...</td>
           </tr>
         ) : patients.length === 0 ? (
           <tr>
-            <td colSpan="5">No patients found</td>
+            <td colSpan="6">No patients found</td>
           </tr>
         ) : (
           patients.map((patient) => (
@@ -31,18 +39,31 @@ export default function PatientsTable({
               <td>{patient.name}</td>
               <td>{patient.age}</td>
               <td>{patient.gender}</td>
+              <td>{patient.barangay_name || "—"}</td>
+
               <td>
-                <span
-                  className={`status-badge ${getStatusColor(
-                    patient.status
-                  )}`}
-                >
+                <span className={`status-badge ${getStatusColor(patient.status)}`}>
                   {formatStatusDisplay(patient.status)}
                 </span>
               </td>
+
               <td>
-                <button className="view-btn">View</button>
-                <button className="view-btn">Edit</button>
+                <button
+                  className="view-btn"
+                  onClick={() =>
+                    openModal(<ViewPatientModal patient={patient} />)
+                  }
+                >
+                  View
+                </button>
+
+
+                <button
+                  className="add-btn"
+                  onClick={() => onAddFamilyMember(patient)}
+                >
+                  Add Family Member
+                </button>
               </td>
             </tr>
           ))
