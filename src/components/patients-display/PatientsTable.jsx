@@ -1,15 +1,17 @@
 import { useModal } from "../modal/ModalProvider";
 import ViewPatientModal from "./ViewPatientModal";
+import EditPatientModal from "./EditPatientModal";
+
 
 export default function PatientsTable({
   patients,
   loading,
   getStatusColor,
   formatStatusDisplay,
-  onEdit,
   onAddFamilyMember,
+  onRefresh,
 }) {
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
 
   return (
     <table className="patient-table">
@@ -56,7 +58,23 @@ export default function PatientsTable({
                 >
                   View
                 </button>
-
+<button
+  className="edit-btn"
+  onClick={() =>
+    openModal(
+      <EditPatientModal
+        patient={patient}
+        onSave={() => {
+          if (onRefresh) onRefresh();
+          closeModal();
+        }}
+        onClose={closeModal}   
+      />
+    )
+  }
+>
+  Edit
+</button>
 
                 <button
                   className="add-btn"

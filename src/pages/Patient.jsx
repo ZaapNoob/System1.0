@@ -14,7 +14,11 @@ import usePatients from "../hooks/usePatients";
 
 import { apiFetch } from "../utils/api";
 
+// Import Modal provider hook
+import { useModal } from "../components/modal/ModalProvider";
 
+// Import EditPatientModal component
+import EditPatientModal from "../components/patients-display/EditPatientModal";
 
 // Import patient page styles
 import "./patient.css";
@@ -27,6 +31,8 @@ import PatientsTable from "../components/patients-display/PatientsTable";
 // Export Patient component
 // Receives authenticated user (doctor/admin), navigation callback, and allowed pages
 export default function Patient({ user, onNavigateToProfile, allowedPages = [], onNavigate }) {
+  const { openModal } = useModal();
+  const [editingPatient, setEditingPatient] = useState(null);
 
   // -----------------------------------
   // STATE MANAGEMENT
@@ -439,13 +445,6 @@ const {
 
 
 
-// =======================
-// Derived active barangay (FOR MODALS / DISPLAY)
-// =======================
-
-const activeBarangay = barangays.find(
-  (b) => Number(b.id) === Number(newPatient.barangay_id)
-);
   // -----------------------------------
   // RENDER UI
   // -----------------------------------
@@ -566,8 +565,22 @@ const activeBarangay = barangays.find(
   getStatusColor={getStatusColor}
   formatStatusDisplay={formatStatusDisplay}
   onView={(patient) => console.log("View", patient)}
-  onEdit={(patient) => console.log("Edit", patient)}
-onAddFamilyMember={async (patient) => {
+  onEdit={(patient) => {
+    openModal(
+      <EditPatientModal 
+        patient={patient} 
+        onClose={() => setEditingPatient(null)}
+        onSave={() => {
+          refetchPatients();
+          setSuccessMessage("Patient updated successfully!");
+          setTimeout(() => setSuccessMessage(""), 3000);
+        }}
+      />
+    );
+    setEditingPatient(patient);
+  }}
+  onRefresh={refetchPatients}
+  onAddFamilyMember={async (patient) => {
   try {
     setLoading(true);
     setError("");
