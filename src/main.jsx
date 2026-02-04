@@ -9,20 +9,19 @@ import ReactDOM from 'react-dom/client';
 // This is the main component of your application
 import App from './App.jsx';
 
+// Import ModalProvider to manage modals across the app
+import { ModalProvider } from './components/modal/ModalProvider';
+
 // Find the HTML element with id="root"
 // This is where the React app will be mounted
 const rootElement = document.getElementById('root');
 
 // Create a React root and render the app into it
 ReactDOM.createRoot(rootElement).render(
-
-  // React.StrictMode is a development-only wrapper
-  // It helps detect bugs, unsafe lifecycle methods,
-  // and other potential issues early
   <React.StrictMode>
-
-    {/* Render the App component */}
-    <App />
-
+    {/* Wrap the whole app with ModalProvider so modals work anywhere */}
+    <ModalProvider>
+      <App />
+    </ModalProvider>
   </React.StrictMode>
 );

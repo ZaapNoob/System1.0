@@ -730,3 +730,30 @@
   font-family: monospace;
   font-size: 12px;
 }
+
+/* ================================
+ TV WIDGET STYLES
+   ================================ */
+   .widget-tv {
+  background: black;
+  color: lime;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tv-widget {
+  text-align: center;
+  padding: 20px;
+}
+
+.tv-queue-number {
+  font-size: 90px;
+  font-weight: bold;
+  letter-spacing: 5px;
+}
+
+.tv-subtext {
+  font-size: 20px;
+  opacity: 0.7;
+}

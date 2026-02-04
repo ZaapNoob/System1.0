@@ -1,92 +1,104 @@
-﻿// Import useState and useEffect from React
-// useState → local UI state
-// useEffect → lifecycle (fetching later if needed)
-import { useState, useEffect } from "react";
+﻿// ==============================
+// Patient Component
+// ==============================
+
+// Import React hooks
+import { useState } from "react";
 
 // Import API configuration
 import API from "../config/api";
 
-// Import Sidebar component for navigation
+// Import Sidebar component
 import Sidebar from "../components/Sidebar";
 
-// Import usePatients hook for fetching and filtering patients
+// Import PatientsTable component
+import PatientsTable from "../components/patients-display/PatientsTable";
+
+// Import custom hook for fetching/filtering patients
 import usePatients from "../hooks/usePatients";
 
+// Import custom hook for adding patients
+import useAddPatient from "../hooks/useAddPatient";
+
+// Import API fetch utility
 import { apiFetch } from "../utils/api";
 
-// Import Modal provider hook
+// Import modal provider
 import { useModal } from "../components/modal/ModalProvider";
 
 // Import EditPatientModal component
 import EditPatientModal from "../components/patients-display/EditPatientModal";
 
-// Import patient page styles
+// Import patient page CSS
 import "./patient.css";
 
-// Import PatientsTable component
-import PatientsTable from "../components/patients-display/PatientsTable";
-
-// Export Patient component
-
-// Export Patient component
-// Receives authenticated user (doctor/admin), navigation callback, and allowed pages
+// ==============================
+// Main Component
+// ==============================
 export default function Patient({ user, onNavigateToProfile, allowedPages = [], onNavigate }) {
   const { openModal } = useModal();
-  const [editingPatient, setEditingPatient] = useState(null);
 
-  // -----------------------------------
-  // STATE MANAGEMENT
-  // -----------------------------------
 
-  // -----------------------------------
-  // LOGOUT HANDLER
-  // -----------------------------------
+  // =======================
+  // Patients Add Form (hook)
+  // =======================
+  const {
+    showAddForm, setShowAddForm,
+    showAdditionalInfo, setShowAdditionalInfo,
+    isFamilyMember, setIsFamilyMember,
+    showCreatePurok, setShowCreatePurok,
 
+    barangays, puroks,
+    newPatient, setNewPatient,
+    newPurokName, setNewPurokName,
+
+    loading, purokLoading,
+    successMessage, error,
+    setSuccessMessage, setError,
+
+    handleInputChange,
+    handleCreatePurok,
+    handleGenerateHouseholdClick,
+    handleSavePatient,
+    formatPurokInput,
+    initialPatientState,
+  } = useAddPatient();
+
+  // =======================
+  // LOGOUT
+  // =======================
   const handleLogout = async (e) => {
     e.stopPropagation();
-
     const token = localStorage.getItem("token");
 
     try {
       await fetch(`${API}/auth/logout.php`, {
         method: "POST",
-        headers: {
-          Authorization: token
-        }
+        headers: { Authorization: token }
       });
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch (err) {
+      console.error("Logout error:", err);
     } finally {
       localStorage.removeItem("token");
       window.location.reload();
     }
   };
 
-  // -----------------------------------
-  // UI HELPERS
-  // -----------------------------------
-
-  // Returns CSS class based on patient status
+  // =======================
+  // UI Helpers
+  // =======================
   const getStatusColor = (status) => {
     switch (status) {
-      case "Admitted":
-        return "status-admitted";
-      case "Discharged":
-        return "status-discharged";
-      case "Under Observation":
-        return "status-observation";
-      case "active":
-        return "status-active";
-      case "inactive":
-        return "status-inactive";
-      case "deceased":
-        return "status-deceased";
-      default:
-        return "";
+      case "Admitted": return "status-admitted";
+      case "Discharged": return "status-discharged";
+      case "Under Observation": return "status-observation";
+      case "active": return "status-active";
+      case "inactive": return "status-inactive";
+      case "deceased": return "status-deceased";
+      default: return "";
     }
   };
 
-  // Format status for display
   const formatStatusDisplay = (status) => {
     if (status === "active") return "Active";
     if (status === "inactive") return "Inactive";
@@ -94,353 +106,24 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
     return status;
   };
 
-
-
-
-
-
-// ======================================
-// ADDING PATIENT (UPDATED / CLEAN)
-// ======================================
-
-const [showAddForm, setShowAddForm] = useState(false);
-const [showAdditionalInfo, setShowAdditionalInfo] = useState(false);
-const [isFamilyMember, setIsFamilyMember] = useState(false);
-
-const [showCreatePurok, setShowCreatePurok] = useState(false);
-
-
-const [barangays, setBarangays] = useState([]);
-const [puroks, setPuroks] = useState([]);
-
-const [purokLoading, setPurokLoading] = useState(false);
-const [loading, setLoading] = useState(false); // ✅ ADD THIS
-const [successMessage, setSuccessMessage] = useState("");
-const [error, setError] = useState("");
-const [newPurokName, setNewPurokName] = useState("");
-
-// =======================
-// Initial patient state
-// =======================
-
-const initialPatientState = {
-  date_of_birth: "",
-  first_name: "",
-  middle_name: "",
-  last_name: "",
-  suffix: "",
-  gender: "",
-  marital_status: "",
-  barangay_id: "",
-  purok_id: "",
-  birthplace: "",
-  blood_type: "",
-  mother_name: "",
-  spouse_name: "",
-  contact_number: "",
-  household_no: "",
-  facility_household_no: "",
-  education_level: "",
-  employment_status: "",
-  family_member_type: "",
-  dswd_nhts: "No",
-  member_4ps: "No",
-  pcb_member: "No",
-  philhealth_member: "No",
-  philhealth_status_type: "",
-  philhealth_no: "",
-  philhealth_category: "None",
-};
-
-const [newPatient, setNewPatient] = useState(initialPatientState);
-
-// =======================
-// API helper
-// =======================
-
-
-const cleanPayload = (obj) =>
-  Object.fromEntries(
-    Object.entries(obj).filter(
-      ([, v]) => v !== "" && v !== null && v !== undefined
-    )
-  );
-
- 
   // =======================
-// Purok formatting helpers
-// =======================
-
-const formatPurokInput = (value) => {
-  return value
-    .replace(/\s+/g, " ")                // remove double spaces
-    .replace(/\bprk\.?\b/gi, "Purok")
-    .replace(/\bsit\.?\b/gi, "Sitio")
-    .replace(/\bsubd\.?\b/gi, "Subdivision");
-};
-
-const normalizePurokName = (value) => {
-  return value
-    .trim()
-    .replace(/\s+/g, " ")
-    .split(" ")
-    .map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-    )
-    .join(" ");
-};
-
-
-// =======================
-// Fetch barangays
-// =======================
-
-useEffect(() => {
-  apiFetch(`${API}/patients/list.php`)
-    .then((res) => setBarangays(res.data))
-    .catch(console.error);
-}, []);
-
-// =======================
-// Fetch puroks by barangay
-// =======================
-
-useEffect(() => {
-  if (!newPatient.barangay_id) {
-    setPuroks([]);
-    return;
-  }
-
-  apiFetch(
-    `${API}/patients/puroks/by_barangay.php?barangay_id=${newPatient.barangay_id}`
-  )
-    .then((res) => setPuroks(res.data))
-    .catch(console.error);
-}, [newPatient.barangay_id]);
-
-useEffect(() => {
-  if (!newPatient.barangay_id) return;
-  if (isFamilyMember) return; // ✅ IMPORTANT
-
-  setNewPatient(prev => ({
-    ...prev,
-    household_no: "",
-    facility_household_no: "",
-  }));
-}, [newPatient.barangay_id, isFamilyMember]);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// =======================
-// WHEN BARANGAY SELECTED
-// =======================
-
-const handleInputChange = (e) => {
-  const { name, value } = e.target;
-
-  setNewPatient((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
-
-// =======================
-// Create purok
-// =======================
-
-const handleCreatePurok = async () => {
-  if (!newPurokName.trim()) return setError("Purok name is required");
-  if (!newPatient.barangay_id)
-    return setError("Please select a barangay first");
-
-  try {
-    setPurokLoading(true);
-    setError("");
-
-    await apiFetch(`${API}/patients/puroks/create.php`, {
-      method: "POST",
-      body: JSON.stringify({
-        barangay_id: Number(newPatient.barangay_id),
-purok_name: normalizePurokName(newPurokName),
-      }),
-    });
-
-    const res = await apiFetch(
-      `${API}/patients/puroks/by_barangay.php?barangay_id=${newPatient.barangay_id}`
-    );
-
-    setPuroks(res.data);
-    setNewPurokName("");
-    setShowCreatePurok(false);
-    setSuccessMessage("Purok created successfully");
-    setTimeout(() => setSuccessMessage(""), 3000);
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setPurokLoading(false);
-  }
-};
-
-
-
-
-
-
-
-// =======================
-// Generate Household (AUTO-GENERATE)
-// =======================
-
-const handleGenerateHouseholdClick = async () => {
-  if (!newPatient.barangay_id) {
-    setError("Please select a barangay first");
-    return;
-  }
-
-  try {
-    setLoading(true);
-    setError("");
-
-    const facilityRes = await apiFetch(
-      `${API}/patients/generate-facility-household.php?barangay_id=${newPatient.barangay_id}`
-    );
-    const householdRes = await apiFetch(`${API}/generate-household.php`);
-
-    setNewPatient(prev => ({
-      ...prev,
-      facility_household_no: facilityRes.facility_household_no,
-      household_no: householdRes.household_no,
-    }));
-
-    setSuccessMessage("Household generated successfully");
-    setTimeout(() => setSuccessMessage(""), 3000);
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-
-// =======================
-// Save patient
-// =======================
-
-const handleSavePatient = async () => {
-  setError("");
-  setSuccessMessage("");
-
-  
-
-  const requiredFields = [
-    "first_name",
-    "last_name",
-    "gender",
-    "date_of_birth",
-    "barangay_id",
-  ];
-
-  for (const field of requiredFields) {
-    if (!newPatient[field]) {
-      setError(`${field.replace("_", " ")} is required`);
-      return;
-    }
-  }
-
-  try {
-    setLoading(true);
-
-    let payload = cleanPayload({
-      ...newPatient,
-      barangay_id: Number(newPatient.barangay_id),
-      purok_id: newPatient.purok_id
-        ? Number(newPatient.purok_id)
-        : null,
-    });
-
-  
-    if (payload.philhealth_member !== "Yes") {
-      delete payload.philhealth_status_type;
-      delete payload.philhealth_no;
-      delete payload.philhealth_category;
-    }
-
-    const res = await apiFetch(`${API}/patients/create.php`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-
-if (isFamilyMember) {
-  // ✅ Keep household context, reset only personal fields
-  setNewPatient(prev => ({
-    ...initialPatientState,
-    barangay_id: prev.barangay_id,
-    purok_id: prev.purok_id,
-    household_no: prev.household_no,
-    facility_household_no: prev.facility_household_no,
-  }));
-} else {
-  // Normal add patient
-  setNewPatient(initialPatientState);
-}
-
-setSuccessMessage(
-  `Patient created successfully! Code: ${res.data.patient_code}`
-);
-
-
-    setTimeout(() => setSuccessMessage(""), 3000);
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-
-
-
-// =======================
-//  DISPLAYING PATIENTS//
-// =======================
-
-const {
-  patients,
-  loading: patientsLoading,
-  search,
-  setSearch,
-  statusFilter,
-  setStatusFilter,
-  barangayFilter,
-  setBarangayFilter,
-  genderFilter,
-  setGenderFilter,
-  dobFilter,
-  setDobFilter,
-  refetchPatients
-} = usePatients();
-
-
-
-
+  // Patients Listing (hook)
+  // =======================
+  const {
+    patients,
+    loading: patientsLoading,
+    search,
+    setSearch,
+    statusFilter,
+    setStatusFilter,
+    barangayFilter,
+    setBarangayFilter,
+    genderFilter,
+    setGenderFilter,
+    dobFilter,
+    setDobFilter,
+    refetchPatients
+  } = usePatients();
 
 
 

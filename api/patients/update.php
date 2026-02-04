@@ -45,7 +45,15 @@ try {
         'spouse_name',
         'contact_number',
         'education_level',
-        'employment_status'
+        'employment_status',
+        'family_member_type',
+        'dswd_nhts',
+        'member_4ps',
+        'pcb_member',
+        'philhealth_member',
+        'philhealth_status_type',
+        'philhealth_no',
+        'philhealth_category'
     ];
 
     $fields = [];

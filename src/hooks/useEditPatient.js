@@ -265,6 +265,7 @@ export default function useEditPatient(patient, onSave, onClose) {
       const res = await updatePatient({
         id: patient.id,
         ...formData,
+          barangay_id: selectedBarangayId,
       });
 
       onSave?.(res);

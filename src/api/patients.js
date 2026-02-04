@@ -17,12 +17,23 @@ export const fetchBarangays = async () => {
 };
 
 /* =========================
+   SEARCH PATIENT IN QUEUE
+========================= */
+export const searchPatientsQueue = async (barangayId = 0, query) => {
+  // If barangayId = 0, it will search all barangays
+  return apiFetch(
+    `${API}/patients/search-patients-Global.php?barangay_id=${barangayId}&search=${encodeURIComponent(query)}`
+  );
+};
+
+
+/* =========================
    SEARCH HOUSEHOLDS
 ========================= */
-export const searchHouseholds = async (barangayId, firstName) => {
+export const searchHouseholds = async (barangayId, query) => {
   return apiFetch(
-    `${API}/patients/search-households.php?barangay_id=${barangayId}&first_name=${encodeURIComponent(
-      firstName
+    `${API}/patients/search-households.php?barangay_id=${barangayId}&q=${encodeURIComponent(
+      query
     )}`
   );
 };

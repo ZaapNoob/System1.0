@@ -1,5 +1,4 @@
-// Import useState hook from React
-// This allows the component to manage internal state (tasks list)
+// Import React hooks
 import { useState, useEffect } from "react";
 
 // Import Sidebar component for navigation
@@ -11,12 +10,25 @@ import "./Dashboard.css";
 // Import API configuration
 import API from "../config/api";
 
-// Export Dashboard component
-// Receives the authenticated user object, callback to navigate to profile, and allowed pages
-export default function Dashboard({ user, onNavigateToProfile, allowedPages = [], onNavigate }) {
+// ✅ IMPORT ACCEPT QUEUE HOOK
+import useAcceptQueue from "../hooks/AcceptQueue";
 
-  // Local state holding a list of tasks
-  // Currently hardcoded (mock data) for UI demonstration
+// ✅ IMPORT MODAL CONTEXT
+import { useModal } from "../components/modal/ModalProvider";
+
+// ✅ IMPORT TRIAGE MODAL
+import TriageModal from "./modal/TriageModal";
+
+// Export Dashboard component
+export default function Dashboard({
+  user,
+  onNavigateToProfile,
+  allowedPages = [],
+  onNavigate
+}) {
+  // ===============================
+  // MOCK TASKS (unchanged)
+  // ===============================
   const [tasks, setTasks] = useState([
     { id: 1, title: "Review project proposal", status: "In Progress", priority: "High" },
     { id: 2, title: "Update documentation", status: "Pending", priority: "Medium" },
@@ -24,16 +36,55 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
     { id: 4, title: "Design new features", status: "In Progress", priority: "Medium" }
   ]);
 
+  // ===============================
+  // TRIAGE QUEUE STATE
+  // ===============================
+  const [waitingQueue, setWaitingQueue] = useState([]);
+  const [servingPatient, setServingPatient] = useState(null);
 
+  // ===============================
+  // MODAL CONTEXT
+  // ===============================
+  const { openModal, closeModal } = useModal();
 
+  // ===============================
+  // ACCEPT QUEUE HOOK
+  // ===============================
+  const { handleAcceptQueue, loading: accepting } = useAcceptQueue({
+    onAccepted: (patient) => {
+      setServingPatient(patient);
+      setWaitingQueue(prev => prev.filter(q => q.id !== patient.id));
+    }
+  });
 
+  // ===============================
+  // LOAD WAITING QUEUE
+  // ===============================
+  useEffect(() => {
+    loadWaitingQueue();
+  }, []);
 
-  // ===================================
+  const loadWaitingQueue = async () => {
+    try {
+      const res = await fetch(`${API}/Queue/get-waiting.php`);
+      const data = await res.json();
+
+      if (data.success) {
+        setWaitingQueue(data.data);
+      } else {
+        setWaitingQueue([]);
+      }
+    } catch (err) {
+      console.error("Failed to load waiting queue:", err);
+      setWaitingQueue([]);
+    }
+  };
+
+  // ===============================
   // WIDGET ACCESS MANAGEMENT
-  // ===================================
+  // ===============================
   const [selectedWidgets, setSelectedWidgets] = useState([]);
 
-  // Load user's accessible widgets on component mount
   useEffect(() => {
     if (user?.id) {
       loadUserWidgets();
@@ -45,118 +96,62 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
       const response = await fetch(
         `${API}/widgets/get.php?user_id=${user.id}`
       );
-      
+
       if (!response.ok) {
-        console.error("API response not OK:", response.status);
         setSelectedWidgets([]);
         return;
       }
-      
-      const text = await response.text();
-      console.log("Raw API response:", text);
-      
-      if (!text) {
-        console.warn("Empty response from API");
-        setSelectedWidgets([]);
-        return;
-      }
-      
-      const widgets = JSON.parse(text);
-      console.log("Parsed widgets:", widgets);
-      
-      // If response has error property, set empty
-      if (widgets.error) {
-        console.error("API error:", widgets.error);
-        setSelectedWidgets([]);
-        return;
-      }
-      
+
+      const widgets = await response.json();
       setSelectedWidgets(Array.isArray(widgets) ? widgets : []);
     } catch (error) {
       console.error("Error loading user widgets:", error);
       setSelectedWidgets([]);
-    } 
+    }
   };
 
-
-
-
-
-
-
-
-  // -----------------------------------
+  // ===============================
   // LOGOUT HANDLER
-  // -----------------------------------
-
-  // Function triggered when user clicks "Logout"
+  // ===============================
   const handleLogout = async (e) => {
-    // Prevent click event from bubbling to parent user-info div
-    // This stops the profile navigation from being triggered
     e.stopPropagation();
-
-    // Retrieve stored authentication token
     const token = localStorage.getItem("token");
-    
+
     try {
-      // Send logout request to backend
-      // This removes the session token from the database
       await fetch(`${API}/auth/logout.php`, {
         method: "POST",
-        headers: {
-          Authorization: token
-        }
+        headers: { Authorization: token }
       });
     } catch (error) {
-      // Log errors if logout request fails
       console.error("Logout error:", error);
     } finally {
-      // Always remove token from browser
-      // This immediately logs the user out on the frontend
       localStorage.removeItem("token");
-
-      // Reload page so App.jsx re-checks authentication state
       window.location.reload();
     }
   };
 
-
-
-
-
-
-  // -----------------------------------
+  // ===============================
   // UI HELPERS
-  // -----------------------------------
+  // ===============================
+  const getPriorityClass = (type) => type === "PRIORITY" ? "priority-high" : "priority-low";
 
-  // Returns a CSS class based on task status
   const getStatusColor = (status) => {
     switch (status) {
-      case "Completed":
-        return "status-completed";
-      case "In Progress":
-        return "status-progress";
-      case "Pending":
-        return "status-pending";
-      default:
-        return "";
+      case "Completed": return "completed";
+      case "In Progress": return "in-progress";
+      case "Pending": return "pending";
+      default: return "default";
     }
   };
 
-  // Returns a CSS class based on task priority
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case "High":
-        return "priority-high";
-      case "Medium":
-        return "priority-medium";
-      case "Low":
-        return "priority-low";
-      default:
-        return "";
+      case "High": return "priority-high";
+      case "Medium": return "priority-medium";
+      case "Low": return "priority-low";
+      default: return "priority-default";
     }
   };
-
   // -----------------------------------
   // RENDER UI
   // -----------------------------------
@@ -333,79 +328,154 @@ export default function Dashboard({ user, onNavigateToProfile, allowedPages = []
                 </div>
               )}
 
-              {/* Triage Widget */}
-              {selectedWidgets.includes("triage") && (
-                <div className="widget-card widget-triage">
-                  <div className="widget-header">
-                    <h3>🚨 Triage Panel</h3>
-                  </div>
-                  <div className="widget-content">
-                    <div className="triage-widget">
-                      <div className="widget-section">
-                        <h4>⏱️ Patient Queue</h4>
-                        <div className="queue-list">
-                          <div className="queue-item priority-high">
-                            <span className="queue-number">Q001</span>
-                            <span className="patient-info">Maria Santos - Critical</span>
-                            <span className="wait-time">Wait: 5 min</span>
-                          </div>
-                          <div className="queue-item priority-medium">
-                            <span className="queue-number">Q002</span>
-                            <span className="patient-info">Pedro Ramos - Moderate</span>
-                            <span className="wait-time">Wait: 12 min</span>
-                          </div>
-                          <div className="queue-item priority-low">
-                            <span className="queue-number">Q003</span>
-                            <span className="patient-info">Juan Dela Cruz - Low</span>
-                            <span className="wait-time">Wait: 25 min</span>
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="widget-section">
-                        <h4>❤️ Vital Signs Summary</h4>
-                        <div className="vitals-grid">
-                          <div className="vital-item">
-                            <span className="vital-label">Blood Pressure</span>
-                            <span className="vital-value">120/80 mmHg</span>
-                          </div>
-                          <div className="vital-item">
-                            <span className="vital-label">Heart Rate</span>
-                            <span className="vital-value">72 bpm</span>
-                          </div>
-                          <div className="vital-item">
-                            <span className="vital-label">Temperature</span>
-                            <span className="vital-value">37.2°C</span>
-                          </div>
-                          <div className="vital-item">
-                            <span className="vital-label">Oxygen Level</span>
-                            <span className="vital-value">98%</span>
-                          </div>
-                        </div>
-                      </div>
 
-                      <div className="widget-section">
-                        <h4>📊 Triage Statistics</h4>
-                        <div className="stats-mini">
-                          <div className="stat-box critical">
-                            <span className="stat-label">Critical</span>
-                            <span className="stat-count">2</span>
-                          </div>
-                          <div className="stat-box moderate">
-                            <span className="stat-label">Moderate</span>
-                            <span className="stat-count">5</span>
-                          </div>
-                          <div className="stat-box low">
-                            <span className="stat-label">Low</span>
-                            <span className="stat-count">8</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
+
+
+{/* Triage Widget */}
+{selectedWidgets.includes("triage") && (
+  <div className="widget-card widget-triage">
+    <div className="widget-header">
+      <h3>🚨 Triage Panel</h3>
+    </div>
+    <div className="widget-content">
+      <div className="triage-widget">
+
+        {/* Patient Queue */}
+        <div className="widget-section">
+          <h4>⏱️ Patient Queue</h4>
+          <div className="queue-list">
+            {waitingQueue.length === 0 && (
+              <div className="empty-queue">No patients waiting</div>
+            )}
+
+            {waitingQueue.map((q) => {
+              const waitMinutes = Math.floor(
+                (Date.now() - new Date(q.created_at)) / 60000
+              );
+
+              return (
+                <div
+                  key={q.id}
+                  className={`queue-item ${
+                    q.queue_type === "PRIORITY"
+                      ? "priority-high"
+                      : "priority-low"
+                  }`}
+                >
+                  <span className="queue-number">{q.queue_code}</span>
+
+                  <span className="patient-info">
+                    {q.first_name} {q.last_name}
+                  </span>
+
+                  <span className="wait-time">
+                    Wait: {waitMinutes} min
+                  </span>
+
+                  {/* ✅ Accept Button Opens Modal */}
+                  <button
+                    className="accept-btn"
+                    disabled={accepting}
+                    onClick={() =>
+                      handleAcceptQueue(q, (patient) => {
+                        // Open Triage Modal after accepting
+                        openModal(
+                          <TriageModal
+                            patient={patient}
+                            doctors={[]}
+                            onAssign={() => console.log("Assign doctor clicked")}
+                            onClose={closeModal}
+                          />
+                        );
+                      })
+                    }
+                  >
+                    {accepting ? "Accepting..." : "Accept"}
+                  </button>
                 </div>
-              )}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Vital Signs Summary */}
+        <div className="widget-section">
+          <h4>❤️ Vital Signs Summary</h4>
+          <div className="vitals-grid">
+            <div className="vital-item">
+              <span className="vital-label">Blood Pressure</span>
+              <span className="vital-value">—</span>
             </div>
+            <div className="vital-item">
+              <span className="vital-label">Heart Rate</span>
+              <span className="vital-value">—</span>
+            </div>
+            <div className="vital-item">
+              <span className="vital-label">Temperature</span>
+              <span className="vital-value">—</span>
+            </div>
+            <div className="vital-item">
+              <span className="vital-label">Oxygen Level</span>
+              <span className="vital-value">—</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Triage Statistics */}
+        <div className="widget-section">
+          <h4>📊 Triage Statistics</h4>
+          <div className="stats-mini">
+            <div className="stat-box critical">
+              <span className="stat-label">Priority</span>
+              <span className="stat-count">
+                {waitingQueue.filter(q => q.queue_type === "PRIORITY").length}
+              </span>
+            </div>
+            <div className="stat-box low">
+              <span className="stat-label">Regular</span>
+              <span className="stat-count">
+                {waitingQueue.filter(q => q.queue_type === "REGULAR").length}
+              </span>
+            </div>
+            <div className="stat-box total">
+              <span className="stat-label">Total</span>
+              <span className="stat-count">{waitingQueue.length}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+
+
+              {/* TV Widget */}
+{selectedWidgets.includes("tv") && (
+  <div className="widget-card widget-tv">
+    <div className="widget-header">
+      <h3>📺 TV Display Panel</h3>
+    </div>
+
+    <div className="widget-content">
+      <div className="tv-widget">
+        <div className="tv-queue-number">Q001</div>
+        <p className="tv-subtext">Now Serving</p>
+      </div>
+    </div>
+  </div>
+)}
+
+
+              
+            </div>
+
+
           </section>
         )}
 

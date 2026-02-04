@@ -708,6 +708,17 @@ const handleAddAccountSubmit = async (e) => {
       />
       <label htmlFor="widget-triage">🚨 Triage Panel</label>
     </div>
+    
+  {/* TV Widget */}
+  <div className="option-group">
+    <input
+      type="checkbox"
+      id="widget-tv"
+      checked={selectedWidgets.includes("tv")}
+      onChange={() => handleWidgetToggle("tv")}
+    />
+    <label htmlFor="widget-tv">📺 TV Display Widget</label>
+  </div>
   </div>
 
   <button className="card-select-btn" onClick={handleSaveWidgets}>

@@ -31,16 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 // --------------------------------------------------
 
 // Database server host
+// Database server host
 $host = 'localhost';
 
-// Database name
-$db = 'react1.0';
+// Database name (your RHU clinic database)
+$db = 'react1.0';   // <-- change this to the actual DB name
 
-// Database username
-$user = 'root';
+// Database username (the new user you created)
+$user = 'rhu_user';      // <-- the username you set in HeidiSQL
 
 // Database password
-$password = '';
+$password = 'rhu_pass123'; // <-- the password you set for that user
+
 
 // --------------------------------------------------
 // CREATE PDO DATABASE CONNECTION
