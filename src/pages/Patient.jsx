@@ -36,6 +36,16 @@ import "./patient.css";
 // Main Component
 // ==============================
 export default function Patient({ user, onNavigateToProfile, allowedPages = [], onNavigate }) {
+  // ===============================
+  // ACTIVE PAGE STATE
+  // ===============================
+  const [currentPage, setCurrentPage] = useState("patient");
+
+  const handleNavigate = (page) => {
+    setCurrentPage(page);
+    if (onNavigate) onNavigate(page);
+  };
+
   const { openModal } = useModal();
 
 
@@ -136,20 +146,28 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
     <div className="patient-container">
 
       {/* Sidebar Navigation */}
-      <Sidebar allowedPages={allowedPages} onNavigate={onNavigate} />
+      <Sidebar 
+        allowedPages={allowedPages} 
+        currentPage={currentPage}
+        onNavigate={handleNavigate} 
+      />
 
       {/* Right content wrapper */}
       <div className="patient-content">
         {/* ================= HEADER ================= */}
-        <header className="patient-header">
+         <header className="patient-header">
           <div className="header-content">
-            <h1>Patient Management</h1>
+            <h1>RHU-Gubat-LGU</h1>
 
             {/* Logged-in user info */}
-            <div className="user-info" onClick={onNavigateToProfile}>
-              <span className="user-name">{user?.name}</span>
-              <span className="user-role">{user?.role}</span>
+            <div className="user-info" onClick={onNavigateToProfile} style={{ cursor: 'pointer' }}>
+               <div className="user-avatar-icon">
+    👤
+  </div>
+              <span className="user-name">{user?.name || "User"}</span>
+              <span className="user-role">{user?.role || "Member"}</span>
 
+              {/* Logout button */}
               <button className="logout-btn" onClick={handleLogout}>
                 Logout
               </button>

@@ -1,73 +1,49 @@
 import React from "react";
 import "./Sidebar.css";
+import MHO from "../assets/MHO.jpg";
 
-const Sidebar = ({ allowedPages = [], onNavigate }) => {
-  const handleNavClick = (page) => {
-    if (onNavigate) {
-      onNavigate(page);
-    }
-  };
+const Sidebar = ({ allowedPages = [], currentPage, onNavigate }) => {
 
   return (
     <div className="sidebar">
-      <nav className="sidebar-nav">
-        <h3 style={{ padding: "15px 20px", margin: "0", color: "white", fontSize: "14px", fontWeight: "600" }}>
-          Pages
-        </h3>
+      <div className="sidebar-brand">
+    <div className="sidebar-logo">
+      <img src={MHO} alt="Logo" />
+    </div>
+
+    <div className="sidebar-title">
+      <h2>Health System</h2>
+      <p>Admin Panel</p>
+    </div>
+    </div>
+
+      <nav>
         <ul>
-          {/* Global Dashboard - Always Available */}
-          <li>
-            <button 
-              onClick={() => handleNavClick("dashboard")}
-              style={{ 
-                background: "none", 
-                border: "none", 
-                cursor: "pointer",
-                width: "100%",
-                textAlign: "left"
-              }}
-            >
-              <a href="#!" style={{ color: "white", textDecoration: "none" }}>🏠 Dashboard</a>
+          {/* Dashboard always visible */}
+          <li className={currentPage === "dashboard" ? "active" : ""}>
+            <button onClick={() => onNavigate("dashboard")}>
+              🏠 Dashboard
             </button>
           </li>
 
-          {/* Permission-controlled pages */}
           {allowedPages.includes("patient") && (
-            <li>
-              <button 
-                onClick={() => handleNavClick("patient")}
-                style={{ 
-                  background: "none", 
-                  border: "none", 
-                  cursor: "pointer",
-                  width: "100%",
-                  textAlign: "left"
-                }}
-              >
-                <a href="#!" style={{ color: "white", textDecoration: "none" }}>👥 Patient</a>
+            <li className={currentPage === "patient" ? "active" : ""}>
+              <button onClick={() => onNavigate("patient")}>
+                👥 Patients
               </button>
             </li>
           )}
+
           {allowedPages.includes("queuegen") && (
-            <li>
-              <button 
-                onClick={() => handleNavClick("queuegen")}
-                style={{ 
-                  background: "none", 
-                  border: "none", 
-                  cursor: "pointer",
-                  width: "100%",
-                  textAlign: "left"
-                }}
-              >
-                <a href="#!" style={{ color: "white", textDecoration: "none" }}>📋 Queue Gen</a>
+            <li className={currentPage === "queuegen" ? "active" : ""}>
+              <button onClick={() => onNavigate("queuegen")}>
+                📋 Queue Generator
               </button>
             </li>
           )}
+
           {allowedPages.length === 0 && (
-            <li style={{ padding: "10px 20px", color: "#ccc", fontSize: "12px" }}>
-              No additional pages available
-            </li>
+            <li className="disabled">No extra permissions</li>
           )}
         </ul>
       </nav>

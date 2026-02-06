@@ -8,6 +8,16 @@ import usePatientSearchQueue from "../hooks/usePatientSearchQueue";
 import "./queuegen.css";
 
 export default function QueueGen({ user, allowedPages = [], onNavigate }) {
+  // ===============================
+  // ACTIVE PAGE STATE
+  // ===============================
+  const [currentPage, setCurrentPage] = useState("queuegen");
+
+  const handleNavigate = (page) => {
+    setCurrentPage(page);
+    if (onNavigate) onNavigate(page);
+  };
+
   const { openModal } = useModal();
   const barangayId = 0;
 
@@ -74,7 +84,11 @@ export default function QueueGen({ user, allowedPages = [], onNavigate }) {
 
   return (
     <div className="queuegen-main">
-      <Sidebar allowedPages={allowedPages} onNavigate={onNavigate} />
+      <Sidebar 
+        allowedPages={allowedPages} 
+        currentPage={currentPage}
+        onNavigate={handleNavigate} 
+      />
 
       <div className="queuegen-container">
         <h2>📋 Queue Generation</h2>

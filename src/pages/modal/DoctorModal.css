@@ -1,0 +1,168 @@
+/* DoctorModal.css */
+
+/* Header */
+.doctor-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: #007bff;
+  color: #fff;
+}
+
+.doctor-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.modal-close-btn:hover {
+  transform: rotate(90deg);
+}
+
+/* Body */
+.doctor-modal-body {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+  flex-wrap: wrap;
+}
+
+/* Left Column - Patient Info */
+.doctor-patient-container {
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.doctor-patient-image img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #007bff;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.doctor-patient-info {
+  width: 100%;
+}
+
+.doctor-patient-info h3 {
+  margin-bottom: 12px;
+  color: #007bff;
+  font-size: 1.25rem;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 8px;
+}
+
+/* Info Row */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 600;
+  color: #555;
+}
+
+.value {
+  color: #333;
+  text-align: right;
+}
+
+/* Right Column - Vital Signs */
+.doctor-vitals-container {
+  flex: 1 1 300px;
+  background: linear-gradient(135deg, #f5f9ff 0%, #e8f4ff 100%);
+  border-radius: 8px;
+  padding: 20px;
+  border-left: 4px solid #007bff;
+}
+
+.doctor-vitals-container h3 {
+  margin-bottom: 16px;
+  color: #007bff;
+  font-size: 1.25rem;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 8px;
+}
+
+/* Footer / Actions */
+.doctor-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-cancel {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background-color: #c82333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .doctor-modal-body {
+    flex-direction: column;
+  }
+
+  .doctor-patient-info-column,
+  .doctor-vital-signs-column {
+    flex: 1 1 100%;
+  }
+
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .value {
+    text-align: left;
+    margin-top: 2px;
+  }
+}

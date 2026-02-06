@@ -16,9 +16,75 @@
 
 
 .patient-header {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: #FEF9E1; /* soft cream */
+  color: #333;
+  padding: 20px 40px; /* bigger padding = taller header */
+  border-bottom: 1px solid #e6e0c8;
+  box-shadow: none; /* remove heavy shadow */
+}
+
+/* Layout */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Dashboard title */
+.patient-header h1 {
+  font-size: 28px; /* bigger title */
+  font-weight: 700;
+  margin: 0;
+  color: #550000;
+  background: linear-gradient(90deg, #550000, #ff6b6b); /* subtle gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* subtle shadow for depth */
+  position: relative;
+  display: inline-block;
+}
+
+
+
+/* User info row */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* smaller spacing */
+  cursor: pointer;
+}
+
+/* Name */
+.user-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Role */
+.user-role {
+  font-size: 13px;
+  color: #777;
+  font-style: italic;
+}
+
+/* Logout button */
+.logout-btn {
+  background: #550000;
+  border: none;
   color: white;
-  padding: 20px;
+  padding: 6px 12px; /* smaller */
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: #FC0000;
+  transform: translateY(-1px);
 }
 
 .patient-main {

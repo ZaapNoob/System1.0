@@ -1,12 +1,36 @@
 import React, { useState } from "react";
+import { useDoctors } from "../../hooks/useDoctors";
+import { assignDoctor } from "../../api/doctor";
 import "./TriageModal.css";
 
-export default function TriageModal({ patient, doctors = [], onAssign, onClose }) {
+export default function TriageModal({ patient, onAssign, onClose }) {
+  const { doctors, loading } = useDoctors();
   const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const handleAssign = () => {
-    if (selectedDoctor) onAssign(selectedDoctor);
-  };
+const handleAssign = async () => {
+  if (!selectedDoctor) return;
+
+  try {
+    await assignDoctor({
+      queue_id: patient.id,
+      patient_id: patient.patient_id,
+      doctor_id: Number(selectedDoctor)
+    });
+
+    setSuccess(true);       // ✅ show success message
+    onAssign(selectedDoctor); // optional: refresh parent list
+
+    // ✅ auto-close modal after short delay
+    setTimeout(() => {
+      onClose();
+    }, 1200);
+
+  } catch (err) {
+    console.error("Failed to assign doctor:", err);
+    alert("Failed to assign doctor");
+  }
+};
 
   return (
     <div className="modal-overlay">
@@ -120,17 +144,19 @@ export default function TriageModal({ patient, doctors = [], onAssign, onClose }
           </div>
         </div>
 
-        {/* Doctor Assignment */}
+       {/* ✅ Doctor Assignment */}
         <div className="triage-doctor-selection">
           <h3>Assign Doctor</h3>
           <select
             className="doctor-dropdown"
             value={selectedDoctor}
             onChange={(e) => setSelectedDoctor(e.target.value)}
+            disabled={loading}
           >
             <option value="" disabled>
-              Select a doctor
+              {loading ? "Loading doctors..." : "Select a doctor"}
             </option>
+
             {doctors.map((doc) => (
               <option key={doc.id} value={doc.id}>
                 {doc.name}
@@ -139,8 +165,13 @@ export default function TriageModal({ patient, doctors = [], onAssign, onClose }
           </select>
         </div>
 
-        {/* Actions */}
+         {/* ✅ Actions */}
         <div className="triage-modal-actions">
+          {success && (
+  <div className="assign-success">
+    ✅ Patient assigned successfully
+  </div>
+)}
           <button
             className="btn btn-assign"
             onClick={handleAssign}

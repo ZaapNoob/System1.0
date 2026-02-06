@@ -9,6 +9,16 @@ require_once __DIR__ . '/auth.php';
 
 // Tell the client that this endpoint returns JSON
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+header('Content-Type: application/json');
 
 // Require the user to be authenticated
 // This will:

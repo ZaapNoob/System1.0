@@ -1,25 +1,31 @@
 // Import React hooks
 import { useState, useEffect } from "react";
 
-// Import Sidebar component for navigation
+// Sidebar
 import Sidebar from "../components/Sidebar";
 
-// Import dashboard styles
+// Styles
 import "./Dashboard.css";
 
-// Import API configuration
+// API
 import API from "../config/api";
 
-// ✅ IMPORT ACCEPT QUEUE HOOK
+// Accept queue hook
 import useAcceptQueue from "../hooks/AcceptQueue";
 
-// ✅ IMPORT MODAL CONTEXT
+// Modal context
 import { useModal } from "../components/modal/ModalProvider";
 
-// ✅ IMPORT TRIAGE MODAL
+// Modals
 import TriageModal from "./modal/TriageModal";
+import DoctorModal from "./modal/DoctorModal";
 
-// Export Dashboard component
+// Doctor hooks
+import { useDoctorAssignments } from "../hooks/useDoctors";
+
+// Auto-fetch hook
+import useAutoFetchStable from "../hooks/useAutoFetchStable";
+
 export default function Dashboard({
   user,
   onNavigateToProfile,
@@ -27,7 +33,17 @@ export default function Dashboard({
   onNavigate
 }) {
   // ===============================
-  // MOCK TASKS (unchanged)
+  // ACTIVE PAGE STATE
+  // ===============================
+  const [currentPage, setCurrentPage] = useState("dashboard");
+
+  const handleNavigate = (page) => {
+    setCurrentPage(page);
+    if (onNavigate) onNavigate(page);
+  };
+
+  // ===============================
+  // MOCK TASKS
   // ===============================
   const [tasks, setTasks] = useState([
     { id: 1, title: "Review project proposal", status: "In Progress", priority: "High" },
@@ -37,15 +53,27 @@ export default function Dashboard({
   ]);
 
   // ===============================
-  // TRIAGE QUEUE STATE
+  // TRIAGE QUEUE (AUTO REFRESH)
   // ===============================
-  const [waitingQueue, setWaitingQueue] = useState([]);
+  const waitingQueue = useAutoFetchStable(`${API}/Queue/get-waiting.php`, 1500);
   const [servingPatient, setServingPatient] = useState(null);
 
   // ===============================
-  // MODAL CONTEXT
+  // DOCTOR ASSIGNMENTS (AUTO REFRESH)
   // ===============================
-  const { openModal, closeModal } = useModal();
+  const doctorAssignments = useAutoFetchStable(
+    user?.id
+      ? `${API}/Queue/get-doctor-assignments.php?doctor_id=${user.id}&status=waiting`
+      : null,
+    1500
+  );
+
+  const doctorAssignmentsLoading = false;
+
+  const { setActive, markDone } = useDoctorAssignments({
+    doctorId: user?.role === "doctor" ? user?.id : null,
+    status: "waiting"
+  });
 
   // ===============================
   // ACCEPT QUEUE HOOK
@@ -53,52 +81,33 @@ export default function Dashboard({
   const { handleAcceptQueue, loading: accepting } = useAcceptQueue({
     onAccepted: (patient) => {
       setServingPatient(patient);
-      setWaitingQueue(prev => prev.filter(q => q.id !== patient.id));
     }
   });
 
   // ===============================
-  // LOAD WAITING QUEUE
+  // MODALS
   // ===============================
-  useEffect(() => {
-    loadWaitingQueue();
-  }, []);
-
-  const loadWaitingQueue = async () => {
-    try {
-      const res = await fetch(`${API}/Queue/get-waiting.php`);
-      const data = await res.json();
-
-      if (data.success) {
-        setWaitingQueue(data.data);
-      } else {
-        setWaitingQueue([]);
-      }
-    } catch (err) {
-      console.error("Failed to load waiting queue:", err);
-      setWaitingQueue([]);
-    }
-  };
+  const { openModal, closeModal } = useModal();
 
   // ===============================
   // WIDGET ACCESS MANAGEMENT
   // ===============================
   const [selectedWidgets, setSelectedWidgets] = useState([]);
+  const [widgetsLoading, setWidgetsLoading] = useState(false);
 
   useEffect(() => {
-    if (user?.id) {
-      loadUserWidgets();
-    }
+    if (user?.id) loadUserWidgets();
   }, [user?.id]);
 
   const loadUserWidgets = async () => {
+    setWidgetsLoading(true);
+
     try {
-      const response = await fetch(
-        `${API}/widgets/get.php?user_id=${user.id}`
-      );
+      const response = await fetch(`${API}/widgets/get.php?user_id=${user.id}`);
 
       if (!response.ok) {
         setSelectedWidgets([]);
+        setWidgetsLoading(false);
         return;
       }
 
@@ -108,6 +117,8 @@ export default function Dashboard({
       console.error("Error loading user widgets:", error);
       setSelectedWidgets([]);
     }
+
+    setWidgetsLoading(false);
   };
 
   // ===============================
@@ -133,25 +144,36 @@ export default function Dashboard({
   // ===============================
   // UI HELPERS
   // ===============================
-  const getPriorityClass = (type) => type === "PRIORITY" ? "priority-high" : "priority-low";
+  const getPriorityClass = (type) =>
+    type === "PRIORITY" ? "priority-high" : "priority-low";
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Completed": return "completed";
-      case "In Progress": return "in-progress";
-      case "Pending": return "pending";
-      default: return "default";
+      case "done":
+        return "completed";
+      case "In Progress":
+        return "in-progress";
+      case "Pending":
+        return "pending";
+      default:
+        return "default";
     }
   };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case "High": return "priority-high";
-      case "Medium": return "priority-medium";
-      case "Low": return "priority-low";
-      default: return "priority-default";
+      case "High":
+        return "priority-high";
+      case "Medium":
+        return "priority-medium";
+      case "Low":
+        return "priority-low";
+      default:
+        return "priority-default";
     }
   };
+
+
   // -----------------------------------
   // RENDER UI
   // -----------------------------------
@@ -160,17 +182,24 @@ export default function Dashboard({
     <div className="dashboard-container">
 
       {/* Sidebar Navigation */}
-      <Sidebar allowedPages={allowedPages} onNavigate={onNavigate} />
+      <Sidebar 
+        allowedPages={allowedPages} 
+        currentPage={currentPage}
+        onNavigate={handleNavigate} 
+      />
 
       {/* Right content wrapper */}
       <div className="dashboard-content">
         {/* Top header */}
         <header className="dashboard-header">
           <div className="header-content">
-            <h1>Dashboard</h1>
+            <h1>RHU-Gubat-LGU</h1>
 
             {/* Logged-in user info */}
             <div className="user-info" onClick={onNavigateToProfile} style={{ cursor: 'pointer' }}>
+               <div className="user-avatar-icon">
+    👤
+  </div>
               <span className="user-name">{user?.name || "User"}</span>
               <span className="user-role">{user?.role || "Member"}</span>
 
@@ -239,94 +268,133 @@ export default function Dashboard({
         </section>
         </div>
 
-        {/* Widgets Section - Only show if widgets are selected */}
-        {selectedWidgets.length > 0 && (
-          <section className="widgets-section">
 
-            <div className="widgets-grid">
-              {/* Doctor Widget */}
-              {selectedWidgets.includes("doctor") && (
-                <div className="widget-card widget-doctor">
-                  <div className="widget-header">
-                    <h3>👨‍⚕️ Doctor Panel</h3>
-                  </div>
-                  <div className="widget-content">
-                    <div className="doctor-widget">
-                      <div className="doctor-summary-grid">
 
-  <div className="doctor-summary-card">
-    <span className="summary-label">Appointments</span>
-  </div>
 
-  <div className="doctor-summary-card">
-    <span className="summary-label">Completed</span>
-  </div>
 
-  <div className="doctor-summary-card">
-    <span className="summary-label">Patients</span>
-  </div>
 
-</div>
 
-                   <div className="widget-section">
-  <h4>📋 Patient Consultations</h4>
 
-  <table className="consultation-table">
-    <thead>
+
+    {/* Widgets Section - Only show if widgets are selected */}
+      {selectedWidgets.length > 0 && (
+        <section className="widgets-section">
+          <div className="widgets-grid">
+
+            {/* Doctor Widget */}
+            {selectedWidgets.includes("doctor") && (
+              <div className="widget-card widget-doctor">
+                <div className="widget-header">
+                  <h3>👨‍⚕️ Doctor Panel</h3>
+                </div>
+                <div className="widget-content">
+                  <div className="doctor-widget">
+                    <div className="doctor-summary-grid">
+                      <div className="doctor-summary-card">
+                        <span className="summary-label">Appointments</span>
+                      </div>
+                      <div className="doctor-summary-card">
+                        <span className="summary-label">Completed</span>
+                      </div>
+                      <div className="doctor-summary-card">
+                        <span className="summary-label">Patients</span>
+                      </div>
+                    </div>
+
+                    <div className="widget-section">
+                      <h4>📋 Patient Consultations</h4>
+<table className="consultation-table">
+  <thead>
+    <tr>
+      <th>Patient Name</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {doctorAssignmentsLoading && (
       <tr>
-        <th>Patient Name</th>
-        <th>Status</th>
+        <td colSpan="3">Loading assignments...</td>
       </tr>
-    </thead>
-    <tbody>
+    )}
+
+    {!doctorAssignmentsLoading && doctorAssignments.length === 0 && (
       <tr>
-        <td>Juan Dela Cruz</td>
+        <td colSpan="3">No assigned patients</td>
+      </tr>
+    )}
+
+    {doctorAssignments.map((item) => (
+      <tr key={item.id}>
+        <td>{item.patient_name}</td>
         <td>
-          <span className="status-badge in-progress">In Progress</span>
+          <span className={`status-badge ${getStatusColor(item.status)}`}>
+            {item.status}
+          </span>
+        </td>
+        <td>
+          {item.status !== "done" && (
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={async () => {
+                try {
+                  // ✅ 1. Mark patient as active & get full patient data
+                  const patientData = await setActive(item.id);
+                  
+                  // ✅ 2. Open modal with full patient data
+                  openModal(
+                    <DoctorModal
+                      patient={patientData}
+                      onDone={async () => {
+                        await markDone(item.id); // mark as done
+                        closeModal();
+                      }}
+                    />
+                  );
+                } catch (err) {
+                  console.error("Error selecting patient:", err);
+                }
+              }}
+            >
+              Select
+            </button>
+          )}
         </td>
       </tr>
-      <tr>
-        <td>Maria Santos</td>
-        <td>
-          <span className="status-badge completed">Completed</span>
-        </td>
-      </tr>
-      <tr>
-        <td>Pedro Ramos</td>
-        <td>
-          <span className="status-badge scheduled">Scheduled</span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+    ))}
+  </tbody>
+</table>
+  </div>
 
 
-                      <div className="widget-section">
-                        <h4>💊 Active Prescriptions</h4>
-                        <div className="prescription-list">
-                          <div className="prescription-item">
-                            <span className="medicine">Amoxicillin 500mg</span>
-                            <span className="dosage">2x Daily</span>
-                          </div>
-                          <div className="prescription-item">
-                            <span className="medicine">Ibuprofen 200mg</span>
-                            <span className="dosage">3x Daily</span>
+                        <div className="widget-section">
+                          <h4>💊 Active Prescriptions</h4>
+                          <div className="prescription-list">
+                            <div className="prescription-item">
+                              <span className="medicine">Amoxicillin 500mg</span>
+                              <span className="dosage">2x Daily</span>
+                            </div>
+                            <div className="prescription-item">
+                              <span className="medicine">Ibuprofen 200mg</span>
+                              <span className="dosage">3x Daily</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="widget-section">
-                        <h4>🔬 Lab Results Pending</h4>
-                        <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                          <li>Blood Test - Juan Dela Cruz</li>
-                          <li>X-Ray Report - Maria Santos</li>
-                        </ul>
+                        <div className="widget-section">
+                          <h4>🔬 Lab Results Pending</h4>
+                          <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                            <li>Blood Test - Juan Dela Cruz</li>
+                            <li>X-Ray Report - Maria Santos</li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+
+
+
 
 
 

@@ -79,14 +79,47 @@ INSERT INTO `barangays` (`id`, `name`, `last_patient_seq`, `is_special`, `facili
 
 -- Dumping structure for event react1.0.cancel_daily_queues
 DELIMITER //
-CREATE EVENT `cancel_daily_queues` ON SCHEDULE EVERY 1 DAY STARTS '2026-02-05 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
+CREATE EVENT `cancel_daily_queues` ON SCHEDULE EVERY 1 DAY STARTS '2026-02-06 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO BEGIN
     UPDATE patient_queue
-    SET status = 'cancelled',
+    SET
+        status = 'cancelled',
         cancelled_by = 'system'
     WHERE status = 'waiting'
-      AND queue_date = CURDATE();
+      AND queue_date < CURDATE()
+      AND cancelled_by IS NULL;
 END//
 DELIMITER ;
+
+-- Dumping structure for table react1.0.doctor_patient_queue
+CREATE TABLE IF NOT EXISTS `doctor_patient_queue` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `patient_id` int NOT NULL,
+  `doctor_id` bigint unsigned NOT NULL,
+  `queue_number` int NOT NULL,
+  `queue_date` date NOT NULL,
+  `status` enum('waiting','serving','done','cancelled') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'waiting',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_active` tinyint(1) DEFAULT '0' COMMENT '1 = currently being seen by doctor',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_doctor_queue` (`doctor_id`,`queue_number`,`queue_date`),
+  KEY `idx_patient` (`patient_id`),
+  KEY `idx_doctor` (`doctor_id`),
+  CONSTRAINT `fk_dpq_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_dpq_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table react1.0.doctor_patient_queue: ~0 rows (approximately)
+DELETE FROM `doctor_patient_queue`;
+INSERT INTO `doctor_patient_queue` (`id`, `patient_id`, `doctor_id`, `queue_number`, `queue_date`, `status`, `created_at`, `is_active`) VALUES
+	(1, 41, 12, 1, '2026-02-05', 'done', '2026-02-05 00:59:24', 0),
+	(2, 5, 12, 2, '2026-02-05', 'serving', '2026-02-05 01:00:45', 0),
+	(3, 60, 12, 3, '2026-02-05', 'serving', '2026-02-05 01:04:55', 0),
+	(4, 72, 20, 1, '2026-02-05', 'waiting', '2026-02-05 01:09:20', 0),
+	(5, 13, 20, 2, '2026-02-05', 'waiting', '2026-02-05 01:43:04', 0),
+	(6, 72, 12, 4, '2026-02-05', 'done', '2026-02-05 02:19:11', 0),
+	(7, 34, 12, 5, '2026-02-05', 'serving', '2026-02-05 03:00:59', 0),
+	(8, 13, 12, 6, '2026-02-05', 'serving', '2026-02-05 03:13:53', 0),
+	(9, 55, 12, 7, '2026-02-05', 'serving', '2026-02-05 03:15:55', 1);
 
 -- Dumping structure for table react1.0.household_sequence
 CREATE TABLE IF NOT EXISTS `household_sequence` (
@@ -310,14 +343,14 @@ CREATE TABLE IF NOT EXISTS `patient_queue` (
   KEY `idx_queue_lookup` (`queue_date`,`queue_type`,`status`),
   KEY `fk_patient_queue` (`patient_id`),
   CONSTRAINT `fk_queue_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table react1.0.patient_queue: ~24 rows (approximately)
 DELETE FROM `patient_queue`;
 INSERT INTO `patient_queue` (`id`, `patient_id`, `queue_date`, `queue_type`, `queue_number`, `queue_code`, `status`, `cancelled_by`, `systolic_bp`, `diastolic_bp`, `heart_rate`, `respiratory_rate`, `temperature`, `oxygen_saturation`, `weight`, `height`, `created_at`) VALUES
-	(1, 42, '2026-02-03', 'PRIORITY', 1, 'P-001', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-03 08:31:33'),
-	(2, 71, '2026-02-03', 'PRIORITY', 2, 'P-002', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-03 08:39:39'),
-	(3, 71, '2026-02-03', 'PRIORITY', 3, 'P-003', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-03 08:47:09'),
+	(1, 42, '2026-02-03', 'PRIORITY', 1, 'P-001', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-03 08:31:33'),
+	(2, 71, '2026-02-03', 'PRIORITY', 2, 'P-002', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-03 08:39:39'),
+	(3, 71, '2026-02-03', 'PRIORITY', 3, 'P-003', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-03 08:47:09'),
 	(4, 42, '2026-02-04', 'PRIORITY', 25, 'P-025', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 00:40:01'),
 	(5, 71, '2026-02-04', 'PRIORITY', 26, 'P-026', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 01:24:25'),
 	(6, 75, '2026-02-04', 'PRIORITY', 27, 'P-027', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:02:04'),
@@ -325,30 +358,48 @@ INSERT INTO `patient_queue` (`id`, `patient_id`, `queue_date`, `queue_type`, `qu
 	(8, 62, '2026-02-04', 'PRIORITY', 29, 'P-029', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:08:34'),
 	(9, 60, '2026-02-04', 'PRIORITY', 30, 'P-030', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:17:31'),
 	(10, 75, '2026-02-04', 'PRIORITY', 31, 'P-031', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:22:02'),
-	(11, 70, '2026-02-04', 'PRIORITY', 32, 'P-032', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:22:54'),
-	(12, 72, '2026-02-04', 'PRIORITY', 33, 'P-033', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:31:37'),
-	(13, 62, '2026-02-04', 'PRIORITY', 34, 'P-034', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 03:14:26'),
-	(14, 60, '2026-02-04', 'PRIORITY', 35, 'P-035', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 03:24:25'),
-	(15, 72, '2026-02-04', 'PRIORITY', 36, 'P-036', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 03:27:13'),
-	(16, 71, '2026-02-04', 'PRIORITY', 37, 'P-037', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:19:40'),
-	(17, 71, '2026-02-04', 'PRIORITY', 38, 'P-038', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:19:51'),
-	(18, 71, '2026-02-04', 'PRIORITY', 40, 'P-040', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:20:24'),
-	(19, 13, '2026-02-04', 'PRIORITY', 41, 'P-041', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:23:59'),
+	(11, 70, '2026-02-04', 'PRIORITY', 32, 'P-032', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:22:54'),
+	(12, 72, '2026-02-04', 'PRIORITY', 33, 'P-033', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 02:31:37'),
+	(13, 62, '2026-02-04', 'PRIORITY', 34, 'P-034', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 03:14:26'),
+	(14, 60, '2026-02-04', 'PRIORITY', 35, 'P-035', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 03:24:25'),
+	(15, 72, '2026-02-04', 'PRIORITY', 36, 'P-036', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 03:27:13'),
+	(16, 71, '2026-02-04', 'PRIORITY', 37, 'P-037', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:19:40'),
+	(17, 71, '2026-02-04', 'PRIORITY', 38, 'P-038', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:19:51'),
+	(18, 71, '2026-02-04', 'PRIORITY', 40, 'P-040', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:20:24'),
+	(19, 13, '2026-02-04', 'PRIORITY', 41, 'P-041', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:23:59'),
 	(20, 13, '2026-02-04', 'REGULAR', 1, 'R-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:24:55'),
-	(21, 13, '2026-02-04', 'REGULAR', 2, 'R-002', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:25:56'),
-	(22, 13, '2026-02-04', 'REGULAR', 3, 'R-003', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:29:08'),
-	(23, 71, '2026-02-04', 'PRIORITY', 60, 'P-060', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:29:43'),
-	(24, 46, '2026-02-04', 'PRIORITY', 61, 'P-061', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:29:57'),
+	(21, 13, '2026-02-04', 'REGULAR', 2, 'R-002', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:25:56'),
+	(22, 13, '2026-02-04', 'REGULAR', 3, 'R-003', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:29:08'),
+	(23, 71, '2026-02-04', 'PRIORITY', 60, 'P-060', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:29:43'),
+	(24, 46, '2026-02-04', 'PRIORITY', 61, 'P-061', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 05:29:57'),
 	(25, 71, '2026-02-04', 'REGULAR', 4, 'R-004', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 06:28:45'),
-	(26, 11, '2026-02-04', 'PRIORITY', 62, 'P-062', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 06:30:13'),
-	(27, 62, '2026-02-04', 'PRIORITY', 63, 'P-063', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 06:44:04'),
-	(28, 55, '2026-02-04', 'PRIORITY', 64, 'P-064', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 06:45:36'),
-	(29, 62, '2026-02-04', 'PRIORITY', 65, 'P-065', 'waiting', NULL, NULL, NULL, 123, 73, 12.0, 32, 23.00, 13.00, '2026-02-04 06:47:58'),
-	(30, 55, '2026-02-04', 'PRIORITY', 66, 'P-066', 'waiting', NULL, NULL, NULL, 28, 23, 11.0, 23, 31.00, 23.00, '2026-02-04 06:55:47'),
-	(31, 49, '2026-02-04', 'PRIORITY', 67, 'P-067', 'waiting', NULL, 120, 928, 271, 26, 93.0, 26, 94.00, 12.00, '2026-02-04 07:00:16'),
+	(26, 11, '2026-02-04', 'PRIORITY', 62, 'P-062', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 06:30:13'),
+	(27, 62, '2026-02-04', 'PRIORITY', 63, 'P-063', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 06:44:04'),
+	(28, 55, '2026-02-04', 'PRIORITY', 64, 'P-064', 'cancelled', 'system', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-04 06:45:36'),
+	(29, 62, '2026-02-04', 'PRIORITY', 65, 'P-065', 'cancelled', 'system', NULL, NULL, 123, 73, 12.0, 32, 23.00, 13.00, '2026-02-04 06:47:58'),
+	(30, 55, '2026-02-04', 'PRIORITY', 66, 'P-066', 'cancelled', 'system', NULL, NULL, 28, 23, 11.0, 23, 31.00, 23.00, '2026-02-04 06:55:47'),
+	(31, 49, '2026-02-04', 'PRIORITY', 67, 'P-067', 'cancelled', 'system', 120, 928, 271, 26, 93.0, 26, 94.00, 12.00, '2026-02-04 07:00:16'),
 	(32, 62, '2026-02-04', 'REGULAR', 5, 'R-005', 'serving', NULL, 120, 928, 271, 26, 93.0, 26, 94.00, 12.00, '2026-02-04 07:01:00'),
 	(33, 56, '2026-02-04', 'REGULAR', 6, 'R-006', 'serving', NULL, 129, 82, 126, 2361, 31.0, 64, 172.00, 271.00, '2026-02-04 07:03:21'),
-	(34, 62, '2026-02-04', 'REGULAR', 100, 'R-100', 'serving', NULL, 120, 8, 725, 23, 93.0, 16, 936.00, 926.00, '2026-02-04 08:20:05');
+	(34, 62, '2026-02-04', 'REGULAR', 100, 'R-100', 'serving', NULL, 120, 8, 725, 23, 93.0, 16, 936.00, 926.00, '2026-02-04 08:20:05'),
+	(35, 62, '2026-02-05', 'PRIORITY', 1, 'P-001', 'serving', NULL, 120, 23, 41, 27, 29.0, NULL, 28.00, 23.00, '2026-02-05 00:35:14'),
+	(36, 13, '2026-02-05', 'PRIORITY', 2, 'P-002', 'serving', NULL, 120, 2, 3, 2, 3.0, 2, 3.00, 2.00, '2026-02-05 00:38:54'),
+	(37, 71, '2026-02-05', 'REGULAR', 1, 'R-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 00:40:06'),
+	(38, 62, '2026-02-05', 'REGULAR', 2, 'R-002', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 00:41:00'),
+	(39, 55, '2026-02-05', 'REGULAR', 3, 'R-003', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 00:41:08'),
+	(40, 13, '2026-02-05', 'PRIORITY', 3, 'P-003', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 00:41:19'),
+	(41, 41, '2026-02-05', 'REGULAR', 4, 'R-004', 'with_doctor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 00:41:27'),
+	(42, 5, '2026-02-05', 'REGULAR', 5, 'R-005', 'with_doctor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 00:41:36'),
+	(43, 13, '2026-02-05', 'REGULAR', 6, 'R-006', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 01:03:35'),
+	(44, 60, '2026-02-05', 'REGULAR', 7, 'R-007', 'with_doctor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 01:04:42'),
+	(45, 72, '2026-02-05', 'REGULAR', 8, 'R-008', 'with_doctor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 01:09:11'),
+	(46, 13, '2026-02-05', 'REGULAR', 9, 'R-009', 'with_doctor', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 01:38:52'),
+	(47, 72, '2026-02-05', 'REGULAR', 11, 'R-011', 'with_doctor', NULL, 120, 80, 80, 20, 36.0, 90, 50.00, 150.00, '2026-02-05 02:18:27'),
+	(48, 62, '2026-02-05', 'REGULAR', 12, 'R-012', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-02-05 02:34:30'),
+	(49, 34, '2026-02-05', 'PRIORITY', 4, 'P-004', 'with_doctor', NULL, 120, 12, 93, 20, 291.0, 28, 24.00, 29.00, '2026-02-05 03:00:47'),
+	(50, 13, '2026-02-05', 'REGULAR', 13, 'R-013', 'with_doctor', NULL, 120, 901, 29, 271, 21.0, 37, 217.00, 41.00, '2026-02-05 03:13:44'),
+	(51, 55, '2026-02-05', 'REGULAR', 14, 'R-014', 'with_doctor', NULL, 121, 12, 3, 232, 13.0, 12, 23.00, 41.00, '2026-02-05 03:15:29'),
+	(52, 41, '2026-02-05', 'REGULAR', 15, 'R-015', 'waiting', NULL, 198, 7, 67, 65, 57.0, 9, 8.00, 45.00, '2026-02-05 03:15:45');
 
 -- Dumping structure for table react1.0.puroks
 CREATE TABLE IF NOT EXISTS `puroks` (
@@ -418,7 +469,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email` (`email`),
   KEY `fk_user_role` (`role`),
   CONSTRAINT `fk_user_role` FOREIGN KEY (`role`) REFERENCES `roles` (`code`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table react1.0.users: ~7 rows (approximately)
 DELETE FROM `users`;
@@ -431,7 +482,8 @@ INSERT INTO `users` (`id`, `uuid`, `name`, `email`, `password_hash`, `role`, `st
 	(16, '34ed2c28-f9ba-11f0-a612-34e6d71ed611', 'Loki', 'Pet@gmail.com', '$2y$10$XIttzMrF8Rk8eGgok23mg.fGsSeiM7a/fJ2HwcT9H5d9CumAeXQQy', 'pet', 'active', '2026-01-25 06:50:59', '2026-01-25 06:50:59'),
 	(17, '5d75e27d-f9c0-11f0-a612-34e6d71ed611', 'Seller', 'seller@gmail.com', '$2y$10$7UxBawEgcPd.SKj2xRPwlOxr65OkU7ThuzGIVRiQzRsn9B..dl0xu', 'seller', 'active', '2026-01-25 07:35:04', '2026-01-25 07:35:04'),
 	(18, 'be4d2b2b-f9c0-11f0-a612-34e6d71ed611', 'Rafael', 'rafael@gmail.com', '$2y$10$Yb.9G0N1REL27ANen9lWc.FzFjCtnrf6aFTaGSX96NGJJ7CYHQpxG', 'user', 'active', '2026-01-25 07:37:47', '2026-01-25 07:37:47'),
-	(19, '0a67ad70-fb3f-11f0-92de-34e6d71ed611', 'Ian', 'ian@gmail.com', '$2y$10$rBx8JoTHUwUjZCaWfYKJz.Txgm9Z5jXA6ochFP6tD48qXRXE/aiU.', 'admin', 'active', '2026-01-27 05:14:22', '2026-01-27 05:14:22');
+	(19, '0a67ad70-fb3f-11f0-92de-34e6d71ed611', 'Ian', 'ian@gmail.com', '$2y$10$rBx8JoTHUwUjZCaWfYKJz.Txgm9Z5jXA6ochFP6tD48qXRXE/aiU.', 'admin', 'active', '2026-01-27 05:14:22', '2026-01-27 05:14:22'),
+	(20, '07266b90-022f-11f1-89a5-34e6d71ed611', 'Mari-Ann Kristine', 'Mari-Ann@gmail.com', '$2y$10$osxlehTAqNnrY8zhB0wjzuXwVWexZSo9gyUSkWHH.1tjr6lO5hVFO', 'doctor', 'active', '2026-02-05 01:07:23', '2026-02-05 01:07:23');
 
 -- Dumping structure for table react1.0.user_panel_access
 CREATE TABLE IF NOT EXISTS `user_panel_access` (
@@ -478,7 +530,7 @@ CREATE TABLE IF NOT EXISTS `user_sessions` (
   UNIQUE KEY `token` (`token`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table react1.0.user_sessions: ~35 rows (approximately)
 DELETE FROM `user_sessions`;
@@ -528,7 +580,9 @@ INSERT INTO `user_sessions` (`id`, `user_id`, `token`, `expires_at`, `created_at
 	(98, 13, 'b40e16a2a70016cf1c2d4528bdbc7215d38106b634ad87dec3285a850075090d', '2026-02-05 02:00:18', '2026-02-04 02:00:18'),
 	(99, 13, '374fe34fa5d954e966e4fff8bc5f1c0e88b159773674b4338b927ea02b854c46', '2026-02-05 02:08:05', '2026-02-04 02:08:05'),
 	(100, 13, '210a0c2bb751052b3b81d10fa0f383598fba2c234feb6131e63cbbf83b90bc61', '2026-02-05 05:18:22', '2026-02-04 05:18:22'),
-	(101, 13, '94165d7b38eafdc1ca1e08d05272a1bb0f12ee73fd9891f81fff8f5705313cab', '2026-02-05 06:10:03', '2026-02-04 06:10:03');
+	(101, 13, '94165d7b38eafdc1ca1e08d05272a1bb0f12ee73fd9891f81fff8f5705313cab', '2026-02-05 06:10:03', '2026-02-04 06:10:03'),
+	(109, 12, '6776151849ed9aa1f9b50a96cdcbba2172c823d9068374df71c721851dc16d4f', '2026-02-06 03:01:22', '2026-02-05 03:01:22'),
+	(110, 13, '2fe7c5a4258611370abf4dc52b4345e7c2f52642c2a5a9713ac6146a8afc41e9', '2026-02-06 03:13:22', '2026-02-05 03:13:22');
 
 -- Dumping structure for table react1.0.user_widget_access
 CREATE TABLE IF NOT EXISTS `user_widget_access` (
@@ -540,17 +594,18 @@ CREATE TABLE IF NOT EXISTS `user_widget_access` (
   KEY `fk_uw_widget` (`widget_id`),
   CONSTRAINT `fk_uw_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_uw_widget` FOREIGN KEY (`widget_id`) REFERENCES `widgets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table react1.0.user_widget_access: ~6 rows (approximately)
 DELETE FROM `user_widget_access`;
 INSERT INTO `user_widget_access` (`id`, `user_id`, `widget_id`) VALUES
 	(8, 12, 1),
-	(64, 13, 2),
+	(73, 13, 2),
 	(16, 15, 1),
 	(17, 15, 2),
 	(54, 19, 1),
-	(55, 19, 2);
+	(55, 19, 2),
+	(70, 20, 1);
 
 -- Dumping structure for table react1.0.widgets
 CREATE TABLE IF NOT EXISTS `widgets` (
