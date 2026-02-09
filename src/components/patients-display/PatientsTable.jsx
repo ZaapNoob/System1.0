@@ -1,6 +1,8 @@
 import { useModal } from "../modal/ModalProvider";
 import ViewPatientModal from "./ViewPatientModal";
 import EditPatientModal from "./EditPatientModal";
+import "./PatientsTable.css";
+
 
 
 export default function PatientsTable({
@@ -20,7 +22,7 @@ export default function PatientsTable({
           <th>Name</th>
           <th>Age</th>
           <th>Gender</th>
-          <th>Barangay</th>
+          <th>Barangay-Code</th>
           <th>Status</th>
           <th>Action</th>
         </tr>
@@ -41,7 +43,7 @@ export default function PatientsTable({
               <td>{patient.name}</td>
               <td>{patient.age}</td>
               <td>{patient.gender}</td>
-              <td>{patient.barangay_name || "—"}</td>
+              <td>{patient.patient_code || "—"}</td>
 
               <td>
                 <span className={`status-badge ${getStatusColor(patient.status)}`}>
@@ -59,7 +61,7 @@ export default function PatientsTable({
                   View
                 </button>
 <button
-  className="edit-btn"
+  className="fancy-btn-small"
   onClick={() =>
     openModal(
       <EditPatientModal

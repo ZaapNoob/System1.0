@@ -1,0 +1,89 @@
+/* ============================
+   General Table Styling
+   ============================ */
+/* Import clean modern fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600&family=Nunito:wght@400;600;700&display=swap');
+
+
+
+.patient-table th,
+.patient-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.patient-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  color: #0b3a4a;
+}
+
+.patient-table tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* ============================
+   Status Badges
+   ============================ */
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #fff;
+  display: inline-block;
+}
+
+.status-admitted { background-color: #3b82f6; }
+.status-discharged { background-color: #10b981; }
+.status-observation { background-color: #f59e0b; }
+.status-active { background-color: #22c55e; }
+.status-inactive { background-color: #6b7280; }
+.status-deceased { background-color: #ef4444; }
+
+/* ============================
+   Buttons (Add / Edit / View)
+   ============================ */
+
+/* Base fancy button style (reuse Add Patient style) */
+/* Compact fancy button style */
+.fancy-btn-small {
+  outline: 0;
+  border: 0;
+  height: 30px;              /* Smaller height */
+  padding: 0 12px;           /* Reduced padding */
+  border-radius: 0.45em;
+  cursor: pointer;
+
+  background: #60A5FA;
+  box-shadow: 0 4px 10px rgba(185, 239, 255, 0.45);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;          /* Slightly lighter so it's not too bold */
+  font-size: 12px;           /* Smaller readable font */
+  color: #0b3a4a;
+
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
+}
+
+.fancy-btn-small:hover {
+  background: #00b7ff;
+  box-shadow: 0 6px 14px rgba(165, 232, 255, 0.55);
+}
+
+.fancy-btn-small:active {
+  transform: scale(0.96);
+}
+
+/* Space between buttons inside table */
+.patient-table td button {
+  margin-right: 4px;
+}
