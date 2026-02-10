@@ -95,28 +95,6 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
   };
 
   // =======================
-  // UI Helpers
-  // =======================
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Admitted": return "status-admitted";
-      case "Discharged": return "status-discharged";
-      case "Under Observation": return "status-observation";
-      case "active": return "status-active";
-      case "inactive": return "status-inactive";
-      case "deceased": return "status-deceased";
-      default: return "";
-    }
-  };
-
-  const formatStatusDisplay = (status) => {
-    if (status === "active") return "Active";
-    if (status === "inactive") return "Inactive";
-    if (status === "deceased") return "Deceased";
-    return status;
-  };
-
-  // =======================
   // Patients Listing (hook)
   // =======================
   const {
@@ -278,8 +256,6 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
        <PatientsTable
   patients={patients}
   loading={patientsLoading}
-  getStatusColor={getStatusColor}
-  formatStatusDisplay={formatStatusDisplay}
   onView={(patient) => console.log("View", patient)}
   onEdit={(patient) => {
     openModal(
@@ -356,10 +332,11 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
 
                 {/* NAME */}
                 <div className="form-row">
-                  <div className="form-group">
-                    <label>First Name</label>
+                  <div className="coolinput">
+                    <label className="text">First Name</label>
                     <input
                       type="text"
+                      className="input"
                       name="first_name"
                       value={newPatient.first_name}
                       onChange={handleInputChange}
@@ -367,20 +344,22 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label>Middle Name</label>
+                  <div className="coolinput">
+                    <label className="text">Middle Name</label>
                     <input
                       type="text"
+                      className="input"
                       name="middle_name"
                       value={newPatient.middle_name}
                       onChange={handleInputChange}
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label>Last Name</label>
+                  <div className="coolinput">
+                    <label className="text">Last Name</label>
                     <input
                       type="text"
+                      className="input"
                       name="last_name"
                       value={newPatient.last_name}
                       onChange={handleInputChange}
@@ -388,9 +367,10 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label>Suffix</label>
+                  <div className="coolinput">
+                    <label className="text">Suffix</label>
                     <select
+                      className="input"
                       name="suffix"
                       value={newPatient.suffix}
                       onChange={handleInputChange}
@@ -406,146 +386,192 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
                   </div>
                 </div>
 
-                {/* DATE OF BIRTH */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Date of Birth</label>
-                    <input
-                      type="date"
-                      name="date_of_birth"
-                      value={newPatient.date_of_birth}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
+                                            {/* DOB + DEMOGRAPHICS */}
+                             <div className="form-row dob-row">
 
-                {/* GENDER */}
-                <div className="form-row">
-                  <label className="section-label">Gender</label>
-                  <div className="radio-group">
-                    <label>
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="Male"
-                        checked={newPatient.gender === "Male"}
-                        onChange={handleInputChange}
-                      />
-                      Male
-                    </label>
+                              {/* Gender + Marital container */}
+                              <div className="form-group demographics-group same-row">
 
-                    <label>
-                      <input
-                        type="radio"
-                        name="gender"
-                        value="Female"
-                        checked={newPatient.gender === "Female"}
-                        onChange={handleInputChange}
-                      />
-                      Female
-                    </label>
-                  </div>
-                </div>
+                                {/* Gender */}
+                                <div className="sub-group">
+                                  <label className="section-label">Gender</label>
+                                  <div className="radio-group">
+                                    <label>
+                                      <input
+                                        type="radio"
+                                        name="gender"
+                                        value="Male"
+                                        checked={newPatient.gender === "Male"}
+                                        onChange={handleInputChange}
+                                      />
+                                      Male
+                                    </label>
 
-                {/* MARITAL STATUS */}
-                <div className="form-row">
-                  <label className="section-label">Marital Status</label>
-                  <div className="radio-group">
-                    <label>
-                      <input
-                        type="radio"
-                        name="marital_status"
-                        value="Single"
-                        checked={newPatient.marital_status === "Single"}
-                        onChange={handleInputChange}
-                      />
-                      Single
-                    </label>
+                                    <label>
+                                      <input
+                                        type="radio"
+                                        name="gender"
+                                        value="Female"
+                                        checked={newPatient.gender === "Female"}
+                                        onChange={handleInputChange}
+                                      />
+                                      Female
+                                    </label>
+                                  </div>
+                                </div>
 
-                    <label>
-                      <input
-                        type="radio"
-                        name="marital_status"
-                        value="Married"
-                        checked={newPatient.marital_status === "Married"}
-                        onChange={handleInputChange}
-                      />
-                      Married
-                    </label>
+                                {/* Marital Status */}
+                                <div className="sub-group">
+                                  <label className="section-label">Marital Status</label>
+                                  <div className="radio-group">
+                                    <label>
+                                      <input
+                                        type="radio"
+                                        name="marital_status"
+                                        value="Single"
+                                        checked={newPatient.marital_status === "Single"}
+                                        onChange={handleInputChange}
+                                      />
+                                      Single
+                                    </label>
 
-                    <label>
-                      <input
-                        type="radio"
-                        name="marital_status"
-                        value="Widowed"
-                        checked={newPatient.marital_status === "Widowed"}
-                        onChange={handleInputChange}
-                      />
-                      Widowed
-                    </label>
+                                    <label>
+                                      <input
+                                        type="radio"
+                                        name="marital_status"
+                                        value="Married"
+                                        checked={newPatient.marital_status === "Married"}
+                                        onChange={handleInputChange}
+                                      />
+                                      Married
+                                    </label>
+                                  </div>
+                                </div>
 
-                    <label>
-                      <input
-                        type="radio"
-                        name="marital_status"
-                        value="Separated"
-                        checked={newPatient.marital_status === "Separated"}
-                        onChange={handleInputChange}
-                      />
-                      Separated
-                    </label>
-                  </div>
-                </div>
+                              </div>
 
-                {/* ADDRESS */}
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Barangay</label>
-                    <select
-                      name="barangay_id"
-                      value={newPatient.barangay_id}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="">Select Barangay</option>
-                      {barangays.map((barangay) => (
-                        <option key={barangay.id} value={barangay.id}>
-                          {barangay.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                              {/* DOB */}
+                              <div className="form-group dob-group">
+                                <label>Date of Birth</label>
+                                <input
+                                  type="date"
+                                  name="date_of_birth"
+                                  value={newPatient.date_of_birth}
+                                  onChange={handleInputChange}
+                                  required
+                                />
+                              </div>
 
-                  <div className="form-group">
-                    <label>Purok</label>
-                    <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
-                      <select
-                        name="purok_id"
-                        value={newPatient.purok_id}
-                        onChange={handleInputChange}
-                        disabled={!newPatient.barangay_id}
-                        style={{ flex: 1 }}
-                      >
-                        <option value="">Select Purok</option>
-                        {puroks.map((purok) => (
-                          <option key={purok.id} value={purok.id}>
-                            {purok.purok_name}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        type="button"
-                        className="create-purok-btn"
-                        onClick={() => setShowCreatePurok(true)}
-                        disabled={!newPatient.barangay_id}
-                        title="Create new purok for this barangay"
-                      >
-                        + Add
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                            </div>
+
+
+
+              {/* ADDRESS CONTAINER */}
+<div className="form-row address-row">
+
+  <div className="form-group address-group">
+
+    {/* Barangay */}
+    <div className="sub-group">
+      <label className="section-label">Barangay</label>
+      <select
+        name="barangay_id"
+        value={newPatient.barangay_id}
+        onChange={handleInputChange}
+        required
+      >
+        <option value="">Select Barangay</option>
+        {barangays.map((barangay) => (
+          <option key={barangay.id} value={barangay.id}>
+            {barangay.name}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    {/* Purok */}
+    <div className="sub-group">
+      <label className="section-label">Purok</label>
+
+      <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
+        <select
+          name="purok_id"
+          value={newPatient.purok_id}
+          onChange={handleInputChange}
+          disabled={!newPatient.barangay_id}
+          style={{ flex: 1 }}
+        >
+          <option value="">Select Purok</option>
+          {puroks.map((purok) => (
+            <option key={purok.id} value={purok.id}>
+              {purok.purok_name}
+            </option>
+          ))}
+        </select>
+
+        <button
+          type="button"
+          className="create-purok-btn"
+          onClick={() => setShowCreatePurok(true)}
+          disabled={!newPatient.barangay_id}
+          title="Create new purok for this barangay"
+        >
+          + Add
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+                                    {/* HOUSEHOLD SETUP (show only after barangay is selected) */}
+                                {newPatient.barangay_id && (
+                              <div className="form-group household-setup">
+
+                                <label>Household Setup</label>
+
+                                <div className="household-row">
+
+                                  {!isFamilyMember && (
+                                    <div className="household-action">
+                                      <button
+                                        type="button"
+                                        className="save-btn"
+                                        disabled={!newPatient.barangay_id || loading}
+                                        onClick={handleGenerateHouseholdClick}
+                                      >
+                                        {loading
+                                          ? "Generating..."
+                                          : newPatient.facility_household_no
+                                            ? "✓ Regenerate Household"
+                                            : "⚙️ Generate Household"}
+                                      </button>
+                                    </div>
+                                  )}
+
+                                  <div className="household-result">
+                                    {newPatient.facility_household_no && (
+                                      <div className="household-info-box">
+                                        <div className="household-title">
+                                          Household Information
+                                        </div>
+                                        <div>
+                                          Facility No: <strong>{newPatient.facility_household_no}</strong>
+                                        </div>
+                                        {newPatient.household_no && (
+                                          <div>
+                                            Household No: <strong>{newPatient.household_no}</strong>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                </div>
+                              </div>
+                            )}
+
 
                 {/* Create Purok Modal */}
                 {showCreatePurok && (
@@ -609,9 +635,8 @@ onChange={(e) =>
                 )}
 
 
-              </div>
 
-              {/* Error and Success Messages */}
+              {/* SUCCESS/ERROR MESSAGES - ALWAYS VISIBLE */}
               {error && (
                 <div className="alert alert-error">
                   {error}
@@ -622,6 +647,8 @@ onChange={(e) =>
                   {successMessage}
                 </div>
               )}
+
+              </div>
 
               <div className="additional-toggle">
                 <button
@@ -637,10 +664,11 @@ onChange={(e) =>
     <h4>Additional Information</h4>
 
     <div className="form-row">
-      <div className="form-group">
-        <label>Birthplace</label>
+      <div className="coolinput">
+        <label className="text">Birthplace</label>
         <input
           type="text"
+          className="input"
           name="birthplace"
           value={newPatient.birthplace}
           onChange={handleInputChange}
@@ -668,20 +696,22 @@ onChange={(e) =>
     </div>
 
     <div className="form-row">
-      <div className="form-group">
-        <label>Mother’s Name</label>
+      <div className="coolinput">
+        <label className="text">Mother's Name</label>
         <input
           type="text"
+          className="input"
           name="mother_name"
           value={newPatient.mother_name}
           onChange={handleInputChange}
         />
       </div>
       {newPatient.marital_status === 'Married' && (
-        <div className="form-group">
-          <label>Spouse Name</label>
+        <div className="coolinput">
+          <label className="text">Spouse Name</label>
           <input
             type="text"
+            className="input"
             name="spouse_name"
             value={newPatient.spouse_name}
             onChange={handleInputChange}
@@ -689,68 +719,16 @@ onChange={(e) =>
           />
         </div>
       )}
-      <div className="form-group">
-        <label>Contact Number</label>
+      <div className="coolinput">
+        <label className="text">Contact Number</label>
         <input
           type="text"
+          className="input"
           name="contact_number"
           value={newPatient.contact_number}
           onChange={handleInputChange}
         />
       </div>
-<div className="form-group">
-  <label>Household Setup</label>
-
-  {/* Show button only if not a family member */}
-  {!isFamilyMember && (
-    <button
-      type="button"
-      className="save-btn"
-      disabled={!newPatient.barangay_id || loading}
-      onClick={handleGenerateHouseholdClick}
-    >
-      {loading
-        ? "Generating..."
-        : newPatient.facility_household_no
-          ? "✓ Regenerate Household"
-          : "⚙️ Generate Household"}
-    </button>
-  )}
-
-  {!newPatient.barangay_id && !isFamilyMember && (
-    <small style={{ color: "#999", marginTop: "5px", display: "block" }}>
-      Please select a barangay first
-    </small>
-  )}
-
-  {/* Display generated household info for everyone */}
-  {newPatient.facility_household_no && (
-    <div
-      style={{
-        marginTop: "10px",
-        padding: "12px",
-        backgroundColor: "#e8f5e9",
-        borderRadius: "6px",
-        color: "#2e7d32",
-        borderLeft: "4px solid #4caf50",
-      }}
-    >
-      <div style={{ fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>
-        Household Information
-      </div>
-      <div style={{ fontSize: "13px" }}>
-        <div>
-          Facility No: <strong>{newPatient.facility_household_no}</strong>
-        </div>
-        {newPatient.household_no && (
-          <div>
-            Household No: <strong>{newPatient.household_no}</strong>
-          </div>
-        )}
-      </div>
-    </div>
-  )}
-</div>
 
     
     </div>
@@ -851,9 +829,10 @@ onChange={(e) =>
     {/* Conditional PhilHealth Fields */}
     {newPatient.philhealth_member === 'Yes' && (
       <div className="form-row">
-        <div className="form-group">
-          <label>PhilHealth Status Type</label>
+        <div className="coolinput">
+          <label className="text">PhilHealth Status Type</label>
           <select
+            className="input"
             name="philhealth_status_type"
             value={newPatient.philhealth_status_type}
             onChange={handleInputChange}
@@ -865,10 +844,11 @@ onChange={(e) =>
           </select>
         </div>
 
-        <div className="form-group">
-          <label>PhilHealth No.</label>
+        <div className="coolinput">
+          <label className="text">PhilHealth No.</label>
           <input
             type="text"
+            className="input"
             name="philhealth_no"
             value={newPatient.philhealth_no}
             onChange={handleInputChange}
@@ -876,9 +856,10 @@ onChange={(e) =>
           />
         </div>
 
-        <div className="form-group">
-          <label>PhilHealth Category</label>
+        <div className="coolinput">
+          <label className="text">PhilHealth Category</label>
           <select
+            className="input"
             name="philhealth_category"
             value={newPatient.philhealth_category}
             onChange={handleInputChange}

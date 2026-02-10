@@ -22,11 +22,14 @@
 .patient-table tr:hover {
   background-color: #f0f8ff;
 }
+button {
+  font-family: inherit;
+}
+
 
 /* ============================
    Status Badges
    ============================ */
-
 .status-badge {
   padding: 4px 8px;
   border-radius: 4px;
@@ -36,12 +39,12 @@
   display: inline-block;
 }
 
-.status-admitted { background-color: #3b82f6; }
-.status-discharged { background-color: #10b981; }
-.status-observation { background-color: #f59e0b; }
-.status-active { background-color: #22c55e; }
-.status-inactive { background-color: #6b7280; }
-.status-deceased { background-color: #ef4444; }
+.status-admitted { background-color: #3b82f6 !important; }
+.status-discharged { background-color: #10b981 !important; }
+.status-observation { background-color: #f59e0b !important; }
+.status-active { background-color: #bffcfa !important; }
+.status-inactive { background-color: #6b7280 !important; }
+.status-deceased { background-color: #ef4444 !important; }
 
 /* ============================
    Buttons (Add / Edit / View)
@@ -86,4 +89,84 @@
 /* Space between buttons inside table */
 .patient-table td button {
   margin-right: 4px;
+}
+
+
+/* ============================
+   view button Design
+   ============================ */
+
+   /* View button – same style as fancy-btn-small but green */
+.view-btn {
+  outline: 0;
+  border: 0;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 0.45em;
+  cursor: pointer;
+
+  background: #45c172;
+  box-shadow: 0 4px 10px rgba(69, 193, 114, 0.45);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  font-size: 12px;
+  color: #0b3a4a;
+
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
+}
+
+.view-btn:hover {
+  background: #34b463;
+  box-shadow: 0 6px 14px rgba(69, 193, 114, 0.55);
+}
+
+.view-btn:active {
+  transform: scale(0.96);
+}
+
+
+
+
+/* ============================
+   Add Family Member Button
+   ============================ */
+.add-btn {
+  outline: 0;
+  border: 0;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 0.45em;
+  cursor: pointer;
+
+  background: #EFCCE7;
+  box-shadow: 0 4px 10px rgba(239, 204, 231, 0.55);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  font-size: 12px;
+  color: #6b214e; /* readable contrast */
+
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.15s ease;
+}
+
+.add-btn:hover {
+  background: #F17FA2;
+  box-shadow: 0 6px 14px rgba(239, 204, 231, 0.7);
+}
+
+.add-btn:active {
+  transform: scale(0.96);
 }

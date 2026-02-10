@@ -8,12 +8,31 @@ import "./PatientsTable.css";
 export default function PatientsTable({
   patients,
   loading,
-  getStatusColor,
-  formatStatusDisplay,
   onAddFamilyMember,
   onRefresh,
 }) {
   const { openModal, closeModal } = useModal();
+
+  // Status color mapping
+  const getStatusColor = (status) => {
+    if (!status) return "";
+    const normalizedStatus = status.toLowerCase();
+    switch (normalizedStatus) {
+      case "admitted": return "status-admitted";
+      case "discharged": return "status-discharged";
+      case "under observation": return "status-observation";
+      case "active": return "status-active";
+      case "inactive": return "status-inactive";
+      case "deceased": return "status-deceased";
+      default: return "";
+    }
+  };
+
+  // Status display formatting
+  const formatStatusDisplay = (status) => {
+    if (!status) return "";
+    return status;
+  };
 
   return (
     <table className="patient-table">

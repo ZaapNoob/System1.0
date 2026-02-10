@@ -148,7 +148,7 @@ export default function useAddPatient() {
       setNewPurokName("");
       setShowCreatePurok(false);
       setSuccessMessage("Purok created successfully");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -176,9 +176,6 @@ export default function useAddPatient() {
         facility_household_no: facilityRes.facility_household_no,
         household_no: householdRes.household_no,
       }));
-
-      setSuccessMessage("Household generated successfully");
-      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -242,7 +239,7 @@ export default function useAddPatient() {
       setSuccessMessage(
         `Patient created successfully! Code: ${res.data.patient_code}`
       );
-      setTimeout(() => setSuccessMessage(""), 3000);
+      setTimeout(() => setSuccessMessage(""), 5000);
     } catch (err) {
       setError(err.message);
     } finally {
