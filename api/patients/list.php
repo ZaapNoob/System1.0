@@ -26,7 +26,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $query = "
-        SELECT id, name 
+        SELECT id, name, is_special 
         FROM barangays 
         ORDER BY name
     ";

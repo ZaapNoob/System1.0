@@ -1,0 +1,895 @@
+/* ============================= */
+/* GLOBAL RESET */
+/* ============================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============================= */
+/* GLOBAL OPD TYPOGRAPHY */
+/* ============================= */
+
+body {
+  font-family: Arial, sans-serif!important;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #000;
+  background: #fff;
+}
+
+.opd-form {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #000;
+}
+
+/* ============================= */
+/* PAGE BASE */
+/* ============================= */
+
+.print-page {
+  background: white;
+  display: flex;
+  justify-content: center;
+}
+
+/* A4 FORM CONTAINER */
+.opd-form {
+  width: 8.5in;
+  padding: 0.3in;
+  background: white;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #000;
+}
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
+.header {
+  border-bottom: 2px solid #000;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+}
+
+.header-inner {
+  display: grid;
+  grid-template-columns: 100px 1fr 100px;
+  align-items: center;
+  gap: 10px;
+}
+
+.seal {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.header-center {
+  text-align: center;
+}
+
+.republic-line,
+.doh-line {
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+.hospital-name {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.license-line {
+  font-size: 10px;
+}
+
+/* ============================= */
+/* TITLE */
+/* ============================= */
+
+.opd-title {
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 8px 0;
+  letter-spacing: 1px;
+}
+
+/* ============================= */
+/* SECTIONS */
+/* ============================= */
+/* ============================= */
+/* TOP GRID (3 COLUMNS LIKE IMAGE) */
+/* ============================= */
+
+.top-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* LEFT | MIDDLE | RIGHT */
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.top-grid .info-box {
+  border: 1px solid #000;
+  padding: 5px 10px; /* Adjusted padding to remove extra space */
+  background: #fff;
+  height: auto; /* Ensure the box height adjusts to the content */
+}
+
+.top-grid .date-box {
+  padding: 5px 10px; /* Adjusted padding to remove extra space */
+}
+
+.record-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  line-height: 1.2; /* Adjust line-height for tighter spacing */
+}
+
+.record-underline {
+  flex: 1;
+  border-bottom: 1px solid #000;
+  height: 16px;
+  text-align: center;
+  font-size: 11px;
+  padding: 0 4px;
+}
+
+
+
+
+
+/* ============================= */
+/* PATIENT INFO SECTION */
+/* ============================= */
+
+.patient-section {
+  border: 1px solid #000;
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 11px;
+    border-radius: 0;   /* 🔥 forces sharp square edges */
+}
+
+
+
+/* Make all labels same width */
+.label {
+  font-weight: 700;   /* stronger bold */
+    width: 130px;      /* fixed width */
+  flex-shrink: 0;
+    color: #000 !important;
+
+}
+
+/* Make all rows align properly */
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 8px;
+}
+
+/* Force all grid rows to align like ADDRESS */
+.four-cols,
+.three-cols,
+.two-cols {
+  margin-left: 138px;  /* 130px label + 8px gap */
+}
+
+.label-inline {
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+/* Underline style */
+.line {
+  border-bottom: 1px solid #000;
+  min-height: 16px;
+  padding: 0 4px;
+  display: inline-flex;        /* change */
+  align-items: center;         /* vertical center */
+  justify-content: center;     /* horizontal center */
+  text-align: center;          /* fallback */
+} 
+.line.full {
+  flex: 1;
+}
+
+.line.full.address-field {
+  font-size: 12px;
+  min-height: 20px;
+  line-height: 1.5;
+  padding: 6px 8px;
+}
+
+.line.small {
+  min-width: 90px;
+}
+
+.line.medium {
+  min-width: 180px;
+}
+
+/* NAME GROUP */
+.name-row {
+  align-items: flex-start;
+}
+
+.name-group {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.name-field {
+  flex: 1;
+  text-align: center;
+}
+
+.name-field .line {
+  width: 100%;
+  font-weight: bold;   /* ✅ makes Marc, Jose, M bold */
+  font-size: 13px;
+  min-height: 19px;
+  line-height: 1.5;
+}
+
+.sub-label {
+  font-size: 10px;
+  margin-top: 4px;
+  font-weight: bold;
+}
+/* AGE / SEX / STATUS / BIRTHDATE */
+.four-cols {
+  display: flex;
+  align-items: center;
+  gap: 35px;          /* adjust spacing here */
+  margin-left: 138px;
+  flex-wrap: nowrap;  /* 🚀 IMPORTANT: prevent wrapping */
+}
+
+/* RELIGION / NATIONALITY / CONTACT */
+.three-cols {
+  display: flex;
+  gap: 40px;     /* adjust as needed */
+  margin-left: 138px;
+}
+
+/* OCCUPATION / COMPANY */
+.two-cols {
+  display: flex;
+  gap: 60px;     /* tighter like image */
+  margin-left: 138px;
+}
+/* Keep label + value always beside each other */
+.field {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;   /* 🚀 prevents text going below */
+}
+
+/* Prevent rows from wrapping */
+.four-cols,
+.three-cols,
+.two-cols {
+  flex-wrap: nowrap;
+}
+
+
+
+
+
+
+
+ /* Consulting Doctor Section */
+        .doctor-section {
+            border: 1px solid #000;
+            padding: 6px;
+            margin-bottom: 8px;
+            min-height: 60px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .signature-area {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 2px solid #000;
+            width: 300px;
+            margin: 0 auto 8px auto;
+            height: 0;
+        }
+
+        .doctor-name {
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+        }
+
+        .doctor-title {
+            font-size: 10px;
+            color: #000;
+            font-style: italic;
+        }
+
+
+
+
+ /* Case Summary Section */
+        .case-summary {
+            border: 1px solid #000;
+            padding: 6px;
+            margin-bottom: 8px;
+            background: #fafafa;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .case-summary-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 8px 0;
+            letter-spacing: 1px;
+        }
+
+      
+
+        .vitals-row {
+                        margin: 10px 0;
+
+            display: grid;
+            grid-template-columns: 120px 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .vitals-section-title {
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+
+
+        .vital-field {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+
+
+        .vital-label {
+            font-size: 10px;
+            font-weight: bold;
+            white-space: nowrap;
+            color: #000 !important;
+    font-weight: bold;
+        }
+
+        .vital-underline {
+            border-bottom: 1px solid #000;
+            min-width: 80px;
+            height: 16px;
+            display: inline-block;
+            font-size: 10px;
+            padding: 0 3px;
+        }
+
+
+
+
+
+
+
+
+
+
+
+.section-box {
+  border: 1px solid #000;
+  padding: 6px;
+  margin-bottom: 8px;
+  background: #fafafa;
+}
+
+/* ============================= */
+/* VITAL SIGNS */
+/* ============================= */
+
+.vitals-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.vitals-section-title {
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.vital-field {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+
+
+.vital-underline {
+  border-bottom: 1px solid #000;
+  min-width: 90px;
+  height: 16px;
+
+  display: inline-flex;
+  align-items: center;     /* vertical center */
+  justify-content: center; /* horizontal center */
+
+  font-size: 10px;
+  padding: 0 6px;          /* adds space from label */
+  text-align: center;
+}
+
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.field-label {
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.field-value {
+  flex: 1;
+}
+.chief-complaint-wrapper {
+    margin-top: 20px;
+    margin-bottom: 12px; /* ✅ space BELOW Chief Complaint */
+}
+
+.chief-complaint-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+}
+
+.chief-complaint-value {
+    border-bottom: 1px solid #000;
+    flex: 1;
+    min-height: 18px;
+    padding: 0 4px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================= */
+/* CLINICAL SECTIONS */
+/* ============================= */
+ /* Clinical Sections */
+        .clinical-section {
+            border: 1px solid #000;
+            padding: 6px;
+            margin-bottom: 6px;
+            min-height: 40px;
+            background: #fafafa;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .clinical-title {
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .clinical-content {
+            font-size: 11px;
+            line-height: 1.4;
+            min-height: 40px;
+        }
+
+        /* Combined Clinical Sections Grid */
+        .clinical-content-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .clinical-subsection {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .clinical-subsection .clinical-title {
+            margin-bottom: 3px;
+        }
+
+        .clinical-subsection .clinical-content {
+            flex: 1;
+            padding: 4px;
+            background: transparent;
+            min-height: 60px;
+        }
+
+        /* Treatment section with larger container for better input */
+        .clinical-subsection:last-child .clinical-content {
+            min-height: 90px;
+        }
+
+
+
+
+
+
+
+
+
+/* ============================= */
+/* SIGNATURE */
+/* ============================= */
+
+.doctor-section {
+  border: 1px solid #000;
+  padding: 6px;
+  margin-bottom: 8px;
+  min-height: 60px;
+/*              background: #fafafa;*/
+
+  
+}
+
+.signature-area {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.signature-line {
+  border-top: 2px solid #000;
+  width: 300px;
+  margin: 0 auto 8px auto;
+}
+
+.doctor-name {
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.doctor-title {
+  font-size: 10px;
+  font-style: italic;
+}
+
+
+
+
+
+
+
+/* ============================= */
+/* DISPOSITION */
+/* ============================= */
+        /* Disposition Section */
+        .disposition-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .disposition-section {
+            border: 1px solid #000;
+            padding: 6px;
+            background: #fafafa;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .checkbox-group {
+            margin: 5px 0;
+        }
+
+        .checkbox {
+            width: 14px;
+            height: 14px;
+            border: 1.5px solid #000;
+            display: inline-block;
+            margin-right: 8px;
+            text-align: center;
+            line-height: 12px;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Inline utilities for date/time pairs */
+        .inline-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .inline-underline {
+            border-bottom: 1px solid #000;
+            width: 120px;
+            height: 16px;
+            display: inline-block;
+        }
+
+        /* Auto-width underline for short inline values (e.g., numeric IDs) */
+        .inline-underline-auto {
+            width: auto;
+            min-width: 60px;
+            padding: 0 4px;
+        }
+
+        /* Keep NO.: and underline together */
+        .inline-no-group {
+            white-space: nowrap;
+        }
+
+        /* Three-part inline row: Date | Center Title | Time */
+        .inline-row-3 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .inline-center-label {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        /* Subtitle for small centered titles above fields */
+        .field-subtitle {
+            text-align: center;
+            font-weight: bold;
+            font-size: 11px;
+            margin-top: 2px;
+            margin-bottom: 4px;
+            text-transform: none;
+        }
+
+        /* Disposition options arranged in two horizontal rows */
+        .disposition-options {
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .disposition-options .disp-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 24px;
+            row-gap: 6px;
+            align-items: center;
+        }
+
+        .disposition-options label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            padding: 2px 0;
+        }
+
+        /* Center the DISPOSITION title within its section */
+        .disposition-section .section-title {
+            text-align: center;
+            margin-bottom: 6px;
+        }
+        /* Date Time Box Wrapper */
+.disposition-info-box {
+    border: 1px solid #000;
+    padding: 6px;
+    margin-bottom: 8px;
+    background: #fff;
+
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+/* Subtitle inside boxes */
+.disposition-info-title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 11px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+
+
+
+
+/* ============================= */
+/* PRINT RULES */
+/* ============================= */
+
+.print-close-button {
+  padding: 10px 16px;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.print-close-button:hover {
+  background-color: #0056b3;
+}
+
+.doctor-selector {
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.doctor-selector label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.doctor-dropdown {
+  padding: 6px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  width: 100%;
+}
+
+.doctor-dropdown:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.top-control-card {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+
+  width: 150px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  border: 1px solid #e5e5e5;
+
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Arrow Button */
+.toggle-button {
+  width: 100%;
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Content Wrapper */
+.top-control-content {
+  padding: 12px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Collapsed State */
+.top-control-card.closed .top-control-content {
+  display: none;
+}
+
+
+
+
+
+
+@media print {
+
+  body {
+    margin: 0;
+    font-size: 11px;
+  }
+
+  .print-page {
+    display: block;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .top-control-card {
+    display: none !important;
+  }
+
+  .print-close-button {
+    display: none !important;
+  }
+
+  .doctor-selector {
+    display: none !important;
+  }
+
+  .opd-form {
+    margin: 0;
+    padding: 0.2in 0.3in;
+    width: 100%;
+  }
+
+  .section-box,
+  .clinical-section,
+  .doctor-section,
+  .disposition-section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  @page {
+    margin: 0;
+  }
+}

@@ -70,9 +70,10 @@ try {
             family_member_type, dswd_nhts, member_4ps, pcb_member,
             philhealth_member, philhealth_status_type,
             philhealth_no, philhealth_category,
+            region, province, city_municipality, barangay_name, street,
             status
         ) VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
         )
     ";
 
@@ -106,6 +107,11 @@ try {
         $data['philhealth_member'] === 'Yes' ? $data['philhealth_status_type'] ?? null : null,
         $data['philhealth_member'] === 'Yes' ? $data['philhealth_no'] ?? null : null,
         $data['philhealth_member'] === 'Yes' ? $data['philhealth_category'] ?? 'None' : null,
+        $data['region'] ?? null,
+        $data['province'] ?? null,
+        $data['city_municipality'] ?? null,
+        $data['barangay_name'] ?? null,
+        $data['street'] ?? null,
         'active'
     ]);
 

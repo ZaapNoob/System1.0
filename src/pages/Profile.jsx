@@ -31,6 +31,8 @@ export default function Profile({ user, onNavigateToDashboard, onAllowedPagesUpd
   // EDIT MODE
   // =============================
   const [isEditing, setIsEditing] = useState(false);
+  const [editMessage, setEditMessage] = useState({ type: "", text: "" });
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -38,11 +40,57 @@ export default function Profile({ user, onNavigateToDashboard, onAllowedPagesUpd
 
   const handleCancelEdit = () => {
     setIsEditing(false);
+    setEditMessage({ type: "", text: "" });
   };
 
-  const handleSaveEdit = () => {
-    console.log("Saving profile data:", profileData);
-    setIsEditing(false);
+  const handleSaveEdit = async () => {
+    try {
+      setIsSavingProfile(true);
+      setEditMessage({ type: "", text: "" });
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${API_BASE_URL}/auth/update-profile.php`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(profileData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setEditMessage({
+          type: "error",
+          text: data.message || "Failed to update profile",
+        });
+        return;
+      }
+
+      setEditMessage({
+        type: "success",
+        text: "Profile updated successfully!",
+      });
+      setIsEditing(false);
+
+      setTimeout(() => {
+        setEditMessage({ type: "", text: "" });
+      }, 3000);
+
+    } catch (error) {
+      console.error("Update error:", error);
+      setEditMessage({
+        type: "error",
+        text: "Network error. Please try again.",
+      });
+    } finally {
+      setIsSavingProfile(false);
+    }
   };
 
 
@@ -59,6 +107,8 @@ export default function Profile({ user, onNavigateToDashboard, onAllowedPagesUpd
   const [profileData, setProfileData] = useState({
     phone: user?.phone || "",
     address: user?.address || "",
+    license_no: user?.license_no || "",
+    title: user?.title || "",
   });
 
   const handleInputChange = (e) => {
@@ -612,12 +662,20 @@ const handleAddAccountSubmit = async (e) => {
               <div className="edit-actions">
 
                 {/* Save profile changes */}
-                <button className="save-btn" onClick={handleSaveEdit}>
-                  Save Changes
+                <button 
+                  className="save-btn" 
+                  onClick={handleSaveEdit}
+                  disabled={isSavingProfile}
+                >
+                  {isSavingProfile ? 'Saving...' : 'Save Changes'}
                 </button>
 
                 {/* Cancel editing */}
-                <button className="cancel-btn" onClick={handleCancelEdit}>
+                <button 
+                  className="cancel-btn" 
+                  onClick={handleCancelEdit}
+                  disabled={isSavingProfile}
+                >
                   Cancel
                 </button>
               </div>
@@ -651,7 +709,8 @@ const handleAddAccountSubmit = async (e) => {
               </div>
             )}
             
-            <div className="card-options">
+                      <div className="card-options">
+
               <div className="option-group">
                 <input 
                   type="checkbox" 
@@ -661,6 +720,7 @@ const handleAddAccountSubmit = async (e) => {
                 />
                 <label htmlFor="page-patient">Patient</label>
               </div>
+
               <div className="option-group">
                 <input 
                   type="checkbox" 
@@ -670,6 +730,29 @@ const handleAddAccountSubmit = async (e) => {
                 />
                 <label htmlFor="page-queuegen">Queue Gen</label>
               </div>
+
+              {/* NEW: Medical */}
+              <div className="option-group">
+                <input 
+                  type="checkbox" 
+                  id="page-medical" 
+                  checked={selectedPages.includes('medical')}
+                  onChange={() => handlePageToggle('medical')}
+                />
+                <label htmlFor="page-medical">Medical</label>
+              </div>
+
+              {/* NEW: Laboratory */}
+              <div className="option-group">
+                <input 
+                  type="checkbox" 
+                  id="page-laboratory" 
+                  checked={selectedPages.includes('laboratory')}
+                  onChange={() => handlePageToggle('laboratory')}
+                />
+                <label htmlFor="page-laboratory">Laboratory</label>
+              </div>
+
             </div>
             
             <button className="card-select-btn" onClick={handleSavePages}>
@@ -718,6 +801,17 @@ const handleAddAccountSubmit = async (e) => {
       onChange={() => handleWidgetToggle("tv")}
     />
     <label htmlFor="widget-tv">📺 TV Display Widget</label>
+  </div>
+
+    {/* ADD THIS */}
+  <div className="option-group">
+    <input
+      type="checkbox"
+      id="widget-encoder"
+      checked={selectedWidgets.includes("encoder")}
+      onChange={() => handleWidgetToggle("encoder")}
+    />
+    <label htmlFor="widget-encoder">🧾 Encoder Panel</label>
   </div>
   </div>
 
@@ -804,6 +898,14 @@ const handleAddAccountSubmit = async (e) => {
 
           <div className="section-content">
 
+            {editMessage.text && (
+              <div className={`message-alert message-${editMessage.type}`} style={{ marginBottom: '1rem' }}>
+                {editMessage.type === 'error' && '❌ '}
+                {editMessage.type === 'success' && '✅ '}
+                {editMessage.text}
+              </div>
+            )}
+
             {/* Phone number field */}
             <div className="profile-field">
               <label>Phone Number</label>
@@ -854,6 +956,53 @@ const handleAddAccountSubmit = async (e) => {
                 {user?.email || "N/A"}
               </p>
             </div>
+
+            {/* Role-based fields for Doctor and Nurse */}
+            {(user?.role === 'doctor' || user?.role === 'nurse') && (
+              <>
+                {/* License Number */}
+                <div className="profile-field">
+                  <label>License Number <span style={{ color: '#e74c3c' }}>*</span></label>
+
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="license_no"
+                      value={profileData.license_no}
+                      onChange={handleInputChange}
+                      placeholder="Enter license number"
+                      className="field-input"
+                      required
+                    />
+                  ) : (
+                    <p className="field-value">
+                      {profileData.license_no || "Not provided"}
+                    </p>
+                  )}
+                </div>
+
+                {/* Title/Designation */}
+                <div className="profile-field">
+                  <label>Title/Designation <span style={{ color: '#e74c3c' }}>*</span></label>
+
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="title"
+                      value={profileData.title}
+                      onChange={handleInputChange}
+                      placeholder={'Enter title (e.g., ' + (user?.role === 'doctor' ? 'MD, Rural Health Physician' : 'RN, Nurse') + ')'}
+                      className="field-input"
+                      required
+                    />
+                  ) : (
+                    <p className="field-value">
+                      {profileData.title || "Not provided"}
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
 
           </div>
         </section>

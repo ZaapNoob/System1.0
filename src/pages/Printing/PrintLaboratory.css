@@ -1,0 +1,316 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #000;
+  background: #fff;
+}
+
+.med-form {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: 0;
+  background: #fff;
+}
+
+/* =====================
+   SCREEN VIEW (Non-Print)
+===================== */
+
+.print-page {
+  display: flex;
+  flex-direction: column;
+  height: 13in;
+}
+
+
+.half-form {
+  flex: 1;              /* auto split equally */
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 0;
+  border-bottom: 2px dashed #999;
+}
+
+.half-form:last-child {
+  border-bottom: none;
+}
+
+/* =====================
+   HEADER
+===================== */
+
+.header {
+   border-bottom: 2px solid #000;
+  margin-bottom: 3px;
+  padding-bottom: 3px;
+}
+  
+
+.header-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 45px;
+  width: 100%;
+}
+
+.seal {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.header-center {
+  text-align: center;
+  flex: 1;
+}
+
+.hospital-name {
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.doh-line {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.license-line {
+  font-size: 9px;
+  line-height: 1.3;
+}
+
+.email {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+/* =====================
+   PRINT SETTINGS
+===================== */
+/* =====================
+   2 COPIES - LONG BOND PRINT
+===================== */
+
+@media print {
+
+  @page {
+    size: 8.5in 13in;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 8.5in;
+    height: 13in;
+  }
+
+  body {
+    display: block;
+  }
+
+  .print-page {
+
+    width: 8.5in;
+    height: 13in;
+    margin: 0;
+    padding: 0;
+    display: block;
+    page-break-after: avoid;
+  }
+  
+
+
+
+  .half-form {
+  height: 6.5in;
+    width: 8.5in;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    box-sizing: border-box;
+    page-break-inside: avoid;
+  }
+
+  /* Cut guide line */
+  .half-form:first-child {
+    border-bottom: 1px dashed #000;
+  }
+
+  .med-form {
+    margin: 0;
+    padding: 0.1in 0.12in;
+    width: 7.8in;
+    box-sizing: border-box;
+  }
+
+  .lab-body {
+    padding: 4px;
+    font-size: 10px;
+  }
+
+  .form-title {
+    font-size: 13px;
+    margin: 2px 0 3px 0;
+  }
+
+  .lab-3col-fixed {
+    width: 100%;
+    margin: 2px auto;
+  }
+
+
+  .doctor-name {
+    font-weight: bold;
+    margin-top: 8px;
+    font-size: 10px;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+
+ 
+
+.lab-body {
+  padding: 10px;
+  font-size: 12px;
+}
+
+.form-title {
+  text-align: center;
+  font-weight: bold;
+      font-size: 16px;
+  margin: 6px 0 8px 0;
+}
+.section {
+  margin-top: 0px;
+  padding-top: 0px;
+}
+
+.info-table {
+  width: 100%;
+}
+
+.center {
+  text-align: center;
+  padding: 20px;
+}
+
+.error {
+  color: red;
+}
+
+/* LAB GRID */
+.lab-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-left: 15px;
+  gap: 3px 20px;
+}
+
+.lab-item {
+  font-size: 12px;
+}
+
+/* DOCTOR */
+.doctor {
+  margin-top: -30px!important;
+  text-align: center;
+}
+
+.doctor-name {
+  font-weight: bold;
+  margin-top: 40px;
+}
+
+
+
+
+
+.patient-header {
+  border: none;           /* remove box border */
+  margin-bottom: -15px!important; /* pull up to overlap with header */
+  background-color: transparent;  /* remove background color */
+}
+
+.patient-header .lab-col {
+  border-right: none;     /* remove vertical lines */
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.patient-header .lab-col div {
+  white-space: nowrap;    /* prevent text wrapping */
+  overflow: hidden;       /* hide overflow */
+  text-overflow: ellipsis; /* add ellipsis for very long text */
+}
+
+
+
+
+
+.lab-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  margin-top: 10px;
+}
+
+
+
+.lab-3col-fixed {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: -15px!important;
+    margin: 15px auto;   /* 👈 THIS centers it */
+  width: 95%;          /* adjust width if needed */
+
+}
+
+.lab-col {
+  padding: 10px 15px;
+  font-size: 12px;
+  line-height: 1.6;
+  
+}
+
+/* Remove right border on last column */
+.lab-col:last-child {
+  border-right: none;
+}
+
+.lab-list {
+  margin-left: 10px;
+  margin-bottom: 4px;
+}
+
+/* DIAGNOSIS */
+.diagnosis {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+/* RIGHT SIDE EXTRA */
+.extra-info {
+  margin-top: 20px;
+  font-size: 12px;
+  line-height: 1.6;
+}

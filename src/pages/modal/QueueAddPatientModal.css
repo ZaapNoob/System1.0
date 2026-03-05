@@ -59,6 +59,8 @@
   padding-top: 16px;
   border-top: 1px solid #e5e7eb;
   color: #111827;
+  text-align: center;
+  margin: 20px auto;
 }
 
 /* RADIO */
@@ -104,4 +106,198 @@
   display: flex;
   justify-content: flex-end;
   gap: 16px;
+}
+
+/* ================= SAVE BUTTON STYLING ================= */
+.save-btn {
+  outline: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 12px 16px !important;
+  background-color: #e0f2fe !important;
+  color: #0f172a !important;
+  border: 1px solid #0f172a !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  text-decoration: none !important;
+  transition: all 0.14s ease-out !important;
+  font-weight: 600 !important;
+}
+
+.save-btn:hover:not(:disabled) {
+  background-color: #2cc8f7 !important;
+  box-shadow: 4px 4px 0 #0f172a !important;
+  transform: translate(-4px, -4px) !important;
+}
+
+.save-btn:focus-visible {
+  outline: 2px solid #0f172a !important;
+  outline-offset: 1px !important;
+}
+
+.save-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+
+
+/* ADDRESS INFORMATION GROUP CONTAINER */
+.section-divider:has(+ .form-grid:has(select[name="barangay_id"])) {
+  max-width: 520px;
+  margin: 20px auto 0 auto;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* STYLE THE GRID LIKE A GROUP CARD */
+.form-grid:has(select[name="barangay_id"]) {
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: center;
+
+  max-width: 520px;
+  margin: 0 auto 10px auto;
+  padding: 18px 20px;
+
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* CENTER CONTENT INSIDE ADDRESS CARD */
+.form-grid:has(select[name="barangay_id"]) .form-group {
+  max-width: 240px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* CENTER DATE OF BIRTH ROW */
+.form-row:has(input[name="date_of_birth"]) {
+  justify-content: center;
+}
+
+/* CENTER DATE OF BIRTH CONTENT */
+.form-row:has(input[name="date_of_birth"]) .form-group {
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* ✅ centers label + input horizontally */
+}
+
+/* CENTER THE LABEL TEXT */
+.form-row:has(input[name="date_of_birth"]) label {
+  text-align: center;
+  width: 100%;
+}
+
+/* CENTER THE DATE INPUT */
+.form-row:has(input[name="date_of_birth"]) input[type="date"] {
+  width: 100%;
+  max-width: 250px;      /* optional: control input width */
+  text-align: center;    /* centers the date text inside input */
+}
+
+/* AGE DISPLAY */
+.age-display {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #fef3c7;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #92400e;
+  text-align: center;
+  border-left: 4px solid #f59e0b;
+}
+
+/* GROUPED CONTAINER STYLE */
+.form-row:has(input[name="gender"]),
+.form-row:has(input[name="marital_status"]) {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding: 18px 20px;
+  margin: 10px auto;
+  max-width: 520px;
+
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* CENTER RADIO OPTIONS INSIDE GROUP CARDS */
+.form-row:has(input[name="gender"]) .radio-group,
+.form-row:has(input[name="marital_status"]) .radio-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+  width: 100%;
+}
+
+/* CENTER EACH LABEL BLOCK */
+.form-row:has(input[name="gender"]) .radio-group label,
+.form-row:has(input[name="marital_status"]) .radio-group label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+}
+
+/* ================= HOUSEHOLD SETUP STYLING ================= */
+
+/* Blue style for Household Info Box */
+.household-info-box.blue-style {
+  display: inline-block;
+  max-width: 420px;
+  width: auto;
+  padding: 14px 16px;
+  background-color: #e0f2fe;   /* light clinic blue */
+  border-radius: 8px;
+  color: #0f172a;              /* readable dark text */
+  border-left: 4px solid #2cc8f7; /* clinic blue accent */
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* subtle elevation */
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.household-info-box.blue-style:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Title */
+.household-info-box.blue-style .household-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #0d47a1;   /* darker blue title */
+  font-size: 15px;
+}
+/* TARGET ONLY HOUSEHOLD GENERATE BUTTON */
+.form-group:has(.household-info-box),
+.form-group:has(button.save-btn) .save-btn {
+  width: fit-content !important;
+  padding: 10px 14px !important;
 }

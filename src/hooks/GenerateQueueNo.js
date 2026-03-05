@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { previewQueueNumber, generateQueueNumber } from "../api/queue";
 import { printQueueTicket } from "../utils/printTicket";
+import API from "../config/api";
 
 export default function useGenerateQueue({
   selectedPatient,
@@ -70,8 +71,10 @@ export default function useGenerateQueue({
    *    weight,
    *    height
    *  }
+   * @param {Function} onAlreadyInQueue Callback when patient is already in queue
+   * @param {Boolean} forceGenerate Skip the duplicate check and proceed with queue generation
    */
-  const handleGenerateQueue = async (vitalsData = {}) => {
+  const handleGenerateQueue = async (vitalsData = {}, onAlreadyInQueue, forceGenerate = false) => {
     if (!selectedPatient) return;
 
     if (isManual && !manualNumber) {
@@ -80,6 +83,27 @@ export default function useGenerateQueue({
     }
 
     try {
+      // ✅ CHECK IF PATIENT IS ALREADY IN QUEUE FOR TODAY (skip if forceGenerate is true)
+      if (!forceGenerate) {
+        const checkRes = await fetch(
+          `${API}/Status/check-status.php?patient_id=${selectedPatient.id}`
+        );
+        const checkData = await checkRes.json();
+
+        if (checkData.success && checkData.inQueue) {
+          // Patient is already in queue or triage - show error
+          const statusText = checkData.inTriage ? "Triage" : "Queue";
+          const errorMsg = `⚠️ Patient Already in ${statusText}\nThis patient is already in the queue with number: ${checkData.queueCode}\nStatus: ${statusText}`;
+          
+          if (onAlreadyInQueue) {
+            onAlreadyInQueue(checkData);
+          } else {
+            alert(errorMsg);
+          }
+          return; // Stop queue generation
+        }
+      }
+
       // Helper to convert empty strings to null and numbers to proper types
       const toNumber = (val) => {
         if (val === "" || val === null || val === undefined) return null;

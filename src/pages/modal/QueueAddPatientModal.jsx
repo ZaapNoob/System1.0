@@ -1,5 +1,7 @@
 import { useModal } from "../../components/modal/ModalProvider";
 import useAddPatient from "../../hooks/useAddPatient";
+import { calculateAge } from "../../hooks/DOBAuto-Age";
+
 import "./QueueAddPatientModal.css";
 
 
@@ -102,18 +104,27 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
         </div>
 
         {/* DOB */}
-        <div className="form-row">
-          <div className="form-group">
-            <label>Date of Birth</label>
-            <input
-              type="date"
-              name="date_of_birth"
-              value={newPatient.date_of_birth}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-        </div>
+      <div className="form-row">
+  <div className="form-group">
+    <label>Date of Birth</label>
+    <input
+      type="date"
+      name="date_of_birth"
+      value={newPatient.date_of_birth}
+      onChange={handleInputChange}
+      required
+    />
+
+    {/* AGE DISPLAY */}
+    {newPatient.date_of_birth && (
+      <div className="age-display">
+        Age: <strong>{calculateAge(newPatient.date_of_birth)}</strong> years old
+      </div>
+    )}
+  </div>
+</div>
+
+
 
         {/* GENDER */}
         <div className="form-row">
@@ -163,53 +174,116 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
 
         {/* BARANGAY & PUROK */}
           <div className="section-divider">Address Information</div>
-        <div className="form-grid">
-          <div className="form-group">
-            <label>Barangay</label>
-            <select
-              name="barangay_id"
-              value={newPatient.barangay_id}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Select Barangay</option>
-              {barangays.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
-          </div>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Barangay</label>
+                    <select
+                      name="barangay_id"
+                      value={newPatient.barangay_id}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">Select Barangay</option>
+                      {barangays.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-          <div className="form-group">
-            <label>Purok</label>
-            <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
-              <select
-                name="purok_id"
-                value={newPatient.purok_id}
-                onChange={handleInputChange}
-                disabled={!newPatient.barangay_id}
-                style={{ flex: 1 }}
-              >
-                <option value="">Select Purok</option>
-                {puroks.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.purok_name}
-                  </option>
-                ))}
-              </select>
-              <button
-                type="button"
-                className="create-purok-btn"
-                onClick={() => setShowCreatePurok(true)}
-                disabled={!newPatient.barangay_id}
-                title="Create new purok for this barangay"
-              >
-                + Add
-              </button>
-            </div>
-          </div>
-        </div>
+                  {/* Purok - only show if barangay is not special */}
+                  {barangays.find(b => b.id == newPatient.barangay_id)?.is_special !== 1 && (
+                  <div className="form-group">
+                    <label>Purok</label>
+                    <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
+                      <select
+                        name="purok_id"
+                        value={newPatient.purok_id}
+                        onChange={handleInputChange}
+                        disabled={!newPatient.barangay_id}
+                        style={{ flex: 1 }}
+                      >
+                        <option value="">Select Purok</option>
+                        {puroks.map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.purok_name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        className="create-purok-btn"
+                        onClick={() => setShowCreatePurok(true)}
+                        disabled={!newPatient.barangay_id}
+                        title="Create new purok for this barangay"
+                      >
+                        + Add
+                      </button>
+                    </div>
+                  </div>
+                  )}
+
+                  {/* Address fields for special barangays */}
+                  {barangays.find(b => b.id == newPatient.barangay_id)?.is_special === 1 && (
+                  <>
+                    <div className="form-group">
+                      <label>Region</label>
+                      <input
+                        type="text"
+                        name="region"
+                        value={newPatient.region}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Region IV-A"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Province</label>
+                      <input
+                        type="text"
+                        name="province"
+                        value={newPatient.province}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Quezon"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Municipality</label>
+                      <input
+                        type="text"
+                        name="city_municipality"
+                        value={newPatient.city_municipality}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Lucban"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Barangay</label>
+                      <input
+                        type="text"
+                        name="barangay_name"
+                        value={newPatient.barangay_name}
+                        onChange={handleInputChange}
+                        placeholder="e.g. San Isidro"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Street</label>
+                      <input
+                        type="text"
+                        name="street"
+                        value={newPatient.street}
+                        onChange={handleInputChange}
+                        placeholder="e.g. Purok 1, Main Street"
+                      />
+                    </div>
+                  </>
+                  )}
+                </div>
 
         {/* CREATE PUROK MODAL */}
         {showCreatePurok && (
@@ -243,6 +317,43 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
         {/* ERROR & SUCCESS */}
         {error && <div className="alert alert-error">{error}</div>}
         {successMessage && <div className="alert alert-success">{successMessage}</div>}
+
+        {/* Household Generator - Outside Additional Info */}
+        <div className="form-group">
+          <label>Household Setup</label>
+          {!isFamilyMember && (
+            <button
+              type="button"
+              className="save-btn"
+              disabled={!newPatient.barangay_id || loading}
+              onClick={handleGenerateHouseholdClick}
+            >
+              {loading
+                ? "Generating..."
+                : newPatient.facility_household_no
+                  ? "✓ Regenerate Household"
+                  : "⚙️ Generate Household"}
+            </button>
+          )}
+          {!newPatient.barangay_id && !isFamilyMember && (
+            <small style={{ color: "#999", display: "block", marginTop: "5px" }}>
+              Please select a barangay first
+            </small>
+          )}
+          {newPatient.facility_household_no && (
+            <div className="household-info-box blue-style">
+              <div className="household-title">
+                Household Information
+              </div>
+              <div>
+                <div>Facility No: <strong>{newPatient.facility_household_no}</strong></div>
+                {newPatient.household_no && (
+                  <div>Household No: <strong>{newPatient.household_no}</strong></div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* ADDITIONAL INFO TOGGLE */}
         <div className="additional-toggle">
@@ -316,52 +427,6 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
                 />
               </div>
             </div>
-
-            {/* Household Generator */}
-            <div className="form-group">
-              <label>Household Setup</label>
-              {!isFamilyMember && (
-                <button
-                  type="button"
-                  className="save-btn"
-                  disabled={!newPatient.barangay_id || loading}
-                  onClick={handleGenerateHouseholdClick}
-                >
-                  {loading
-                    ? "Generating..."
-                    : newPatient.facility_household_no
-                      ? "✓ Regenerate Household"
-                      : "⚙️ Generate Household"}
-                </button>
-              )}
-              {!newPatient.barangay_id && !isFamilyMember && (
-                <small style={{ color: "#999", display: "block", marginTop: "5px" }}>
-                  Please select a barangay first
-                </small>
-              )}
-              {newPatient.facility_household_no && (
-                <div style={{
-                  marginTop: "10px",
-                  padding: "12px",
-                  backgroundColor: "#e8f5e9",
-                  borderRadius: "6px",
-                  color: "#2e7d32",
-                  borderLeft: "4px solid #4caf50"
-                }}>
-                  <div style={{ fontSize: "13px", fontWeight: 600, marginBottom: "6px" }}>
-                    Household Information
-                  </div>
-                  <div style={{ fontSize: "13px" }}>
-                    <div>Facility No: <strong>{newPatient.facility_household_no}</strong></div>
-                    {newPatient.household_no && (
-                      <div>Household No: <strong>{newPatient.household_no}</strong></div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-
 
             <div className="form-container">
 

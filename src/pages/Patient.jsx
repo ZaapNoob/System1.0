@@ -29,6 +29,9 @@ import { useModal } from "../components/modal/ModalProvider";
 // Import EditPatientModal component
 import EditPatientModal from "../components/patients-display/EditPatientModal";
 
+// Import DatePicker component
+import DatePicker from "../components/DatePicker";
+
 // Import patient page CSS
 import "./patient.css";
 
@@ -289,6 +292,11 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
       purok_id: data.purok_id ? String(data.purok_id) : "",
       household_no: data.household_no ?? "",
       facility_household_no: data.facility_household_no ?? "",
+      region: data.region ?? "",
+      province: data.province ?? "",
+      city_municipality: data.city_municipality ?? "",
+      barangay_name: data.barangay_name ?? "",
+      street: data.street ?? "",
     });
 
   } catch (err) {
@@ -370,7 +378,7 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
                   <div className="coolinput">
                     <label className="text">Suffix</label>
                     <select
-                      className="input"
+                      className="input native-select"
                       name="suffix"
                       value={newPatient.suffix}
                       onChange={handleInputChange}
@@ -386,144 +394,221 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
                   </div>
                 </div>
 
-                                            {/* DOB + DEMOGRAPHICS */}
-                             <div className="form-row dob-row">
+                                                        {/* DOB + DEMOGRAPHICS + ADDRESS IN ONE ROW */}
+                              <div className="form-row demographics-address-row">
 
-                              {/* Gender + Marital container */}
-                              <div className="form-group demographics-group same-row">
+                                {/* Gender + Marital container */}
 
-                                {/* Gender */}
-                                <div className="sub-group">
-                                  <label className="section-label">Gender</label>
-                                  <div className="radio-group">
-                                    <label>
-                                      <input
-                                        type="radio"
-                                        name="gender"
-                                        value="Male"
-                                        checked={newPatient.gender === "Male"}
-                                        onChange={handleInputChange}
-                                      />
-                                      Male
-                                    </label>
+                                <div className="section-box">
+                                <span className="section-title">Personal Information</span>
+                                <div className="form-group demographics-group same-row">
 
-                                    <label>
-                                      <input
-                                        type="radio"
-                                        name="gender"
-                                        value="Female"
-                                        checked={newPatient.gender === "Female"}
-                                        onChange={handleInputChange}
-                                      />
-                                      Female
-                                    </label>
+                                  {/* Gender */}
+                                  <div className="sub-group">
+                                    <label className="section-label">Gender</label>
+                                    <div className="radio-group">
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="gender"
+                                          value="Male"
+                                          checked={newPatient.gender === "Male"}
+                                          onChange={handleInputChange}
+                                        />
+                                        Male
+                                      </label>
+
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="gender"
+                                          value="Female"
+                                          checked={newPatient.gender === "Female"}
+                                          onChange={handleInputChange}
+                                        />
+                                        Female
+                                      </label>
+                                    </div>
                                   </div>
+
+                                  {/* Marital Status */}
+                                  <div className="sub-group">
+                                    <label className="section-label">Marital Status</label>
+                                    <div className="radio-group">
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="marital_status"
+                                          value="Single"
+                                          checked={newPatient.marital_status === "Single"}
+                                          onChange={handleInputChange}
+                                        />
+                                        Single
+                                      </label>
+
+                                      <label>
+                                        <input
+                                          type="radio"
+                                          name="marital_status"
+                                          value="Married"
+                                          checked={newPatient.marital_status === "Married"}
+                                          onChange={handleInputChange}
+                                        />
+                                        Married
+                                      </label>
+                                    </div>
+                                  </div>
+
                                 </div>
+                              </div>
 
-                                {/* Marital Status */}
-                                <div className="sub-group">
-                                  <label className="section-label">Marital Status</label>
-                                  <div className="radio-group">
-                                    <label>
-                                      <input
-                                        type="radio"
-                                        name="marital_status"
-                                        value="Single"
-                                        checked={newPatient.marital_status === "Single"}
-                                        onChange={handleInputChange}
-                                      />
-                                      Single
-                                    </label>
+                              {/* DOB Section Box */}
+                              <div className="section-box dob-section-box">
+                                <span className="section-title">Date of Birth</span>
 
-                                    <label>
-                                      <input
-                                        type="radio"
-                                        name="marital_status"
-                                        value="Married"
-                                        checked={newPatient.marital_status === "Married"}
-                                        onChange={handleInputChange}
-                                      />
-                                      Married
-                                    </label>
+                                <div className="dob-picker-wrapper">
+                                  <DatePicker
+                                    value={newPatient.date_of_birth}
+                                    onChange={handleInputChange}
+                                    name="date_of_birth"
+                                  />
+
+                                  <p className="dob-hint">E.g. 26/04/1980</p>
+                                </div>
+                              </div>
+
+
+
+                                {/* Barangay + Purok */}
+
+                                <div className="section-box">
+                                <span className="section-title">Residential Details</span>
+
+                                <div className="form-group address-group inline-address">
+
+                                  {/* Barangay */}
+                                  <div className="sub-group">
+                                    <label className="section-label">Barangay</label>
+                                    <select
+                                      className="outline-select"
+                                      name="barangay_id"
+                                      value={newPatient.barangay_id}
+                                      onChange={handleInputChange}
+                                      required
+                                    >
+                                      <option value="">Select Barangay</option>
+                                      {barangays.map((barangay) => (
+                                        <option key={barangay.id} value={barangay.id}>
+                                          {barangay.name}
+                                        </option>
+                                      ))}
+                                    </select>
                                   </div>
+
+                                  {/* Purok - only show if barangay is not special */}
+                                  {barangays.find(b => b.id == newPatient.barangay_id)?.is_special !== 1 && (
+                                  <div className="sub-group">
+                                    <label className="section-label">Purok</label>
+
+                                    <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
+                                      <select
+                                        className="outline-select"
+                                        name="purok_id"
+                                        value={newPatient.purok_id}
+                                        onChange={handleInputChange}
+                                        disabled={!newPatient.barangay_id}
+                                        style={{ flex: 1 }}
+                                      >
+                                        <option value="">Select Purok</option>
+                                        {puroks.map((purok) => (
+                                          <option key={purok.id} value={purok.id}>
+                                            {purok.purok_name}
+                                          </option>
+                                        ))}
+                                      </select>
+
+                                      <button
+                                        type="button"
+                                        className="create-purok-btn"
+                                        onClick={() => setShowCreatePurok(true)}
+                                        disabled={!newPatient.barangay_id}
+                                        title="Create new purok for this barangay"
+                                      >
+                                        + Add
+                                      </button>
+                                    </div>
+                                  </div>
+                                  )}
+
+                                  {/* Address fields for special barangays */}
+                                  {barangays.find(b => b.id == newPatient.barangay_id)?.is_special === 1 && (
+                                  <>
+                                    <div className="sub-group">
+                                      <label className="section-label">Region</label>
+                                      <input
+                                        type="text"
+                                        className="outline-select"
+                                        name="region"
+                                        value={newPatient.region}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. Region IV-A"
+                                      />
+                                    </div>
+
+                                    <div className="sub-group">
+                                      <label className="section-label">Province</label>
+                                      <input
+                                        type="text"
+                                        className="outline-select"
+                                        name="province"
+                                        value={newPatient.province}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. Quezon"
+                                      />
+                                    </div>
+
+                                    <div className="sub-group">
+                                      <label className="section-label">Municipality</label>
+                                      <input
+                                        type="text"
+                                        className="outline-select"
+                                        name="city_municipality"
+                                        value={newPatient.city_municipality}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. Lucban"
+                                      />
+                                    </div>
+
+                                    <div className="sub-group">
+                                      <label className="section-label">Barangay</label>
+                                      <input
+                                        type="text"
+                                        className="outline-select"
+                                        name="barangay_name"
+                                        value={newPatient.barangay_name}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. San Isidro"
+                                      />
+                                    </div>
+
+                                    <div className="sub-group">
+                                      <label className="section-label">Street</label>
+                                      <input
+                                        type="text"
+                                        className="outline-select"
+                                        name="street"
+                                        value={newPatient.street}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. Purok 1, Main Street"
+                                      />
+                                    </div>
+                                  </>
+                                  )}
+
                                 </div>
 
                               </div>
-
-                              {/* DOB */}
-                              <div className="form-group dob-group">
-                                <label>Date of Birth</label>
-                                <input
-                                  type="date"
-                                  name="date_of_birth"
-                                  value={newPatient.date_of_birth}
-                                  onChange={handleInputChange}
-                                  required
-                                />
                               </div>
-
-                            </div>
-
-
-
-              {/* ADDRESS CONTAINER */}
-<div className="form-row address-row">
-
-  <div className="form-group address-group">
-
-    {/* Barangay */}
-    <div className="sub-group">
-      <label className="section-label">Barangay</label>
-      <select
-        name="barangay_id"
-        value={newPatient.barangay_id}
-        onChange={handleInputChange}
-        required
-      >
-        <option value="">Select Barangay</option>
-        {barangays.map((barangay) => (
-          <option key={barangay.id} value={barangay.id}>
-            {barangay.name}
-          </option>
-        ))}
-      </select>
-    </div>
-
-    {/* Purok */}
-    <div className="sub-group">
-      <label className="section-label">Purok</label>
-
-      <div style={{ display: "flex", gap: "10px", alignItems: "flex-end" }}>
-        <select
-          name="purok_id"
-          value={newPatient.purok_id}
-          onChange={handleInputChange}
-          disabled={!newPatient.barangay_id}
-          style={{ flex: 1 }}
-        >
-          <option value="">Select Purok</option>
-          {puroks.map((purok) => (
-            <option key={purok.id} value={purok.id}>
-              {purok.purok_name}
-            </option>
-          ))}
-        </select>
-
-        <button
-          type="button"
-          className="create-purok-btn"
-          onClick={() => setShowCreatePurok(true)}
-          disabled={!newPatient.barangay_id}
-          title="Create new purok for this barangay"
-        >
-          + Add
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-</div>
 
                                     {/* HOUSEHOLD SETUP (show only after barangay is selected) */}
                                 {newPatient.barangay_id && (
@@ -549,24 +634,22 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
                                       </button>
                                     </div>
                                   )}
+<div className="household-result">
+  {newPatient.facility_household_no && (
+    <div className="household-info-box blue-style">
+      <div className="household-title">Household Information</div>
+      <div>
+        Facility No: <strong>{newPatient.facility_household_no}</strong>
+      </div>
+      {newPatient.household_no && (
+        <div>
+          Household No: <strong>{newPatient.household_no}</strong>
+        </div>
+      )}
+    </div>
+  )}
+</div>
 
-                                  <div className="household-result">
-                                    {newPatient.facility_household_no && (
-                                      <div className="household-info-box">
-                                        <div className="household-title">
-                                          Household Information
-                                        </div>
-                                        <div>
-                                          Facility No: <strong>{newPatient.facility_household_no}</strong>
-                                        </div>
-                                        {newPatient.household_no && (
-                                          <div>
-                                            Household No: <strong>{newPatient.household_no}</strong>
-                                          </div>
-                                        )}
-                                      </div>
-                                    )}
-                                  </div>
 
                                 </div>
                               </div>
@@ -678,6 +761,7 @@ onChange={(e) =>
       <div className="form-group">
         <label>Blood Type</label>
         <select
+          className="outline-select"
           name="blood_type"
           value={newPatient.blood_type}
           onChange={handleInputChange}
@@ -737,6 +821,7 @@ onChange={(e) =>
       <div className="form-group">
         <label>Educational Attainment</label>
         <select
+          className="outline-select"
           name="education_level"
           value={newPatient.education_level}
           onChange={handleInputChange}
@@ -755,6 +840,7 @@ onChange={(e) =>
       <div className="form-group">
         <label>Employment Status</label>
         <select
+          className="outline-select"
           name="employment_status"
           value={newPatient.employment_status}
           onChange={handleInputChange}
@@ -770,6 +856,7 @@ onChange={(e) =>
       <div className="form-group">
         <label>Family Member</label>
         <select
+          className="outline-select"
           name="family_member_type"
           value={newPatient.family_member_type}
           onChange={handleInputChange}
@@ -787,7 +874,7 @@ onChange={(e) =>
     <div className="form-row">
       <div className="form-group">
         <label>DSWD NHTS?</label>
-        <select name="dswd_nhts" value={newPatient.dswd_nhts} onChange={handleInputChange}>
+        <select className="outline-select" name="dswd_nhts" value={newPatient.dswd_nhts} onChange={handleInputChange}>
           <option value="">Select</option>
           <option>Yes</option>
           <option>No</option>
@@ -796,7 +883,7 @@ onChange={(e) =>
 
       <div className="form-group">
         <label>4Ps Member?</label>
-        <select name="member_4ps" value={newPatient.member_4ps} onChange={handleInputChange}>
+        <select className="outline-select" name="member_4ps" value={newPatient.member_4ps} onChange={handleInputChange}>
           <option value="">Select</option>
           <option>Yes</option>
           <option>No</option>
@@ -805,7 +892,7 @@ onChange={(e) =>
 
       <div className="form-group">
         <label>PCB Member?</label>
-        <select name="pcb_member" value={newPatient.pcb_member} onChange={handleInputChange}>
+        <select className="outline-select" name="pcb_member" value={newPatient.pcb_member} onChange={handleInputChange}>
           <option value="">Select</option>
           <option>Yes</option>
           <option>No</option>
@@ -815,6 +902,7 @@ onChange={(e) =>
       <div className="form-group">
         <label>PhilHealth Member?</label>
         <select
+          className="outline-select"
           name="philhealth_member"
           value={newPatient.philhealth_member}
           onChange={handleInputChange}
@@ -832,7 +920,7 @@ onChange={(e) =>
         <div className="coolinput">
           <label className="text">PhilHealth Status Type</label>
           <select
-            className="input"
+            className="input outline-select"
             name="philhealth_status_type"
             value={newPatient.philhealth_status_type}
             onChange={handleInputChange}
@@ -859,7 +947,7 @@ onChange={(e) =>
         <div className="coolinput">
           <label className="text">PhilHealth Category</label>
           <select
-            className="input"
+            className="input outline-select"
             name="philhealth_category"
             value={newPatient.philhealth_category}
             onChange={handleInputChange}
@@ -910,17 +998,20 @@ onChange={(e) =>
 
   </div>
 )}
+<div className="form-actions">
+  <button
+    type="button"
+    className="save-btn"
+    onClick={handleSavePatient}
+    disabled={loading}
+  >
+    <span className="save-text">
+      {loading ? "Saving..." : "Save Patient"}
+    </span>
+  </button>
+</div>
 
-              <div className="form-actions">
-                <button 
-                  type="button" 
-                  className="save-btn"
-                  onClick={handleSavePatient}
-                  disabled={loading}
-                >
-                  {loading ? "Saving..." : "Save Patient"}
-                </button>
-              </div>
+
             </>
           )}
 

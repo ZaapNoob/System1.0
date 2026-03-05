@@ -42,6 +42,22 @@ const Sidebar = ({ allowedPages = [], currentPage, onNavigate }) => {
             </li>
           )}
 
+          {allowedPages.includes("medical") && (
+            <li className={currentPage === "medical" ? "active" : ""}>
+              <button onClick={() => onNavigate("medical")}>
+                🏥 Medical
+              </button>
+            </li>
+          )}
+
+          {allowedPages.includes("laboratory") && (
+            <li className={currentPage === "laboratory" ? "active" : ""}>
+              <button onClick={() => onNavigate("laboratory")}>
+                🔬 Laboratory
+              </button>
+            </li>
+          )}
+
           {allowedPages.length === 0 && (
             <li className="disabled">No extra permissions</li>
           )}

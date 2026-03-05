@@ -1,0 +1,206 @@
+      * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.2;
+            color: #000;
+            background: #fff;
+        }
+
+        .med-form {
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.3in;
+            background: #fff;
+        }
+
+        /* =====================
+   HEADER
+===================== */
+
+        .header {
+            display: grid;
+            grid-template-columns: 1fr;
+            margin-bottom: 14px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 8px;
+        }
+
+        .header-inner {
+            display: grid;
+            grid-template-columns: 80px 1fr 80px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-divider {
+            display: none;
+        }
+
+      .seal {
+    object-fit: contain;
+}
+
+.seal-left {
+    width: 130px;
+    height: 130px;
+}
+
+.seal-right {
+    width: 120px;
+    height: 120px;
+    transform: translateX(-30px)!important;  /* move left 10px */
+}
+
+        .header-center {
+            text-align: center;
+        }
+
+        .republic-line {
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .doh-line {
+            font-size: 11px;
+            margin-bottom: 2px;
+        }
+
+        .hospital-name {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .license-line {
+            font-size: 10px;
+            margin-bottom: 2px;
+        }
+
+        /* =====================
+   PRINT BUTTONS
+===================== */
+
+        .print-buttons {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 2147483647;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .print-buttons .btn {
+            pointer-events: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin-left: 8px;
+            background: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        /* helper */
+        .no-print {}
+
+        /* =====================
+   PRINT
+===================== */
+
+        @media print {
+
+            body {
+                margin: 0;
+                font-size: 11px;
+            }
+
+            .med-form {
+                margin: 0;
+                padding: 0.2in 0.3in;
+                max-width: none;
+                display: table;
+                width: 100%;
+                table-layout: fixed;
+                padding: 0.3in 0.5in;
+                /* top/bottom | left/right */
+
+            }
+
+            .header {
+                display: table-header-group;
+                background: #fff;
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            .header-inner {
+                display: grid !important;
+                grid-template-columns: 80px 1fr 80px;
+                align-items: center;
+                gap: 10px;
+                padding: 0.1in 0;
+            }
+
+            .header-divider {
+                display: block;
+                border-bottom: 2px solid #000;
+                height: 0;
+                margin-top: 0.05in;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+        }
+
+        @page {
+            margin: 0;
+        }
+
+        .hospital-name {
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .doh-line {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .license-line {
+            font-size: 10px;
+            line-height: 1.3;
+        }

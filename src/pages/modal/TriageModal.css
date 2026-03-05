@@ -1,131 +1,6 @@
-.triage-modal-container {
-  width: 90% !important;
-  max-width: 1000px !important;
-  background: #fff !important;
-  padding: 20px !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 20px !important;
-  font-family: Arial, sans-serif !important;
-}
-
-.triage-modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-}
-
-.triage-modal-header h2 {
-  margin: 0;
-  font-size: 1.8rem;
-}
-
-.modal-close-btn {
-  font-size: 1.5rem;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-}
-
-.triage-modal-body {
-  display: flex;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-
-.triage-patient-image {
-  flex: 0 0 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.triage-patient-image img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 12px;
-  border: 2px solid #ccc;
-}
-
-.triage-patient-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.triage-patient-details h3 {
-  margin: 0 0 10px 0;
-  font-size: 1.2rem;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-}
-
-.label {
-  font-weight: bold;
-  color: #333;
-}
-
-.value {
-  color: #555;
-  margin-left: 10px;
-  text-align: right;
-}
-
-.triage-doctor-selection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.doctor-dropdown {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.triage-modal-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-}
-
-.btn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-}
-
-.btn-assign {
-  background-color: #4caf50;
-  color: #fff;
-}
-
-.btn-cancel {
-  background-color: #f44336;
-  color: #fff;
-}
-
-/* Vital Signs Header */
-.triage-patient-details h4 {
-  margin: 15px 0 5px 0;
-  font-size: 1.1rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 3px;
-}
-/* Overlay */
+/* =========================
+   Modal Overlay & Container
+   ========================= */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -139,7 +14,6 @@
   z-index: 999;
 }
 
-/* Modal Container */
 .triage-modal-container {
   width: 90%;
   max-width: 1000px;
@@ -155,7 +29,9 @@
   overflow-y: auto;
 }
 
-/* Header */
+/* ===========
+   Modal Header
+   =========== */
 .triage-modal-header {
   display: flex;
   justify-content: space-between;
@@ -176,14 +52,42 @@
   cursor: pointer;
 }
 
-/* Body */
-.triage-modal-body {
+/* ===========
+   Modal Body (deprecated - kept for reference)
+   =========== */
+/* .triage-modal-body has been replaced by .triage-patient-section */
+
+/* Body Wrapper - Contains patient info on top, doctor assignment + consultation history below */
+.triage-modal-body-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+}
+
+/* Top Section: Patient Info + Vital Signs */
+.triage-patient-section {
   display: flex;
   gap: 30px;
   flex-wrap: wrap;
 }
 
-/* Patient Image */
+/* Bottom Section: Doctor Assignment + Consultation History side by side */
+.triage-bottom-section {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+/* Doctor section on the left */
+.triage-doctor-section {
+  flex: 0 0 auto;
+  min-width: 300px;
+}
+
+/* ====================
+   Patient Image Section
+   ==================== */
 .triage-patient-image {
   flex: 0 0 150px;
   display: flex;
@@ -199,7 +103,9 @@
   border: 2px solid #ccc;
 }
 
-/* Patient Details */
+/* ====================
+   Patient Details Section
+   ==================== */
 .triage-patient-details {
   flex: 1;
   display: flex;
@@ -212,13 +118,17 @@
   margin: 0 0 10px 0;
 }
 
+.triage-patient-details h3 {
+  font-size: 1.2rem;
+}
+
 .triage-patient-details h4 {
   font-size: 1.1rem;
   border-bottom: 1px solid #eee;
   padding-bottom: 3px;
 }
 
-/* Info Rows */
+/* Info rows inside patient details */
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -236,11 +146,24 @@
   text-align: right;
 }
 
-/* Doctor Selection */
+/* ====================
+   Doctor Selection
+   ==================== */
 .triage-doctor-selection {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.triage-doctor-selection h3 {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  color: #1f2937;
+  font-weight: 600;
 }
 
 .doctor-dropdown {
@@ -248,57 +171,104 @@
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  width: 100%;
 }
 
-/* Actions */
+/* ====================
+   Modal Actions
+   ==================== */
 .triage-modal-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid #e0e0e0;
 }
 
+.triage-modal-actions > .warning-notification,
+.triage-modal-actions > .assign-success {
+  flex: 1;
+  margin: 0;
+}
+/* ====================
+   Modal Buttons - New Design
+   ==================== */
+/* ====================
+   Modal Buttons
+   ==================== */
 .btn {
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
+  outline: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 12px 16px !important;
+  border-radius: 4px !important;
+  border: 1px solid #0f172a !important;
+  cursor: pointer !important;
+  flex-shrink: 0 !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  text-decoration: none !important;
+  transition: all 0.14s ease-out !important;
+  font-weight: 600 !important;
 }
 
+/* ====================
+   Assign Button
+   ==================== */
 .btn-assign {
-  background-color: #4caf50;
-  color: #fff;
+  background-color: #b6f2d6 !important; /* Light green background */
+  color: #0f172a !important; /* Dark text */
+  border-color: #0f172a !important;
 }
 
+.btn-assign:hover {
+  background-color: #3ec786 !important; /* Green hover */
+  box-shadow: 4px 4px 0 #0f172a !important;
+  transform: translate(-4px, -4px) !important;
+}
+
+
+/* ====================
+   Cancel Button
+   ==================== */
 .btn-cancel {
-  background-color: #f44336;
-  color: #fff;
+  background-color: #CECECE !important; /* Light gray background */
+  color: #0f172a !important; /* Dark text */
+  border-color: #0f172a !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .triage-modal-body {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .triage-patient-details {
-    width: 100%;
-  }
-
-  .value {
-    text-align: left;
-  }
+/* Cancel Button Hover */
+.btn-cancel:hover {
+  background-color: #707070 !important; /* Dark gray hover */
+  box-shadow: 4px 4px 0 #0f172a !important;
+  transform: translate(-4px, -4px) !important;
 }
-/* Grid for Patient Info + Vital Signs */
+/* ====================
+   Focus-visible state
+   ==================== */
+.btn:focus-visible {
+  outline: 2px solid #0f172a !important;
+  outline-offset: 1px !important;
+}
+
+
+/* ====================
+   Patient Info + Vital Signs Grid
+   ==================== */
 .triage-patient-info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 30px;
   width: 100%;
+  padding-bottom: 20px;
 }
 
-/* Columns */
 .patient-info-column,
 .vital-signs-column {
   display: flex;
@@ -306,7 +276,6 @@
   gap: 8px;
 }
 
-/* Section Headers */
 .patient-info-column h3,
 .vital-signs-column h3 {
   font-size: 1.2rem;
@@ -314,19 +283,434 @@
   border-bottom: 1px solid #eee;
   padding-bottom: 5px;
 }
+/* ====================
+   Warning Notification
+   ==================== */
+.warning-notification {
+  margin-bottom: 15px;
+  padding: 12px;
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 600;
+  animation: slideDown 0.3s ease-out;
+}
 
-/* Responsive: stack on mobile */
-@media (max-width: 768px) {
-  .triage-patient-info-grid {
-    grid-template-columns: 1fr;
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-}.assign-success {
-  margin-top: 12px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====================
+   Validation Warning Message
+   ==================== */
+.validation-warning {
+  margin-bottom: 12px;
   padding: 10px;
+  background: #fff8e1;
+  color: #c57e0f;
+  border: 1px solid #f0c674;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ====================
+   Assign Success Message
+   ==================== */
+.assign-success {
+  margin-bottom: 15px;
+  padding: 12px;
   background: #e6f9f0;
   color: #1e7f4f;
   border: 1px solid #a6e3c8;
   border-radius: 6px;
   font-size: 14px;
   text-align: center;
+  font-weight: 600;
+  animation: slideDown 0.3s ease-out;
+}
+
+/* ====================
+   Responsive Styles
+   ==================== */
+@media (max-width: 768px) {
+  .triage-patient-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .triage-bottom-section {
+    flex-direction: column;
+  }
+
+  .triage-doctor-section {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .consult-history-panel {
+    min-height: 300px;
+  }
+
+  .triage-modal-container {
+    width: 95%;
+    max-width: 100%;
+  }
+}
+
+
+
+
+
+
+/*Patient Information Part */
+/* Patient Info Card */
+.patient-info-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+}
+
+.patient-info-card:hover {
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 6px 12px rgba(0, 0, 0, 0.12),
+    0 12px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Table Layout */
+.patient-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.patient-info-table td {
+  padding: 8px 6px;
+  vertical-align: top;
+}
+
+/* Label Column */
+.patient-info-table .label {
+  font-weight: 600;
+  color: #333;
+  width: 40%;
+  white-space: nowrap;
+}
+
+/* Value Column */
+.patient-info-table .value {
+  color: #555;
+  text-align: left;
+}
+
+/* Row Divider */
+.patient-info-table tr:not(:last-child) td,
+.vital-signs-table tr:not(:last-child) td {
+  border-bottom: 1px solid #b7bec6;
+}
+
+
+.patient-info-column h3 {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.patient-info-column h3::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #4caf50;
+  margin: 8px auto 0 auto;
+  border-radius: 3px;
+}
+
+
+
+
+/*CARDDD*/
+.card-header {
+  background-color: #ffefe8; /* light blue */
+  margin: -20px -20px 15px -20px;
+  padding: 14px;
+  border-bottom: 1px solid #e5e5e5;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+
+
+
+/* ========================= */
+/* Vital Signs Card */
+/* ========================= */
+.vital-signs-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease;
+}
+
+.vital-signs-card:hover {
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 6px 12px rgba(0, 0, 0, 0.12),
+    0 12px 20px rgba(0, 0, 0, 0.08);
+}
+/* Table Layout */
+.vital-signs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.vital-signs-table td {
+  padding: 8px 6px;
+  vertical-align: top;
+}
+
+/* Label Column */
+.vital-signs-table .label {
+  font-weight: 600;
+  color: #333;
+  width: 45%;
+  white-space: nowrap;
+}
+
+/* Value Column */
+.vital-signs-table .value {
+  color: #555;
+  text-align: left;
+}
+
+/* Row Divider */
+.patient-info-table tr:not(:last-child) td,
+.vital-signs-table tr:not(:last-child) td {
+  border-bottom: 1px solid #b7bec6;
+}
+
+/* Center Header */
+.vital-signs-column h3 {
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.vital-signs-column h3::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #4caf50;
+  margin: 8px auto 0 auto;
+  border-radius: 3px;
+}
+
+/* ==========================
+   Consultation History Panel
+   ========================== *//* Make Consultation History match the doctor card */
+.consult-history-section {
+  flex: 1; /* take remaining space */
+  min-width: 300px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.06);
+  max-height: 500px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom scrollbar styling */
+.consult-history-section::-webkit-scrollbar {
+  width: 8px;
+}
+
+.consult-history-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.consult-history-section::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.consult-history-section::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Header inside the card */
+.consult-history-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1f2937;
+}
+
+.consult-history-section h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: #1f2937;
+  flex-shrink: 0;
+}
+
+.loading-text,
+.no-history {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  font-size: 14px;
+}
+
+/* Ensure horizontal layout for history columns */
+.history-columns {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+/* Custom scrollbar for horizontal scroll */
+.history-columns::-webkit-scrollbar {
+  height: 6px;
+}
+
+.history-columns::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.history-columns::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.history-columns::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Each column in the history card */
+.history-column {
+  flex: 0 0 auto;
+  width: 180px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Scrollbar for individual history columns */
+.history-column::-webkit-scrollbar {
+  width: 6px;
+}
+
+.history-column::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+.history-column::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 10px;
+}
+
+.history-column::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Column header */
+.history-column h5 {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}
+/* Individual mini cards */
+.mini-history-card {
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 12px;
+}
+
+/* NEW: top row layout */
+.mini-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-date {
+  font-weight: 600;
+  color: #111827;
+}
+
+.mini-purpose {
+  color: #4b5563;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* Adjusted print button */
+.mini-print-btn {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.mini-print-btn:hover {
+  background: #2563eb;
+}
+
+.mini-print-btn:active {
+  transform: scale(0.97);
 }

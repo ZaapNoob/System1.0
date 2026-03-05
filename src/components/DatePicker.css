@@ -1,0 +1,56 @@
+/* ========================
+   DATE PICKER STYLING
+   ======================== */
+
+.dob-picker {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dob-input {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #89a6bb;
+  background-color: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  cursor: text;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.dob-input:hover {
+  border-color: #4facfe;
+  box-shadow: 0 0 0 2px rgba(79, 172, 254, 0.1);
+}
+
+.dob-input:focus {
+  outline: none;
+  border-color: #4facfe;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.15);
+  background-color: #f9fcff;
+}
+
+.dob-input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .dob-picker {
+    gap: 8px;
+  }
+
+  .dob-input {
+    min-width: 120px;
+    padding: 6px;
+    font-size: 14px;
+  }
+}

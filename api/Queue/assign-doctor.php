@@ -49,6 +49,7 @@ if ($patientQueueId <= 0 || $patientId <= 0 || $doctorId <= 0) {
 }
 
 try {
+    error_log("[ASSIGN-DOCTOR] 🟡 Processing assignment for queue_id={$patientQueueId}, patient_id={$patientId}, doctor_id={$doctorId}");
     $pdo->beginTransaction();
 
     /* =========================
@@ -62,6 +63,7 @@ try {
     ");
     $stmt->execute([$doctorId]);
     $nextNo = (int)$stmt->fetchColumn();
+    error_log("[ASSIGN-DOCTOR] 📊 Next queue number for Doctor {$doctorId}: {$nextNo}");
 
     /* =========================
        Insert doctor queue
@@ -73,19 +75,22 @@ try {
             (?, ?, ?, CURDATE(), 'waiting')
     ");
     $stmt->execute([$patientId, $doctorId, $nextNo]);
+    error_log("[ASSIGN-DOCTOR] ✅ Inserted into doctor_patient_queue: rows=" . $stmt->rowCount());
 
     /* =========================
        Update patient queue status
     ========================= */
     $stmt = $pdo->prepare("
         UPDATE patient_queue
-        SET status = 'with_doctor'
+        SET status = 'serving'
         WHERE id = ?
           AND patient_id = ?
     ");
     $stmt->execute([$patientQueueId, $patientId]);
+    error_log("[ASSIGN-DOCTOR] ✅ Updated patient_queue status: rows=" . $stmt->rowCount());
 
     $pdo->commit();
+    error_log("[ASSIGN-DOCTOR] ✅ Transaction committed successfully");
 
     echo json_encode([
         'success' => true,
@@ -93,6 +98,7 @@ try {
         'doctor_queue_number' => $nextNo
     ]);
 } catch (Throwable $e) {
+    error_log("[ASSIGN-DOCTOR] ❌ Exception: " . $e->getMessage());
 
     if ($pdo->inTransaction()) {
         $pdo->rollBack();

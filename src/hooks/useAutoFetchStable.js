@@ -1,87 +1,102 @@
 import { useEffect, useRef, useState } from "react";
+import { useWebSocketContext } from "../context/WebSocketContext";
 
-export default function useAutoFetchStable(url, interval = 3000) {
-  // Generate cache key from URL for localStorage
-  // Include query parameters in the hash to avoid cache collisions between different doctor_ids, filters, etc.
-  const cacheKey = url ? `cache_${btoa(url)}` : null;
+/**
+ * Smart fetch hook that uses WebSocket when available, polls only as fallback
+ * For doctor-assignments, filters by doctorId and status automatically
+ *
+ * @param {string} dataType - Type of data: 'waiting-queue' or 'doctor-assignments'
+ * @param {string} url - Fallback API endpoint (only used if WebSocket unavailable)
+ * @param {number} fallbackInterval - Polling interval for WebSocket disconnection (default: 20000ms)
+ * @param {number} doctorId - (Optional) Doctor ID to filter assignments for specific doctor
+ * @param {string|string[]} statusFilter - (Optional) Status or array of statuses to filter by (e.g., 'waiting' or ['waiting', 'serving'])
+ */
+export default function useAutoFetchStable(dataType, url, fallbackInterval = 20000, doctorId = null, statusFilter = null) {
+  const { connected, waitingQueue, doctorAssignments } = useWebSocketContext();
   
-  // Initialize data from localStorage if available
-  const [data, setData] = useState(() => {
-    if (!cacheKey) return [];
-    try {
-      const cached = localStorage.getItem(cacheKey);
-      return cached ? JSON.parse(cached) : [];
-    } catch (err) {
-      console.warn("Failed to load from cache:", err);
-      return [];
-    }
-  });
-
-  const lastHashRef = useRef("");
+  const [data, setData] = useState([]);
+  const [isUsingWebSocket, setIsUsingWebSocket] = useState(false);
   const timerRef = useRef(null);
 
-  useEffect(() => {
-    let mounted = true;
+  // Get the appropriate data source (don't filter here - do it in useEffect)
+  const sourceData = dataType === 'waiting-queue' ? waitingQueue : doctorAssignments;
 
-    // Skip fetch if URL is not valid (null, undefined, or contains 'undefined')
-    if (!url || url.includes('undefined')) {
-      // Clear any existing intervals if URL becomes invalid
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
+  // Normalize data to ensure consistent field names
+  const normalizeData = (items) => {
+    if (!Array.isArray(items)) return [];
+    return items.map(item => {
+      // If WebSocket sends first_name/last_name separately, combine them
+      if (!item.patient_name && item.first_name) {
+        return {
+          ...item,
+          patient_name: `${item.first_name}${item.last_name ? ' ' + item.last_name : ''}`.trim()
+        };
       }
-      return;
+      return item;
+    });
+  };
+
+  useEffect(() => {
+    // Convert statusFilter to array if it's a string
+    const statusArray = statusFilter ? (Array.isArray(statusFilter) ? statusFilter : [statusFilter]) : null;
+
+    // Apply filtering inside useEffect to avoid infinite loop
+    let wsData = sourceData;
+    if (dataType === 'doctor-assignments' && Array.isArray(wsData)) {
+      // Filter by doctor_id
+      if (doctorId) {
+        wsData = wsData.filter(item => item.doctor_id === doctorId);
+      }
+      // Filter by status (e.g., ['waiting', 'serving'])
+      if (statusArray && statusArray.length > 0) {
+        wsData = wsData.filter(item => statusArray.includes(item.status));
+      }
     }
 
-    const fetchData = async () => {
-      if (!mounted) return;
+    if (connected && Array.isArray(wsData) && wsData.length > 0) {
+      // ✅ WebSocket is connected and has actual data
+      const normalizedData = normalizeData(wsData);
+      setData(normalizedData);
+      setIsUsingWebSocket(true);
       
-      try {
-        const res = await fetch(url);
-        const json = await res.json();
-
-        if (!json?.success) return;
-
-        const newData = json.data || [];
-        const newHash = JSON.stringify(newData);
-
-        if (newHash !== lastHashRef.current) {
-          lastHashRef.current = newHash;
-          if (mounted) {
-            setData(newData);
-            
-            // Save to localStorage for persistence across page refreshes
-            if (cacheKey) {
-              try {
-                localStorage.setItem(cacheKey, JSON.stringify(newData));
-              } catch (err) {
-                console.warn("Failed to save to cache:", err);
-              }
-            }
-            
-            console.log(`✅ Data updated from ${url.split('/').pop()}`);
-          }
-        }
-      } catch (err) {
-        console.error("Auto refresh error:", err);
-      }
-    };
-
-    // Fetch immediately when URL becomes valid or changes
-    fetchData();
-    
-    // Set up interval for continuous polling
-    if (timerRef.current) clearInterval(timerRef.current);
-    timerRef.current = setInterval(fetchData, interval);
-
-    return () => {
-      mounted = false;
+      // Clear any pending fallback polls
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
+    } else if (!connected && url) {
+      // ⛔ WebSocket disconnected, use polling fallback
+      setIsUsingWebSocket(false);
+      
+      const fetchData = async () => {
+        try {
+          const res = await fetch(url);
+          const json = await res.json();
+          
+          if (json?.success) {
+            const newData = normalizeData(json.data || []);
+            setData(newData);
+          }
+        } catch (err) {
+          console.error(`Fallback polling error for ${dataType}:`, err);
+        }
+      };
+      
+      // Immediate first fetch
+      fetchData();
+      
+      // Set up polling interval
+      timerRef.current = setInterval(fetchData, fallbackInterval);
+    }
+    
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
     };
-  }, [url, interval, cacheKey]);
+    // ⚠️ FIXED: Only depend on data length and connected status to prevent infinite loops
+    // Do NOT depend on sourceData array reference - it changes on every WebSocket update
+  }, [connected, sourceData?.length, url, fallbackInterval, dataType, doctorId, statusFilter]);
 
   return data;
 }

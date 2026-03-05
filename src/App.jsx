@@ -15,14 +15,30 @@ import Dashboard from "./pages/Dashboard";
 // Import Patient page component
 import Patient from "./pages/Patient";
 
+import Medical from "./pages/Medical";
+
+import Laboratory from "./pages/Laboratory";
+
 // Import QueueGen page component
 import QueueGen from "./pages/QueueGen";
 
 // Import Profile page component
 import Profile from "./pages/Profile";
 
+// Import PrintOPD page component
+import PrintOPD from "./pages/Printing/PrintOPD";
+
+// Import PintMEDICAL page component
+import PintMEDICAL from "./pages/Printing/PintMEDICAL";
+
+// Import PrintLaboratory page component
+import PrintLaboratory from "./pages/Printing/PrintLaboratory";
+
 // Import ModalProvider
 import { ModalProvider } from "./components/modal/ModalProvider";
+
+// Import WebSocket Provider
+import { WebSocketProvider } from "./context/WebSocketContext";
 
 // Main root component of the React app
 export default function App() {
@@ -44,6 +60,8 @@ export default function App() {
 
   // Stores the user's allowed pages from Profile settings
   const [allowedPages, setAllowedPages] = useState([]);
+
+  const path = window.location.pathname;
 
   // -----------------------------
   // RUN ON APP LOAD (AUTH CHECK)
@@ -132,50 +150,103 @@ export default function App() {
   // If user is NOT logged in, show Login page
   if (!user) return <Login onLogin={setUser} />;
 
+  // If URL is /print-opd → render PrintOPD page in new tab
+if (path.includes("print-opd")) {
+  return <PrintOPD />;
+}
+
+  // If URL is /printing/medical → render PintMEDICAL page in new tab
+if (path.includes("printing/medical")) {
+  return <PintMEDICAL />;
+}
+
+  // If URL is /print-laboratory → render PrintLaboratory page in new tab
+if (path.includes("print-laboratory")) {
+  return <PrintLaboratory />;
+}
+
   // If user IS logged in, conditionally show Dashboard, Patient, QueueGen, or Profile
 
   if (currentPage === "profile") {
     return (
-      <Profile
-        user={user}
-        onNavigateToDashboard={() => setCurrentPage("dashboard")}
-        onAllowedPagesUpdate={handleAllowedPagesUpdate}
-      />
+      <WebSocketProvider>
+        <Profile
+          user={user}
+          onNavigateToDashboard={() => setCurrentPage("dashboard")}
+          onAllowedPagesUpdate={handleAllowedPagesUpdate}
+        />
+      </WebSocketProvider>
     );
   }
 
   if (currentPage === "patient") {
     return (
+      <WebSocketProvider>
+        <ModalProvider>
+          <Patient
+            user={user}
+            onNavigateToProfile={() => setCurrentPage("profile")}
+            allowedPages={allowedPages}
+            onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
+      </WebSocketProvider>
+    );
+  }
+
+  if (currentPage === "queuegen") {
+    return (
+      <WebSocketProvider>
+        <ModalProvider>
+          <QueueGen
+            user={user}
+            allowedPages={allowedPages}
+            onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
+      </WebSocketProvider>
+    );
+  }
+    if (currentPage === "medical") {
+    return (
+      <WebSocketProvider>
+        <ModalProvider>
+          <Medical
+            user={user}
+            onNavigateToProfile={() => setCurrentPage("profile")}
+            allowedPages={allowedPages}
+            onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
+      </WebSocketProvider>
+    );
+  }
+    if (currentPage === "laboratory") {
+    return (
+      <WebSocketProvider>
+        <ModalProvider>
+          <Laboratory
+            user={user}
+            onNavigateToProfile={() => setCurrentPage("profile")}
+            allowedPages={allowedPages}
+            onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
+      </WebSocketProvider>
+    );
+  }
+
+  // Default: show Dashboard with ModalProvider
+  return (
+    <WebSocketProvider>
       <ModalProvider>
-        <Patient
+        <Dashboard
           user={user}
           onNavigateToProfile={() => setCurrentPage("profile")}
           allowedPages={allowedPages}
           onNavigate={setCurrentPage}
         />
       </ModalProvider>
-    );
-  }
-
-  if (currentPage === "queuegen") {
-    return (
-      <ModalProvider>
-        <QueueGen
-          user={user}
-          allowedPages={allowedPages}
-          onNavigate={setCurrentPage}
-        />
-      </ModalProvider>
-    );
-  }
-
-  // Default: show Dashboard
-  return (
-    <Dashboard
-      user={user}
-      onNavigateToProfile={() => setCurrentPage("profile")}
-      allowedPages={allowedPages}
-      onNavigate={setCurrentPage}
-    />
+    </WebSocketProvider>
   );
 }

@@ -26,6 +26,15 @@ import { useDoctorAssignments } from "../hooks/useDoctors";
 // Auto-fetch hook
 import useAutoFetchStable from "../hooks/useAutoFetchStable";
 
+// WebSocket context
+import { useWebSocketContext } from "../context/WebSocketContext";
+
+// WebSocket polling hook
+import { useWebSocketPolling } from "../hooks/useWebSocketPolling";
+
+// Auto-revert triage hook
+import useAutoRevertTriage from "../hooks/useAutoRevertTriage";
+
 export default function Dashboard({
   user,
   onNavigateToProfile,
@@ -53,19 +62,48 @@ export default function Dashboard({
   ]);
 
   // ===============================
-  // TRIAGE QUEUE (AUTO REFRESH)
+  // POLLING RESET TRIGGER & WEBSOCKET HANDLERS
   // ===============================
-  const waitingQueue = useAutoFetchStable(`${API}/Queue/get-waiting.php`, 1500);
-  const [servingPatient, setServingPatient] = useState(null);
+  const { pollingReset, triggerPollingReset } = useWebSocketPolling();
+
+  // Get WebSocket connection status
+  const { connected } = useWebSocketContext();
 
   // ===============================
-  // DOCTOR ASSIGNMENTS (AUTO REFRESH)
+  // TRIAGE QUEUE (AUTO REFRESH) - Uses WebSocket, fallback to polling
   // ===============================
+  const waitingQueue = useAutoFetchStable(
+    'waiting-queue',
+    `${API}/Queue/get-waiting.php`,
+    20000  // Fallback polling interval (only used if WebSocket is down)
+  );
+  const [servingPatient, setServingPatient] = useState(null);
+  
+  // ===============================
+  // TRIAGE AUTO-REVERT HOOK
+  // ===============================
+  const { triageQueueId, assignmentCompleted, setTriageQueueId, setAssignmentCompleted, revertTriage } = useAutoRevertTriage();
+  
+  // ===============================
+  // WEBSOCKET CONTEXT
+  // ===============================
+  const { send: wsSend } = useWebSocketContext();
+
+  // ===============================
+  // DOCTOR ASSIGNMENTS (AUTO REFRESH) - Uses WebSocket live fetch, fallback to polling
+  // ===============================
+  // Note: Pulls from doctor_patient_queue table for real-time doctor-patient assignments
+  // Uses WebSocket-triggered live fetch when doctor assignments change
+  // 🔒 Filters automatically by logged-in doctor's ID
+  // 🔒 Filters by status: only 'waiting' and 'serving' (hides 'done')
   const doctorAssignments = useAutoFetchStable(
+    'doctor-assignments',
     user?.id
       ? `${API}/Queue/get-doctor-assignments.php?doctor_id=${user.id}&status=waiting`
       : null,
-    1500
+    20000,  // Fallback polling interval (only used if WebSocket is down)
+    user?.id,  // 🔒 Filter to this doctor's assignments only
+    ['waiting', 'serving']  // 🔒 Only show waiting and serving statuses
   );
 
   const doctorAssignmentsLoading = false;
@@ -289,17 +327,7 @@ export default function Dashboard({
                 </div>
                 <div className="widget-content">
                   <div className="doctor-widget">
-                    <div className="doctor-summary-grid">
-                      <div className="doctor-summary-card">
-                        <span className="summary-label">Appointments</span>
-                      </div>
-                      <div className="doctor-summary-card">
-                        <span className="summary-label">Completed</span>
-                      </div>
-                      <div className="doctor-summary-card">
-                        <span className="summary-label">Patients</span>
-                      </div>
-                    </div>
+                 
 
                     <div className="widget-section">
                       <h4>📋 Patient Consultations</h4>
@@ -347,6 +375,11 @@ export default function Dashboard({
                       patient={patientData}
                       onDone={async () => {
                         await markDone(item.id); // mark as done
+                        
+                        // 📡 Trigger WebSocket live fetch after marking done
+                        wsSend({ type: 'refresh-doctor-queue-now', doctor_id: user?.id });
+                        console.log('📡 Patient marked done - triggering WebSocket live fetch');
+                        
                         closeModal();
                       }}
                     />
@@ -367,27 +400,7 @@ export default function Dashboard({
   </div>
 
 
-                        <div className="widget-section">
-                          <h4>💊 Active Prescriptions</h4>
-                          <div className="prescription-list">
-                            <div className="prescription-item">
-                              <span className="medicine">Amoxicillin 500mg</span>
-                              <span className="dosage">2x Daily</span>
-                            </div>
-                            <div className="prescription-item">
-                              <span className="medicine">Ibuprofen 200mg</span>
-                              <span className="dosage">3x Daily</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="widget-section">
-                          <h4>🔬 Lab Results Pending</h4>
-                          <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                            <li>Blood Test - Juan Dela Cruz</li>
-                            <li>X-Ray Report - Maria Santos</li>
-                          </ul>
-                        </div>
+                      
                       </div>
                     </div>
                   </div>
@@ -446,19 +459,52 @@ export default function Dashboard({
                   <button
                     className="accept-btn"
                     disabled={accepting}
-                    onClick={() =>
+                    onClick={() => {
+                      // Accept hook will trigger WebSocket live fetch automatically
                       handleAcceptQueue(q, (patient) => {
+                        // 📝 Store triage state in localStorage for recovery
+                        const patientQueueId = patient.id;
+                        localStorage.setItem("activeTriageQueueId", patientQueueId);
+                        localStorage.setItem("triageAssignmentCompleted", "false");
+                        
+                        // Track in state
+                        setTriageQueueId(patientQueueId);
+                        setAssignmentCompleted(false);
+                        
                         // Open Triage Modal after accepting
                         openModal(
                           <TriageModal
                             patient={patient}
-                            doctors={[]}
-                            onAssign={() => console.log("Assign doctor clicked")}
-                            onClose={closeModal}
+                            triggerPollingReset={triggerPollingReset}
+                            onAssign={() => {
+                              // ✅ Mark assignment as completed
+                              setAssignmentCompleted(true);
+                              localStorage.setItem("triageAssignmentCompleted", "true");
+                              console.log("✅ Doctor assigned - triage complete");
+                            }}
+                            onClose={async () => {
+                              // ✅ Close modal & cleanup
+                              if (!assignmentCompleted) {
+                                // Auto-revert this specific triage back to waiting
+                                await revertTriage(patientQueueId); // 🔄 Wait for revert to complete
+                                
+                                // 📡 After revert completes, trigger WebSocket live fetch
+                                // This will broadcast updated queue to all connected dashboards
+                                wsSend({ type: 'refresh-queue-now' });
+                                console.log('📡 Patient reverted to waiting - triggering WebSocket live fetch');
+                              }
+                              
+                              // Clean up state
+                              setTriageQueueId(null);
+                              setAssignmentCompleted(false);
+                              localStorage.removeItem("activeTriageQueueId");
+                              localStorage.removeItem("triageAssignmentCompleted");
+                              closeModal();
+                            }}
                           />
                         );
                       })
-                    }
+                    }}
                   >
                     {accepting ? "Accepting..." : "Accept"}
                   </button>
@@ -468,28 +514,7 @@ export default function Dashboard({
           </div>
         </div>
 
-        {/* Vital Signs Summary */}
-        <div className="widget-section">
-          <h4>❤️ Vital Signs Summary</h4>
-          <div className="vitals-grid">
-            <div className="vital-item">
-              <span className="vital-label">Blood Pressure</span>
-              <span className="vital-value">—</span>
-            </div>
-            <div className="vital-item">
-              <span className="vital-label">Heart Rate</span>
-              <span className="vital-value">—</span>
-            </div>
-            <div className="vital-item">
-              <span className="vital-label">Temperature</span>
-              <span className="vital-value">—</span>
-            </div>
-            <div className="vital-item">
-              <span className="vital-label">Oxygen Level</span>
-              <span className="vital-value">—</span>
-            </div>
-          </div>
-        </div>
+    
 
         {/* Triage Statistics */}
         <div className="widget-section">
@@ -518,6 +543,31 @@ export default function Dashboard({
     </div>
   </div>
 )}
+
+
+{selectedWidgets.includes("encoder") && (
+  <div className="widget-card widget-encoder">
+    <div className="widget-header">
+      <h3>🧾 Encoder Panel</h3>
+    </div>
+
+    <div className="widget-content">
+      <table className="consultation-table">
+        <thead>
+          <tr>
+            <th>Patient Name</th>
+            <th>Consultation / Description</th>
+            <th>Visit Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* bind this later to your visits API */}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
+
 
 
 

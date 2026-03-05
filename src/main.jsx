@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom/client';
 // This is the main component of your application
 import App from './App.jsx';
 
+
 // Import ModalProvider to manage modals across the app
 import { ModalProvider } from './components/modal/ModalProvider';
 

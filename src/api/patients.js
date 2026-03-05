@@ -17,7 +17,7 @@ export const fetchBarangays = async () => {
 };
 
 /* =========================
-   SEARCH PATIENT IN QUEUE
+   SEARCH PATIENT IN QUEUEand
 ========================= */
 export const searchPatientsQueue = async (barangayId = 0, query) => {
   // If barangayId = 0, it will search all barangays
@@ -77,4 +77,27 @@ export const updatePatient = async (payload) => {
     },
     body: JSON.stringify(payload),
   });
+};
+
+/* =========================
+   MEDICAL CERTIFICATE
+========================= */
+export const saveMedicalCertificate = async (certificateData) => {
+  return apiFetch(`${API}/medical/save-certificate.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(certificateData),
+  });
+};
+
+export const getCertificateDetails = async (certificateId) => {
+  return apiFetch(`${API}/medical/get-certificate.php?id=${certificateId}`);
+};
+
+export const getMedicalHistory = async (patientId) => {
+  return apiFetch(
+    `${API}/medical/medical-history.php?patient_id=${patientId}`
+  );
 };

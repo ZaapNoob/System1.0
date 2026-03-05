@@ -87,7 +87,7 @@
 .dashboard-main {
   padding: 34px 24px;
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns:300px 1fr!important;
   gap: 30px;
   margin: 0;
   max-width: none;
