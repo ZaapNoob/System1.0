@@ -202,6 +202,23 @@
 
 
 
+.back-btn{
+  background:#6c757d;
+  color:white;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.back-btn:hover{
+  background:#5a6268;
+}
+
+
+
+
+
 
 
 

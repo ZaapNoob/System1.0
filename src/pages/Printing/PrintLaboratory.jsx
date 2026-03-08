@@ -87,14 +87,10 @@ const PrintLaboratory = () => {
   /* =========================
      CHECKBOX LOGIC
   ========================= */
-  const selectedTests = new Set(
-    (labRequestData?.tests || []).map((t) =>
-      t?.test_name?.trim().toLowerCase()
-    )
-  );
-
-  const renderCheck = (test) => {
-    const isChecked = selectedTests.has(test.toLowerCase());
+  const renderCheck = (category, test) => {
+    const isChecked = labRequestData?.tests?.some(
+      (t) => t.category === category && t.test_name === test
+    );
     return (
       <div>
         {isChecked ? "☑" : "☐"} {test}
@@ -170,17 +166,17 @@ const PrintLaboratory = () => {
           {/* CHEMISTRY */}
           <div className="lab-col">
             <strong>Chemistry:</strong>
-            {renderCheck("BUN")}
-            {renderCheck("Crea")}
-            {renderCheck("FBS")}
-            {renderCheck("Lipid Profile")}
-            {renderCheck("HbA1c")}
-            {renderCheck("BUA")}
-            {renderCheck("Na")}
-            {renderCheck("K")}
-            {renderCheck("Cl")}
-            {renderCheck("AST/ALT")}
-            {renderCheck("Others")}
+            {renderCheck("Chemistry", "BUN")}
+            {renderCheck("Chemistry", "Crea")}
+            {renderCheck("Chemistry", "FBS")}
+            {renderCheck("Chemistry", "Lipid Profile")}
+            {renderCheck("Chemistry", "HbA1c")}
+            {renderCheck("Chemistry", "BUA")}
+            {renderCheck("Chemistry", "Na")}
+            {renderCheck("Chemistry", "K")}
+            {renderCheck("Chemistry", "Cl")}
+            {renderCheck("Chemistry", "AST/ALT")}
+            {renderCheck("Chemistry", "Others")}
             {getOtherValue("Chemistry") && (
               <div style={{ marginLeft: "20px", fontSize: "11px" }}>
                 {getOtherValue("Chemistry")}
@@ -195,9 +191,9 @@ const PrintLaboratory = () => {
           {/* CARDIOLOGY + BACTERIOLOGY */}
           <div className="lab-col">
             <strong>Cardiology:</strong>
-            {renderCheck("2D Echo")}
-            {renderCheck("ECG")}
-            {renderCheck("Others")}
+            {renderCheck("Cardiology", "2D Echo")}
+            {renderCheck("Cardiology", "ECG")}
+            {renderCheck("Cardiology", "Others")}
             {getOtherValue("Cardiology") && (
               <div style={{ marginLeft: "20px", fontSize: "11px" }}>
                 {getOtherValue("Cardiology")}
@@ -206,9 +202,9 @@ const PrintLaboratory = () => {
 
             <br />
             <strong>Bacteriology:</strong>
-            {renderCheck("Gen Expert")}
-            {renderCheck("AFB Stain")}
-            {renderCheck("Others")}
+            {renderCheck("Bacteriology", "Gen Expert")}
+            {renderCheck("Bacteriology", "AFB Stain")}
+            {renderCheck("Bacteriology", "Others")}
             {getOtherValue("Bacteriology") && (
               <div style={{ marginLeft: "20px", fontSize: "11px" }}>
                 {getOtherValue("Bacteriology")}
@@ -219,10 +215,10 @@ const PrintLaboratory = () => {
           {/* HEMATOLOGY */}
           <div className="lab-col">
             <strong>Hematology:</strong>
-            {renderCheck("CBC")}
-            {renderCheck("PC")}
-            {renderCheck("Blood Typing")}
-            {renderCheck("Others")}
+            {renderCheck("Hematology", "CBC")}
+            {renderCheck("Hematology", "PC")}
+            {renderCheck("Hematology", "Blood Typing")}
+            {renderCheck("Hematology", "Others")}
             {getOtherValue("Hematology") && (
               <div style={{ marginLeft: "20px", fontSize: "11px" }}>
                 {getOtherValue("Hematology")}
@@ -231,10 +227,10 @@ const PrintLaboratory = () => {
 
             <br />
             <strong>Urinalysis & Others:</strong>
-            {renderCheck("Fecalysis")}
-            {renderCheck("Urinalysis")}
-            {renderCheck("Covid 19 Test")}
-            {renderCheck("Others")}
+            {renderCheck("Urinalysis & Others", "Fecalysis")}
+            {renderCheck("Urinalysis & Others", "Urinalysis")}
+            {renderCheck("Urinalysis & Others", "Covid 19 Test")}
+            {renderCheck("Urinalysis & Others", "Others")}
             {getOtherValue("Urinalysis & Others") && (
               <div style={{ marginLeft: "20px", fontSize: "11px" }}>
                 {getOtherValue("Urinalysis & Others")}

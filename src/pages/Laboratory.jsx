@@ -274,11 +274,12 @@ export default function LabRequest({
           </div>
 
           {/* RIGHT PANEL */}
-          <div className="right-panel">
+        <  div className="right-panel1">
             {step === 2 && selectedPatient && (
-              <div className="lab-request-container">
-                <div className="lab-card">
-                  <div className="lab-header">
+              <div className="lab-request-container1">
+                      <div className="lab-width-controller1">
+                <div className="lab-card1">
+                  <div className="lab-header1">
                     <h2>Lab Request Details</h2>
                     <button
                       type="button"
@@ -466,6 +467,7 @@ export default function LabRequest({
                   >
                     {loading ? "Saving..." : "Save Lab Request →"}
                   </button>
+                </div>
                 </div>
               </div>
             )}

@@ -67,8 +67,11 @@ export default function Login({ onLogin }) {
       return;
     }
 
-    // Parse successful response JSON
-    const data = await res.json();
+    // Parse successful response - read as text first for debugging
+    const responseText = await res.text();
+    console.log("Raw login response:", responseText);
+    
+    const data = JSON.parse(responseText);
     console.log("Login successful:", data);
 
     // Save authentication token in browser storage

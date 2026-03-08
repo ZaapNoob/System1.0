@@ -81,7 +81,7 @@ export default function MedicalCertificate({ patient, mc, onClose }) {
       {error && <div style={{ padding: "20px", textAlign: "center", color: "red" }}>Error: {error}</div>}
 
       {(patient || certificateData) && (
-        <div className="med-form">
+        <div className="med-form" style={{ maxWidth: "8.5in", margin: "0 auto", padding: "0.5in" }}>
           {/* Use fetched data if available, otherwise use props */}
           {(() => {
             const patientData = certificateData || patient;
@@ -92,7 +92,7 @@ export default function MedicalCertificate({ patient, mc, onClose }) {
                 {/* HEADER */}
                 <div className="header">
                   <div className="header-inner">
-<img src={LGULogo} alt="LGU Logo" className="seal seal-left" />
+<img src={LGULogo} alt="LGU Logo" className="seal seal-left1" />
 
                     <div className="header-center">
                       <div className="hospital-name">Rural Health Unit - Gubat</div>
@@ -114,7 +114,7 @@ export default function MedicalCertificate({ patient, mc, onClose }) {
                       </div>
                     </div>
 
-<img src={MHOLogo} alt="MHO Logo" className="seal seal-right" />                  </div>
+<img src={MHOLogo} alt="MHO Logo" className="seal seal-right1" />                  </div>
                   <div className="header-divider"></div>
                 </div>
 

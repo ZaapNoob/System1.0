@@ -6,11 +6,15 @@ export default function useWebSocket() {
 
   const [waitingQueue, setWaitingQueue] = useState([]);
   const [doctorAssignments, setDoctorAssignments] = useState([]);
+  const [encoderQueue, setEncoderQueue] = useState([]);
 
   useEffect(() => {
+    // Connect to WebSocket via Apache on the standard port (443)
+    // Apache proxies /ws to ws://localhost:8080
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.hostname}:8080`;
+    const wsUrl = `${protocol}//${window.location.hostname}/ws`;
 
+    console.log(`📡 Connecting to WebSocket: ${wsUrl}`);
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
@@ -28,6 +32,10 @@ export default function useWebSocket() {
 
         case "doctor-assignments":
           setDoctorAssignments(message.data);
+          break;
+
+        case "encoder-queue":
+          setEncoderQueue(message.data);
           break;
 
         default:
@@ -59,6 +67,7 @@ export default function useWebSocket() {
     connected,
     waitingQueue,
     doctorAssignments,
+    encoderQueue,
     send
   };
 }

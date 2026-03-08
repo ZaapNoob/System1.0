@@ -3,23 +3,30 @@ import { useWebSocketContext } from "../context/WebSocketContext";
 
 /**
  * Smart fetch hook that uses WebSocket when available, polls only as fallback
- * For doctor-assignments, filters by doctorId and status automatically
+ * For doctor-assignments and encoder, filters by doctorId and status/date automatically
  *
- * @param {string} dataType - Type of data: 'waiting-queue' or 'doctor-assignments'
+ * @param {string} dataType - Type of data: 'waiting-queue', 'doctor-assignments', or 'encoder-queue'
  * @param {string} url - Fallback API endpoint (only used if WebSocket unavailable)
  * @param {number} fallbackInterval - Polling interval for WebSocket disconnection (default: 20000ms)
- * @param {number} doctorId - (Optional) Doctor ID to filter assignments for specific doctor
+ * @param {number} doctorId - (Optional) Doctor ID to filter assignments/encoder for specific doctor
  * @param {string|string[]} statusFilter - (Optional) Status or array of statuses to filter by (e.g., 'waiting' or ['waiting', 'serving'])
  */
 export default function useAutoFetchStable(dataType, url, fallbackInterval = 20000, doctorId = null, statusFilter = null) {
-  const { connected, waitingQueue, doctorAssignments } = useWebSocketContext();
+  const { connected, waitingQueue, doctorAssignments, encoderQueue } = useWebSocketContext();
   
   const [data, setData] = useState([]);
   const [isUsingWebSocket, setIsUsingWebSocket] = useState(false);
   const timerRef = useRef(null);
 
-  // Get the appropriate data source (don't filter here - do it in useEffect)
-  const sourceData = dataType === 'waiting-queue' ? waitingQueue : doctorAssignments;
+  // Get the appropriate data source based on dataType
+  let sourceData;
+  if (dataType === 'waiting-queue') {
+    sourceData = waitingQueue;
+  } else if (dataType === 'doctor-assignments') {
+    sourceData = doctorAssignments;
+  } else if (dataType === 'encoder-queue') {
+    sourceData = encoderQueue;
+  }
 
   // Normalize data to ensure consistent field names
   const normalizeData = (items) => {
@@ -35,6 +42,7 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
       return item;
     });
   };
+  
 
   useEffect(() => {
     // Convert statusFilter to array if it's a string
@@ -42,7 +50,7 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
 
     // Apply filtering inside useEffect to avoid infinite loop
     let wsData = sourceData;
-    if (dataType === 'doctor-assignments' && Array.isArray(wsData)) {
+    if ((dataType === 'doctor-assignments' || dataType === 'encoder-queue') && Array.isArray(wsData)) {
       // Filter by doctor_id
       if (doctorId) {
         wsData = wsData.filter(item => item.doctor_id === doctorId);

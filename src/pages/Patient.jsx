@@ -32,6 +32,16 @@ import EditPatientModal from "../components/patients-display/EditPatientModal";
 // Import DatePicker component
 import DatePicker from "../components/DatePicker";
 
+// Import Camera component
+import Camera from "../components/Camera";
+import useCamera from "../hooks/camera/useCamera";
+
+// Import DOB Age calculator
+import { calculateAge } from "../hooks/DOBAuto-Age";
+
+
+
+
 // Import patient page CSS
 import "./patient.css";
 
@@ -51,6 +61,7 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
 
   const { openModal } = useModal();
 
+  
 
   // =======================
   // Patients Add Form (hook)
@@ -69,10 +80,14 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
     successMessage, error,
     setSuccessMessage, setError,
 
+    showDuplicateWarning, setShowDuplicateWarning,
+    duplicateWarning,
+
     handleInputChange,
     handleCreatePurok,
     handleGenerateHouseholdClick,
     handleSavePatient,
+    handleProceedWithDuplicate,
     formatPurokInput,
     initialPatientState,
   } = useAddPatient();
@@ -96,6 +111,18 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
       window.location.reload();
     }
   };
+const {
+  showCamera,
+  patientImage,
+  currentPatientId,
+  handleOpenCamera,
+  handleCloseCamera,
+  handleImageUpload,
+  handleCaptureImage,
+  handleSavePatientWithCamera,
+  clearPatientImage
+} = useCamera(newPatient, handleSavePatient);
+  
 
   // =======================
   // Patients Listing (hook)
@@ -330,6 +357,7 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
     setNewPatient(initialPatientState);
     setError("");
     setSuccessMessage("");
+    clearPatientImage(); // Fix #4: Clear image when form is cancelled
   }}
 >
   Cancel
@@ -396,86 +424,152 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
 
                                                         {/* DOB + DEMOGRAPHICS + ADDRESS IN ONE ROW */}
                               <div className="form-row demographics-address-row">
+<div className="profile-demographics-wrapper">
+  <div className="patient-profile-section-wrapper">
+    <div className="profile-photo-container">
+      {patientImage ? (
+        <img src={patientImage} alt="Patient Profile" className="profile-photo" />
+      ) : (
+        <div className="profile-photo-placeholder">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+      )}
+      <button
+        type="button"
+        className="camera-btn"
+        onClick={handleOpenCamera}
+        title="Open camera to capture photo"
+      >
+        📷 Capture Photo
+      </button>
+    </div>
+  </div>
 
-                                {/* Gender + Marital container */}
+ <div className="demographics-divider">
+  <div className="form-group demographics-group same-row">
 
-                                <div className="section-box">
-                                <span className="section-title">Personal Information</span>
-                                <div className="form-group demographics-group same-row">
+    {/* Gender */}
+    <div className="sub-group">
+      <label className="section-label">Gender</label>
+      <div className="radio-group">
+        <label>
+          <input
+            type="radio"
+            name="gender"
+            value="Male"
+            checked={newPatient.gender === "Male"}
+            onChange={handleInputChange}
+          />
+          Male
+        </label>
 
-                                  {/* Gender */}
-                                  <div className="sub-group">
-                                    <label className="section-label">Gender</label>
-                                    <div className="radio-group">
-                                      <label>
-                                        <input
-                                          type="radio"
-                                          name="gender"
-                                          value="Male"
-                                          checked={newPatient.gender === "Male"}
-                                          onChange={handleInputChange}
-                                        />
-                                        Male
-                                      </label>
+        <label>
+          <input
+            type="radio"
+            name="gender"
+            value="Female"
+            checked={newPatient.gender === "Female"}
+            onChange={handleInputChange}
+          />
+          Female
+        </label>
+      </div>
+    </div>
 
-                                      <label>
-                                        <input
-                                          type="radio"
-                                          name="gender"
-                                          value="Female"
-                                          checked={newPatient.gender === "Female"}
-                                          onChange={handleInputChange}
-                                        />
-                                        Female
-                                      </label>
-                                    </div>
-                                  </div>
+    {/* Divider */}
+    <div className="demographics-divider-line"></div>
 
-                                  {/* Marital Status */}
-                                  <div className="sub-group">
-                                    <label className="section-label">Marital Status</label>
-                                    <div className="radio-group">
-                                      <label>
-                                        <input
-                                          type="radio"
-                                          name="marital_status"
-                                          value="Single"
-                                          checked={newPatient.marital_status === "Single"}
-                                          onChange={handleInputChange}
-                                        />
-                                        Single
-                                      </label>
+    {/* Marital Status */}
+    <div className="sub-group">
+      <label className="section-label">Marital Status</label>
+      <div className="radio-group">
+        <label>
+          <input
+            type="radio"
+            name="marital_status"
+            value="Single"
+            checked={newPatient.marital_status === "Single"}
+            onChange={handleInputChange}
+          />
+          Single
+        </label>
 
-                                      <label>
-                                        <input
-                                          type="radio"
-                                          name="marital_status"
-                                          value="Married"
-                                          checked={newPatient.marital_status === "Married"}
-                                          onChange={handleInputChange}
-                                        />
-                                        Married
-                                      </label>
-                                    </div>
-                                  </div>
+        <label>
+          <input
+            type="radio"
+            name="marital_status"
+            value="Married"
+            checked={newPatient.marital_status === "Married"}
+            onChange={handleInputChange}
+          />
+          Married
+        </label>
 
-                                </div>
-                              </div>
+        <label>
+          <input
+            type="radio"
+            name="marital_status"
+            value="Separated"
+            checked={newPatient.marital_status === "Separated"}
+            onChange={handleInputChange}
+          />
+          Separated
+        </label>
 
-                              {/* DOB Section Box */}
-                              <div className="section-box dob-section-box">
-                                <span className="section-title">Date of Birth</span>
+        <label>
+          <input
+            type="radio"
+            name="marital_status"
+            value="Co-habitation"
+            checked={newPatient.marital_status === "Co-habitation"}
+            onChange={handleInputChange}
+          />
+          Co-habitation
+        </label>
 
-                                <div className="dob-picker-wrapper">
-                                  <DatePicker
-                                    value={newPatient.date_of_birth}
-                                    onChange={handleInputChange}
-                                    name="date_of_birth"
-                                  />
+        <label>
+          <input
+            type="radio"
+            name="marital_status"
+            value="Widowed"
+            checked={newPatient.marital_status === "Widowed"}
+            onChange={handleInputChange}
+          />
+          Widowed
+        </label>
+      </div>
+    </div>
 
-                                  <p className="dob-hint">E.g. 26/04/1980</p>
-                                </div>
-                              </div>
+  </div>
+</div>
+</div>
+
+                                      {/* DOB Section Box */}
+                                      <div className="section-box dob-section-box">
+                                        <span className="section-title">Date of Birth</span>
+
+                                        <div className="dob-picker-wrapper">
+                                          <DatePicker
+                                            value={newPatient.date_of_birth}
+                                            onChange={handleInputChange}
+                                            name="date_of_birth"
+                                          />
+
+                                          <p className="dob-hint">E.g. 03/15/2020</p>
+                                        </div>
+
+                                       {/* Auto-calculated Age Display */}
+{newPatient.date_of_birth && (
+  <div className="age-display-box">
+    <p className="age-label">Age</p>
+    <p className="age-value">
+      {calculateAge(newPatient.date_of_birth)} years old
+    </p>
+  </div>
+)}
+                                      </div>
 
 
 
@@ -790,16 +884,16 @@ onChange={(e) =>
           onChange={handleInputChange}
         />
       </div>
-      {newPatient.marital_status === 'Married' && (
+      {(newPatient.marital_status === 'Married' || newPatient.marital_status === 'Co-habitation') && (
         <div className="coolinput">
-          <label className="text">Spouse Name</label>
+          <label className="text">Spouse/Partner Name</label>
           <input
             type="text"
             className="input"
             name="spouse_name"
             value={newPatient.spouse_name}
             onChange={handleInputChange}
-            placeholder="Enter spouse's name"
+            placeholder="Enter spouse/partner's name"
           />
         </div>
       )}
@@ -1002,7 +1096,7 @@ onChange={(e) =>
   <button
     type="button"
     className="save-btn"
-    onClick={handleSavePatient}
+    onClick={handleSavePatientWithCamera}
     disabled={loading}
   >
     <span className="save-text">
@@ -1018,6 +1112,75 @@ onChange={(e) =>
         </section>
 
       </main>
+
+      {/* ================= DUPLICATE PATIENT WARNING MODAL ================= */}
+      {showDuplicateWarning && duplicateWarning && (
+        <div className="modal-overlay" onClick={() => setShowDuplicateWarning(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h4>⚠️ Possible Duplicate Patient</h4>
+              <button
+                type="button"
+                className="modal-close"
+                onClick={() => setShowDuplicateWarning(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <p>A patient with the same name, gender, and date of birth already exists:</p>
+              <div className="duplicate-info-box" style={{
+                backgroundColor: "#fff3cd",
+                border: "1px solid #ffc107",
+                padding: "15px",
+                borderRadius: "5px",
+                marginTop: "15px",
+                marginBottom: "15px"
+              }}>
+                <div><strong>Name:</strong> {duplicateWarning.first_name} {duplicateWarning.last_name}</div>
+                <div><strong>Patient Code:</strong> {duplicateWarning.patient_code}</div>
+              </div>
+              <p style={{ fontSize: "14px", color: "#666" }}>
+                Are you sure you want to add this patient anyway?
+              </p>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="cancel-btn"
+                onClick={() => setShowDuplicateWarning(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="save-btn"
+                onClick={handleProceedWithDuplicate}
+                disabled={loading}
+              >
+                {loading ? "Adding..." : "Add Anyway"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ================= CAMERA MODAL ================= */}
+      {showCamera && (
+        <div className="modal-overlay" onClick={handleCloseCamera}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <Camera
+              patientId={currentPatientId || newPatient.id}
+              onClose={handleCloseCamera}
+              onUpload={handleImageUpload}
+              onCapture={handleCaptureImage}
+            />
+          </div>
+        </div>
+      )}
+
       </div>
     </div>
   );

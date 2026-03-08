@@ -97,6 +97,16 @@ class QueueServer implements MessageComponentInterface
             // Each client will filter by their own logged-in doctor ID
             $this->broadcastDoctorQueue(null);
         }
+
+        // Handle encoder queue refresh triggers
+        if (
+            $data['type'] === 'refresh-encoder-queue-now' ||
+            $data['type'] === 'consultation-saved' ||
+            $data['type'] === 'encoder-queue-updated'
+        ) {
+            echo "[" . date('Y-m-d H:i:s') . "] 🔄 Live fetch trigger (encoder queue) from client\n";
+            $this->broadcastEncoderQueue();
+        }
     }
 
     private function broadcastQueueData()
@@ -163,6 +173,102 @@ class QueueServer implements MessageComponentInterface
             }
         } catch (\Exception $e) {
             echo "[ERROR] Failed to fetch/broadcast queue data: " . $e->getMessage() . "\n";
+            // Try to reconnect to database
+            $this->initDatabase();
+        }
+    }
+
+    private function broadcastEncoderQueue()
+    {
+        if (!$this->db) {
+            echo "[ERROR] Database connection not available\n";
+            return;
+        }
+
+        try {
+            // 🔄 Fetch encoder queue (patients with status='done', grouped by earliest queue_number per patient)
+            $sql = "SELECT *
+FROM (
+    SELECT 
+        dpq.id AS queue_id,
+        dpq.patient_id,
+        dpq.doctor_id,
+        dpq.queue_number,
+        dpq.queue_date,
+        dpq.status,
+        dpq.is_active,
+        dpq.created_at,
+        p.first_name,
+        p.last_name,
+        u.name AS doctor_name,
+        (SELECT COUNT(*) 
+         FROM consultations c 
+         WHERE c.patient_id = dpq.patient_id 
+           AND (
+             c.diagnosis IS NOT NULL 
+             OR c.treatment IS NOT NULL
+           )
+        ) AS has_consultation,
+        pq.created_at AS visit_date,
+
+        ROW_NUMBER() OVER (
+            PARTITION BY dpq.patient_id
+            ORDER BY dpq.queue_number ASC
+        ) AS rn
+
+    FROM doctor_patient_queue dpq
+    JOIN patients_db p ON p.id = dpq.patient_id
+    JOIN users u ON u.id = dpq.doctor_id
+    LEFT JOIN patient_queue pq ON pq.id = dpq.patient_queue_id
+
+    WHERE dpq.queue_date = CURDATE()
+      AND dpq.status = 'done'
+) t
+WHERE rn = 1
+ORDER BY queue_number ASC";
+
+            echo "[" . date('Y-m-d H:i:s') . "] 🔍 Executing encoder queue query\n";
+            $stmt = $this->db->query($sql);
+            $encoderQueue = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Add full patient name
+            foreach ($encoderQueue as &$row) {
+                $row['patient_name'] = trim($row['first_name'] . ' ' . $row['last_name']);
+            }
+
+            echo "[" . date('Y-m-d H:i:s') . "] 📊 Query result: " . count($encoderQueue) . " patients to encode\n";
+
+            // Log details of each patient
+            foreach ($encoderQueue as $idx => $patient) {
+                $encodedStatus = $patient['has_consultation'] > 0 ? 'Encoded' : 'Pending';
+                echo "[" . date('Y-m-d H:i:s') . "]   Patient {$idx}: ID={$patient['queue_id']}, Name={$patient['patient_name']}, Status={$encodedStatus}\n";
+            }
+
+            // ✅ Broadcast to all connected clients
+            if (count($this->clients) > 0) {
+                $response = [
+                    'type' => 'encoder-queue',
+                    'data' => $encoderQueue,
+                    'timestamp' => date('Y-m-d H:i:s'),
+                    'count' => count($encoderQueue)
+                ];
+
+                $sentCount = 0;
+                foreach ($this->clients as $client) {
+                    try {
+                        $client->send(json_encode($response));
+                        $sentCount++;
+                    } catch (\Exception $e) {
+                        echo "[ERROR] Failed to send to client: " . $e->getMessage() . "\n";
+                    }
+                }
+
+                echo "[" . date('Y-m-d H:i:s') . "] ✅ Live broadcast to {$sentCount} clients: " . count($encoderQueue) . " patients to encode\n";
+            } else {
+                echo "[" . date('Y-m-d H:i:s') . "] No clients connected\n";
+            }
+        } catch (\Exception $e) {
+            echo "[ERROR] Failed to fetch/broadcast encoder queue data: " . $e->getMessage() . "\n";
             // Try to reconnect to database
             $this->initDatabase();
         }

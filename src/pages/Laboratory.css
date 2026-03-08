@@ -111,18 +111,17 @@
   flex-direction: column;
   gap: 16px;
 }
-
-.right-panel {
-  display: flex;
+.right-panel1 {
+  display: flex !important;
   flex-direction: column;
   gap: 20px;
-  width: 100%;
+  flex: 2 !important;   /* 👈 takes more space */
 }
 
 .right-split-layout {
   display: grid;
-  grid-template-columns: 600px 1fr;   /* 👈 left panel wider */
-  gap: 20px;
+  grid-template-columns: 600px 1fr!important;  /* 👈 left panel wider */
+  gap: 20px!important;
 }
 .dashboard-main.full-width {
   grid-template-columns: 1fr;
@@ -147,21 +146,21 @@
    LAB REQUEST CONTAINER
 ═══════════════════════════════ */
 
-.lab-request-container {
+.lab-request-container1 {
   display: flex;
   justify-content: center;
   padding: 30px;
 }
 
-.lab-card {
-  width: 900px;
+.lab-card1 {
+  width: 900px!important;
   background: #fff;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
-.lab-header {
+.lab-header1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -170,12 +169,16 @@
   padding-bottom: 15px;
 }
 
-.lab-header h2 {
+.lab-header1 h2 {
   font-size: 22px;
   font-weight: 700;
   color: #1a202c;
   margin: 0;
 }
+/* WIDTH CONTROLLER */
+.lab-width-controller1 {
+  width: 300px;
+  margin: 0 auto;   /* ✅ centers horizontally */}
 
 /* ═══════════════════════════════
    HISTORY BOX

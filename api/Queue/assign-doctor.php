@@ -70,11 +70,11 @@ try {
     ========================= */
     $stmt = $pdo->prepare("
         INSERT INTO doctor_patient_queue
-            (patient_id, doctor_id, queue_number, queue_date, status)
+            (patient_queue_id, patient_id, doctor_id, queue_number, queue_date, status)
         VALUES
-            (?, ?, ?, CURDATE(), 'waiting')
+            (?, ?, ?, ?, CURDATE(), 'waiting')
     ");
-    $stmt->execute([$patientId, $doctorId, $nextNo]);
+    $stmt->execute([$patientQueueId, $patientId, $doctorId, $nextNo]);
     error_log("[ASSIGN-DOCTOR] ✅ Inserted into doctor_patient_queue: rows=" . $stmt->rowCount());
 
     /* =========================

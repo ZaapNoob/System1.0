@@ -31,8 +31,8 @@ export const useSaveConsultation = (onClose, doctors = []) => {
 
       // Prepare data for API
       const consultationData = {
-        queue_id: patient.id,
-        patient_id: patient.patient_id,
+        queue_id: patient.id || null,  // Optional - may be null for new consultations
+        patient_id: patient.patient_id || patient.id,  // Support both structures
         physician: formData.physician || null,  // ✅ Use selected physician from form
         referral: formData.referral || null,
         referredTo: formData.referredTo || null,
@@ -50,6 +50,9 @@ export const useSaveConsultation = (onClose, doctors = []) => {
         weight: formData.weight || null,
         height: formData.height || null,
         chiefComplaint: formData.chiefComplaint || null,
+        diagnosis: formData.diagnosis || null,
+        treatment: formData.treatment || null,
+        patientIllness: formData.patientIllness || null,
       };
 
       // ✅ Save to database
@@ -66,6 +69,9 @@ export const useSaveConsultation = (onClose, doctors = []) => {
         ...consultationData,
         created_at: new Date().toISOString(),
         complaint: formData.chiefComplaint,
+        history: formData.patientIllness,
+        diagnosis: formData.diagnosis,
+        treatment: formData.treatment,
         systolic_bp: formData.systolic,
         diastolic_bp: formData.diastolic,
         heart_rate: formData.pulse,

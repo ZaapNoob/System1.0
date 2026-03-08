@@ -31,6 +31,12 @@ try {
         }
     }
 
+    // ✅ Valid marital status values
+    $validMaritalStatuses = ['Single', 'Married', 'Separated', 'Co-habitation', 'Widowed'];
+    if (!empty($data['marital_status']) && !in_array($data['marital_status'], $validMaritalStatuses)) {
+        throw new Exception("Invalid marital status. Allowed values: " . implode(', ', $validMaritalStatuses));
+    }
+
     $pdo->beginTransaction();
 
     // Lock barangay row

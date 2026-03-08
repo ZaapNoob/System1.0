@@ -15,8 +15,8 @@ require_once("../../config/db.php");
 try {
     $data = json_decode(file_get_contents("php://input"), true);
 
-    // Validate required fields
-    $required = ['queue_id', 'patient_id'];
+    // Validate required fields - queue_id is now optional
+    $required = ['patient_id'];
     foreach ($required as $field) {
         if (!isset($data[$field])) {
             http_response_code(400);
@@ -45,8 +45,11 @@ try {
             oxygen_saturation,
             weight,
             height,
-            chief_complaint
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            chief_complaint,
+            diagnosis,
+            treatment,
+            patient_illness
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     // Map form fields to database columns
@@ -69,7 +72,10 @@ try {
         $data['oxygen'] ?? null,
         $data['weight'] ?? null,
         $data['height'] ?? null,
-        $data['chiefComplaint'] ?? null
+        $data['chiefComplaint'] ?? null,
+        $data['diagnosis'] ?? null,
+        $data['treatment'] ?? null,
+        $data['patientIllness'] ?? null
     ]);
 
     if ($result) {

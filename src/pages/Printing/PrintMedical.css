@@ -46,14 +46,14 @@
     object-fit: contain;
 }
 
-.seal-left {
-    width: 130px;
-    height: 130px;
+.seal-left1 {
+    width: 120px!important;
+    height: 120px!important;
 }
 
-.seal-right {
-    width: 120px;
-    height: 120px;
+.seal-right1 {
+    width: 120px!important;
+    height: 120px!important;
     transform: translateX(-30px)!important;  /* move left 10px */
 }
 

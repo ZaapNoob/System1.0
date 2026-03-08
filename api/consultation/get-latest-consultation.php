@@ -31,6 +31,9 @@ $sql = "SELECT
             c.purpose_visit,
             c.nature_visit,
             c.chief_complaint,
+             c.diagnosis,
+            c.treatment,
+            c.patient_illness,
             c.systolic_bp,
             c.diastolic_bp,
             c.temperature,
@@ -69,6 +72,10 @@ try {
             'purpose_visit' => $row['purpose_visit'],
             'nature_visit' => $row['nature_visit'],
             'chief_complaint' => $row['chief_complaint'],
+            'diagnosis' => $row['diagnosis'],
+            'treatment' => $row['treatment'],
+            'patient_illness' => $row['patient_illness'],
+            'created_at' => $row['created_at'],
             'bp' => $row['systolic_bp'] && $row['diastolic_bp']
                 ? $row['systolic_bp'] . '/' . $row['diastolic_bp']
                 : null,

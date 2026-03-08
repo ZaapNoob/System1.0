@@ -6,17 +6,17 @@ use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 use App\QueueServer;
 
-// Create WebSocket server
 $server = IoServer::factory(
     new HttpServer(
         new WsServer(
             new QueueServer()
         )
     ),
-    8080  // WebSocket port
+    8080,
+    '0.0.0.0'
 );
 
-echo "Queue WebSocket Server running on ws://localhost:8080\n";
-echo "Press Ctrl+C to stop.\n";
+echo "Queue WebSocket Server running on ws://0.0.0.0:8080\n";
+echo "Press Ctrl+C to stop\n";
 
 $server->run();

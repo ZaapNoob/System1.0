@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import API from "../config/api";
 import { apiFetch } from "../utils/api";
+import { checkDuplicatePatient } from "../api/patients";
 
 export default function useAddPatient() {
 
@@ -21,10 +22,17 @@ export default function useAddPatient() {
   const [error, setError] = useState("");
   const [newPurokName, setNewPurokName] = useState("");
 
+  // Duplicate Warning States
+  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+
   // =======================
   // INITIAL PATIENT STATE
   // =======================
+  // ✅ Valid marital statuses: Single, Married, Separated, Co-habitation, Widowed
   const initialPatientState = {
+    id: null,
+    patient_code: null,
     date_of_birth: "",
     first_name: "",
     middle_name: "",
@@ -84,7 +92,57 @@ export default function useAddPatient() {
       .split(" ")
       .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
       .join(" ");
+// =======================
+// LIVE DUPLICATE SCANNER
+// =======================
+useEffect(() => {
 
+  if (
+    !newPatient.first_name ||
+    !newPatient.last_name ||
+    !newPatient.date_of_birth ||
+    !newPatient.gender
+  ) return;
+
+  const timer = setTimeout(async () => {
+
+    try {
+
+      const res = await checkDuplicatePatient({
+        first_name: newPatient.first_name,
+        last_name: newPatient.last_name,
+        date_of_birth: newPatient.date_of_birth,
+        gender: newPatient.gender
+      });
+
+      if (res.duplicate) {
+
+        setError(
+          `⚠ Possible duplicate patient (Code: ${res.data.patient_code})`
+        );
+
+      } else {
+
+        setError("");
+
+      }
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
+
+  }, 600); // debounce (prevents server spam)
+
+  return () => clearTimeout(timer);
+
+}, [
+  newPatient.first_name,
+  newPatient.last_name,
+  newPatient.date_of_birth,
+  newPatient.gender
+]);
   // =======================
   // FETCH BARANGAYS
   // =======================
@@ -188,7 +246,7 @@ export default function useAddPatient() {
     }
   };
 
-  const handleSavePatient = async () => {
+  const handleSavePatient = async (bypassDuplicateCheck = false) => {
     setError("");
     setSuccessMessage("");
 
@@ -203,12 +261,29 @@ export default function useAddPatient() {
     for (const field of requiredFields) {
       if (!newPatient[field]) {
         setError(`${field.replace("_", " ")} is required`);
-        return;
+        return null; // Return null on validation error
       }
     }
 
     try {
       setLoading(true);
+
+      // Check for duplicate patient (unless bypassing)
+      if (!bypassDuplicateCheck) {
+        const duplicateRes = await checkDuplicatePatient({
+          first_name: newPatient.first_name,
+          last_name: newPatient.last_name,
+          date_of_birth: newPatient.date_of_birth,
+          gender: newPatient.gender
+        });
+
+        if (duplicateRes.duplicate) {
+          setDuplicateWarning(duplicateRes.data);
+          setShowDuplicateWarning(true);
+          setLoading(false);
+          return null;
+        }
+      }
 
       let payload = cleanPayload({
         ...newPatient,
@@ -229,6 +304,15 @@ export default function useAddPatient() {
         body: JSON.stringify(payload),
       });
 
+      // Store the created patient ID and code
+      if (res.data && res.data.id) {
+        setNewPatient(prev => ({
+          ...prev,
+          id: res.data.id,
+          patient_code: res.data.patient_code
+        }));
+      }
+
       if (isFamilyMember) {
         setNewPatient(prev => ({
           ...initialPatientState,
@@ -238,18 +322,33 @@ export default function useAddPatient() {
           facility_household_no: prev.facility_household_no,
         }));
       } else {
-        setNewPatient(initialPatientState);
+        // Keep the ID for camera upload, but reset other fields
+        setNewPatient(prev => ({
+          ...initialPatientState,
+          id: res.data?.id,
+          patient_code: res.data?.patient_code
+        }));
       }
 
       setSuccessMessage(
         `Patient created successfully! Code: ${res.data.patient_code}`
       );
       setTimeout(() => setSuccessMessage(""), 5000);
+      
+      // Return the patient ID for camera upload
+      return res.data?.id || null;
     } catch (err) {
       setError(err.message);
+      return null; // Return null on error
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleProceedWithDuplicate = async () => {
+    setShowDuplicateWarning(false);
+    setDuplicateWarning(null);
+    await handleSavePatient(true); // true = bypass duplicate check
   };
 
   // =======================
@@ -269,10 +368,14 @@ export default function useAddPatient() {
     successMessage, error,
     setSuccessMessage, setError,
 
+    showDuplicateWarning, setShowDuplicateWarning,
+    duplicateWarning,
+
     handleInputChange,
     handleCreatePurok,
     handleGenerateHouseholdClick,
     handleSavePatient,
+    handleProceedWithDuplicate,
     formatPurokInput,
     initialPatientState,
   };

@@ -213,8 +213,8 @@ const { medicalHistory, loadingHistory } =
 
         {/* RIGHT SIDE - Preview Panel */}
  {/* RIGHT SIDE - Preview Panel */}
-<div className="stats-section">
-  <div className="stats-section-header">
+<div className="preview-section">
+    <div className="stats-section-header">
     <h2>Preview</h2>
   </div>
 

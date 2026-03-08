@@ -101,3 +101,10 @@ export const getMedicalHistory = async (patientId) => {
     `${API}/medical/medical-history.php?patient_id=${patientId}`
   );
 };
+
+export const checkDuplicatePatient = async (payload) => {
+
+  const params = new URLSearchParams(payload).toString();
+
+  return apiFetch(`${API}/patients/duplicate-check.php?${params}`);
+};

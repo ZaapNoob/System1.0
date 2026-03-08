@@ -40,7 +40,9 @@ export default function PrintOPD() {
         diagnosis: data.diagnosis || "",
         treatment: data.treatment || "",
         // ✅ Load consulting doctor from multiple possible field names
-        attending_physician: data.attending_physician || data.attending_physician_name || data.doctor_name || ""
+        attending_physician: data.attending_physician || data.attending_physician_name || data.doctor_name || "",
+        license_no: data.license_no || "",
+        title: data.title || ""
       });
     }
   }, []);
@@ -106,13 +108,13 @@ export default function PrintOPD() {
   </div>
 </div>
       
-      <div className="print-page">
+      <div className="print-page1">
       <div className="opd-form">
 
         {/* ================= HEADER ================= */}
-        <div className="header">
-          <div className="header-inner">
-            <img src={LGULogo} alt="LGU" className="seal" />
+        <div className="header1">
+          <div className="header-inner1">
+            <img src={LGULogo} alt="LGU" className="seal1" />
 
             <div className="header-center">
               <div className="republic-line">MUNICIPALITY OF GUBAT</div>
@@ -123,7 +125,7 @@ export default function PrintOPD() {
               </div>
             </div>
 
-            <img src={MHOLogo} alt="MHO" className="seal" />
+            <img src={MHOLogo} alt="MHO" className="seal1" />
           </div>
         </div>
 
@@ -225,8 +227,17 @@ export default function PrintOPD() {
     <div><span className="label-inline">AGE:</span> <span className="line small">{patient?.age || "24 Yrs 0 Mths 6d"}</span></div>
     <div><span className="label-inline">SEX:</span> <span className="line small">{patient?.gender || "Female"}</span></div>
     <div><span className="label-inline">STATUS:</span> <span className="line small">{patient?.marital_status || "Single"}</span></div>
-    <div><span className="label-inline">BIRTHDATE:</span> <span className="line small">{patient?.date_of_birth || "22/02/2002"}</span></div>
- </div>
+<span className="label-inline">BIRTHDATE:</span> 
+      <span className="line small">
+        {patient?.date_of_birth 
+          ? new Date(patient.date_of_birth).toLocaleDateString("en-US", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "February 22, 2002"
+        }
+      </span> </div>
   </div>
 
   {/* RELIGION | NATIONALITY | CONTACT */}
@@ -267,11 +278,14 @@ export default function PrintOPD() {
                 {record?.attending_physician
                     ? record.attending_physician.toUpperCase()
                     : ""}
+                    
             </div>
 
             <div className="doctor-title">
                 (Consulting Doctor)
             </div>
+
+         
         </div>
 
     </div>

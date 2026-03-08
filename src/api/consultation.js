@@ -168,3 +168,33 @@ export const getEncoderQueue = async (doctor_id, queue_date = null) => {
     throw error;
   }
 };
+
+
+export const updateConsultation = async (consultationData) => {
+  try {
+
+    const response = await fetch(`${API}/consultation/update-consultation.php`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(consultationData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Failed to update consultation");
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("Error updating consultation:", error);
+    throw error;
+  }
+};
+
+
+
+

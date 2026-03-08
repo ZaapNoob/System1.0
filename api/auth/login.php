@@ -9,6 +9,12 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
+// Enable detailed error logging
+error_log("=== LOGIN REQUEST ===");
+error_log("Method: " . $_SERVER['REQUEST_METHOD']);
+error_log("Content-Type: " . ($_SERVER['CONTENT_TYPE'] ?? 'not set'));
+error_log("POST data received: " . print_r($_POST, true));
+
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
