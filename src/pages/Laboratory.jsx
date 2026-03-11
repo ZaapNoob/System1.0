@@ -22,11 +22,15 @@ export default function LabRequest({
     loading,
     error,
     savedLabRequestId,
+    editingLabRequestId,
     handleSearch,
     handleSelectPatientForm,
     handleReset,
     handleGenerateLabRequest,
     clearSavedLabRequestId,
+    handleEditLabRequest,
+    handleUpdateLabRequest,
+    handleCancelEditLab,
   } = useLabRequest();
 
   const { openLabPrintPreview } = usePrintLaboratory();
@@ -51,8 +55,11 @@ export default function LabRequest({
 
   const [selectedTests, setSelectedTests] = useState([]);
 
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   const { labHistory, loadingHistory } = useLabHistory(
-    selectedPatient?.id
+    selectedPatient?.id,
+    refreshTrigger
   );
 
   const handleCheckboxChange = (category, test) => {
@@ -112,6 +119,9 @@ export default function LabRequest({
           <label key={test} className="checkbox-item">
             <input
               type="checkbox"
+              checked={selectedTests.some(
+                (t) => t.category === category && t.test_name === test
+              )}
               onChange={() =>
                 handleCheckboxChange(category, test)
               }
@@ -189,26 +199,19 @@ export default function LabRequest({
                   </p>
                 </div>
 
-                <form onSubmit={handleSearch}>
+                <form onSubmit={(e) => e.preventDefault()}>
                   <div className="search-input-group">
                     <input
                       type="text"
                       className="search-input-new"
-                      placeholder="Search by name or ID..."
+                      placeholder="Search by name or ID... (type to search)"
                       value={searchQuery}
                       onChange={(e) =>
                         setSearchQuery(e.target.value)
                       }
+                      autoComplete="off"
                     />
-                    <button
-                      type="submit"
-                      className="search-submit-btn"
-                      disabled={loading}
-                    >
-                      {loading
-                        ? "Searching..."
-                        : "Search"}
-                    </button>
+                    {loading && <span style={{ marginLeft: '10px', color: '#666' }}>🔄 Searching...</span>}
                   </div>
                   {error && (
                     <div
@@ -335,6 +338,31 @@ export default function LabRequest({
                               >
                                 Print
                               </button>
+
+                              {/* ✏️ EDIT BUTTON */}
+                              <button
+                                type="button"
+                                className="history-print-btn"
+                                onClick={() => {
+                                  const editData = handleEditLabRequest(item);
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    id: item.id,
+                                    request_no: item.request_no,
+                                    diagnosis: editData.diagnosis,
+                                    xray_findings: editData.xray_findings,
+                                    utz_findings: editData.utz_findings,
+                                  }));
+                                  // Set selected tests from history
+                                  if (editData.tests && editData.tests.length > 0) {
+                                    setSelectedTests(editData.tests);
+                                  }
+                                }}
+                                title="Edit lab request"
+                                style={{ marginLeft: '8px' }}
+                              >
+                                ✏️
+                              </button>
                             </li>
                           ))}
                         </ul>
@@ -452,21 +480,58 @@ export default function LabRequest({
                     "Others",
                   ])}
 
-                  <button
-                    className="btn-primary-lg"
-                    onClick={() =>
-                      handleGenerateLabRequest(
-                        formData,
-                        selectedPatient,
-                        selectedTests,
-                        user,
-                        setStep
-                      )
-                    }
-                    disabled={loading}
-                  >
-                    {loading ? "Saving..." : "Save Lab Request →"}
-                  </button>
+                  {editingLabRequestId ? (
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button
+                        className="btn-primary-lg"
+                        onClick={() =>
+                          handleUpdateLabRequest(
+                            formData,
+                            selectedTests,
+                            refreshTrigger,
+                            setRefreshTrigger
+                          )
+                        }
+                        disabled={loading}
+                      >
+                        {loading ? "Updating..." : "Update Lab Request ✓"}
+                      </button>
+                      <button
+                        className="btn-outline"
+                        onClick={() => {
+                          handleCancelEditLab();
+                          setFormData({
+                            request_no: `LR-${new Date().getFullYear()}-${Math.floor(
+                              Math.random() * 9000
+                            ) + 1000}`,
+                            patient_id: "",
+                            diagnosis: "",
+                            xray_findings: "",
+                            utz_findings: "",
+                          });
+                          setSelectedTests([]);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="btn-primary-lg"
+                      onClick={() =>
+                        handleGenerateLabRequest(
+                          formData,
+                          selectedPatient,
+                          selectedTests,
+                          user,
+                          setStep
+                        )
+                      }
+                      disabled={loading}
+                    >
+                      {loading ? "Saving..." : "Save Lab Request →"}
+                    </button>
+                  )}
                 </div>
                 </div>
               </div>

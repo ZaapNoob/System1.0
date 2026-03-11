@@ -411,7 +411,16 @@ export default function Dashboard({
                                             // ✅ 1. Mark patient as active & get full patient data
                                             const patientData = await setActive(item.id);
 
-                                            // ✅ 2. Open modal with full patient data
+                                            // 📡 2. BROADCAST UPDATE TO TV & ALL DASHBOARDS
+                                            // Immediately trigger WebSocket refresh so TV display updates in real-time
+                                            wsSend({ 
+                                              type: 'doctor-assignment-updated',
+                                              doctor_id: user?.id,
+                                              message: 'Doctor marked patient as active'
+                                            });
+                                            console.log('📡 [DOCTOR-SELECT] WebSocket trigger sent - TV display will update immediately');
+
+                                            // ✅ 3. Open modal with full patient data
                                             openModal(
                                               <DoctorModal
                                                 patient={patientData}
@@ -747,18 +756,7 @@ export default function Dashboard({
 
                 {/* TV Widget */}
                 {selectedWidgets.includes("tv") && (
-                  <div className="widget-card widget-tv">
-                    <div className="widget-header">
-                      <h3>📺 TV Display Panel</h3>
-                    </div>
-
-                    <div className="widget-content">
-                      <div className="tv-widget">
-                        <div className="tv-queue-number">Q001</div>
-                        <p className="tv-subtext">Now Serving</p>
-                      </div>
-                    </div>
-                  </div>
+                  <TVDisplayWidget />
                 )}
 
 
@@ -794,6 +792,75 @@ export default function Dashboard({
           </section>
 
         </main>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * TV Display Widget Component
+ * Shows all active queues in real-time via WebSocket
+ * Displays all doctors' current patients (up to doctor capacity)
+ */
+function TVDisplayWidget() {
+  const { doctorAssignments } = useWebSocketContext();
+
+  console.log('📺 [TV-RENDER] All doctorAssignments from WebSocket:', doctorAssignments);
+
+  // Get all active queues (is_active = 1 OR status = 'serving')
+  const activeQueues = doctorAssignments
+    .filter(q => q.is_active === 1 || q.status === 'serving')
+    .sort((a, b) => {
+      // Sort by doctor_id first, then by patient_queue_id
+      if (a.doctor_id !== b.doctor_id) {
+        return a.doctor_id - b.doctor_id;
+      }
+      const aId = a.patient_queue_id || a.id;
+      const bId = b.patient_queue_id || b.id;
+      return aId - bId;
+    });
+
+  // Debug: Log active queues with ALL fields
+  console.log('📺 [TV-ACTIVE] Filtered active queues:', activeQueues.map(q => ({
+    id: q.id,
+    patient_queue_id: q.patient_queue_id,
+    queue_number: q.queue_number,
+    doctor_id: q.doctor_id,
+    doctor_name: q.doctor_name,
+    patient_name: `${q.first_name} ${q.last_name}`,
+    status: q.status,
+    is_active: q.is_active,
+    all_keys: Object.keys(q)  // Show ALL available fields
+  })));
+
+  return (
+    <div className="widget-card widget-tv">
+      <div className="widget-header">
+        <h3>📺 TV Display Panel - Now Serving</h3>
+      </div>
+
+      <div className="widget-content">
+        <div className="tv-widget-grid">
+          {activeQueues.length === 0 ? (
+            <div className="tv-no-queue">
+              <p>No Active Queues</p>
+            </div>
+          ) : (
+            activeQueues.map((queue, index) => (
+              <div key={`${queue.doctor_id}-${index}`} className="tv-queue-slot">
+                <div className="tv-doctor-label">Dr. {queue.doctor_name || `Doctor ${queue.doctor_id}`}</div>
+                <div className="tv-queue-display">
+                  <div className="tv-queue-id">
+                    {queue.patient_queue_id || queue.queue_number || queue.id || '---'}
+                  </div>
+                  <div className="tv-status-badge">
+                    {queue.status.toUpperCase()}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

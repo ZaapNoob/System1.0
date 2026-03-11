@@ -753,6 +753,17 @@ const handleAddAccountSubmit = async (e) => {
                 <label htmlFor="page-laboratory">Laboratory</label>
               </div>
 
+              {/* NEW: Reports */}
+              <div className="option-group">
+                <input 
+                  type="checkbox" 
+                  id="page-reports" 
+                  checked={selectedPages.includes('reports')}
+                  onChange={() => handlePageToggle('reports')}
+                />
+                <label htmlFor="page-reports">Reports</label>
+              </div>
+
             </div>
             
             <button className="card-select-btn" onClick={handleSavePages}>

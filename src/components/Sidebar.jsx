@@ -58,6 +58,14 @@ const Sidebar = ({ allowedPages = [], currentPage, onNavigate }) => {
             </li>
           )}
 
+          {allowedPages.includes("reports") && (
+            <li className={currentPage === "reports" ? "active" : ""}>
+              <button onClick={() => onNavigate("reports")}>
+                📊 Reports
+              </button>
+            </li>
+          )}
+
           {allowedPages.length === 0 && (
             <li className="disabled">No extra permissions</li>
           )}

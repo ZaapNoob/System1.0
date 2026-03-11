@@ -51,7 +51,7 @@ try {
                 p.date_of_birth,
                 p.blood_type,
                 p.barangay_id,
-                p.barangay_name,
+                COALESCE(p.barangay_name, ba.name) as barangay_name,
                 p.street,
                 p.city_municipality,
                 p.province,

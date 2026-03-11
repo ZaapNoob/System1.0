@@ -288,6 +288,7 @@ ORDER BY queue_number ASC";
                     dpq.id,
                     dpq.patient_id,
                     dpq.doctor_id,
+                    dpq.patient_queue_id,
                     dpq.queue_number,
                     dpq.queue_date,
                     dpq.status,
@@ -316,9 +317,9 @@ ORDER BY queue_number ASC";
 
             echo "[" . date('Y-m-d H:i:s') . "] 📊 Query result: " . count($doctorQueue) . " doctor assignments\n";
 
-            // Log details of each assignment
+            // Log details of each assignment - INCLUDING patient_queue_id
             foreach ($doctorQueue as $idx => $assignment) {
-                echo "[" . date('Y-m-d H:i:s') . "]   Assignment {$idx}: ID={$assignment['id']}, DoctorID={$assignment['doctor_id']}, Patient={$assignment['first_name']} {$assignment['last_name']}, Status={$assignment['status']}\n";
+                echo "[" . date('Y-m-d H:i:s') . "]   Assignment {$idx}: ID={$assignment['id']}, PatientQueueID={$assignment['patient_queue_id']}, DoctorID={$assignment['doctor_id']}, Patient={$assignment['first_name']} {$assignment['last_name']}, Status={$assignment['status']}, IsActive={$assignment['is_active']}\n";
             }
 
             // ✅ Broadcast to all connected clients

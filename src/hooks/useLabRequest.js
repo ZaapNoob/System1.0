@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { searchPatientsForLab, saveLabRequest } from "../api/laboratory";
+import { useState, useEffect } from "react";
+import { searchPatientsForLab, saveLabRequest, updateLabRequest } from "../api/laboratory";
 
 /**
  * Custom hook for managing lab request form
@@ -13,19 +13,36 @@ export default function useLabRequest() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [savedLabRequestId, setSavedLabRequestId] = useState(null);
+  const [editingLabRequestId, setEditingLabRequestId] = useState(null);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) {
-      setError("Please enter a search query");
-      return;
-    }
+  // -----------------------
+  // LIVE SEARCH WITH DEBOUNCING
+  // -----------------------
+  useEffect(() => {
+    // Debounce timer
+    const debounceTimer = setTimeout(() => {
+      if (!searchQuery.trim()) {
+        setSearchResults([]);
+        setError("");
+        return;
+      }
 
+      // Perform the search
+      performSearch(searchQuery);
+    }, 300); // 300ms delay before fetching
+
+    return () => clearTimeout(debounceTimer); // Cleanup timer on unmount or query change
+  }, [searchQuery]);
+
+  // -----------------------
+  // PERFORM SEARCH
+  // -----------------------
+  const performSearch = async (query) => {
     setLoading(true);
     setError("");
 
     try {
-      const results = await searchPatientsForLab(searchQuery);
+      const results = await searchPatientsForLab(query);
       setSearchResults(results || []);
       if (results.length === 0) {
         setError("No patients found");
@@ -36,6 +53,20 @@ export default function useLabRequest() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // -----------------------
+  // HANDLE SEARCH (Optional - keep for form submit)
+  // -----------------------
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      setError("Please enter a search query");
+      return;
+    }
+
+    // Just perform the search directly (debouncing is already done via useEffect)
+    await performSearch(searchQuery);
   };
 
   const handleSelectPatientForm = (patient, setFormData) => {
@@ -107,6 +138,68 @@ export default function useLabRequest() {
     }
   };
 
+  // -----------------------
+  // EDIT LAB REQUEST
+  // -----------------------
+  const handleEditLabRequest = (historyItem) => {
+    setEditingLabRequestId(historyItem.id);
+    // Return history item data to pre-fill form
+    return {
+      diagnosis: historyItem.diagnosis,
+      xray_findings: historyItem.xray_findings,
+      utz_findings: historyItem.utz_findings,
+      tests: historyItem.tests || []
+    };
+  };
+
+  // -----------------------
+  // UPDATE LAB REQUEST
+  // -----------------------
+  const handleUpdateLabRequest = async (
+    formData,
+    selectedTests,
+    refreshTrigger,
+    setRefreshTrigger
+  ) => {
+    try {
+      // Validate form data
+      if (!formData.diagnosis.trim()) {
+        setError("Please enter a diagnosis");
+        return;
+      }
+
+      if (selectedTests.length === 0) {
+        setError("Please select at least one test");
+        return;
+      }
+
+      setLoading(true);
+      setError("");
+
+      // Call API to update lab request
+      const result = await updateLabRequest(formData, selectedTests);
+
+      if (result) {
+        alert("Lab request updated successfully!");
+        setEditingLabRequestId(null);
+        // Trigger refresh of history
+        setRefreshTrigger(refreshTrigger + 1);
+      }
+    } catch (err) {
+      setError(err.message || "Failed to update lab request");
+      console.error("Error updating lab request:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // -----------------------
+  // CANCEL EDIT
+  // -----------------------
+  const handleCancelEditLab = () => {
+    setEditingLabRequestId(null);
+  };
+
   return {
     step,
     setStep,
@@ -117,10 +210,14 @@ export default function useLabRequest() {
     loading,
     error,
     savedLabRequestId,
+    editingLabRequestId,
     handleSearch,
     handleSelectPatientForm,
     handleReset,
     handleGenerateLabRequest,
     clearSavedLabRequestId,
+    handleEditLabRequest,
+    handleUpdateLabRequest,
+    handleCancelEditLab,
   };
 }

@@ -143,3 +143,51 @@ export const saveLabRequest = async (requestData, selectedTests, doctorId) => {
     throw error;
   }
 };
+
+/**
+ * Update laboratory request
+ * @param {Object} requestData - Lab request data including id, diagnosis, xray_findings, utz_findings
+ * @param {Array} selectedTests - Selected tests array with category, test_name, other_value
+ * @returns {Promise} Updated request data
+ */
+export const updateLabRequest = async (requestData, selectedTests) => {
+  try {
+    const payload = {
+      id: requestData.id,
+      diagnosis: requestData.diagnosis,
+      xray_findings: requestData.xray_findings || null,
+      utz_findings: requestData.utz_findings || null,
+      tests: selectedTests
+    };
+
+    const response = await fetch(
+      `${API}/laboratory/update-certificate-laboratory.php`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const text = await response.text();
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseError) {
+      console.error("Failed to parse response as JSON:", text);
+      throw new Error(`Invalid JSON response`);
+    }
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || `Failed to update lab request`);
+    }
+
+    return data.data;
+  } catch (error) {
+    console.error("Error updating lab request:", error);
+    throw error;
+  }
+};

@@ -1,12 +1,12 @@
 /**
  * Hook for formatting patient addresses
- * Handles both Gubat residents (using purok + barangay) and outside patients (using street, city, province, region)
+ * Uses is_special to determine if patient is local (barangay) or outside Gubat
  */
 export const useFormatAddress = () => {
   const formatAddress = (patientData) => {
     if (!patientData) return "";
     
-    // If patient is from outside Gubat (is_special = 1 or is_special = true)
+    // If patient is from outside Gubat (is_special = 1)
     if (patientData.is_special === 1 || patientData.is_special === true) {
       // Format: street, city_municipality, province, region
       const addressParts = [
@@ -17,12 +17,14 @@ export const useFormatAddress = () => {
       ].filter(Boolean);
       return addressParts.join(", ");
     } else {
-      // If patient is from Gubat - use purok (if available) + barangay
+      // Local barangay patient - use purok + barangay + city (from patient's data or default Gubat)
       const purokPart = patientData.purok_name ? `${patientData.purok_name}, ` : "";
-      const barangayName = patientData.barangay_name || "Gubat";
-      // Only add ", Gubat" if barangay_name is not already "Gubat"
-      const cityPart = barangayName.toLowerCase() === "gubat" ? "" : ", Gubat";
-      return `${purokPart}${barangayName}${cityPart}, Sorsogon, Sorsogon`;
+      const barangayName = patientData.barangay_name || "";
+      const city = patientData.city_municipality || "Gubat";
+      const province = patientData.province || "Sorsogon";
+      const region = patientData.region || "Sorsogon";
+      
+      return `${purokPart}${barangayName}, ${city}, ${province}, ${region}`;
     }
   };
 

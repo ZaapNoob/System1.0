@@ -19,6 +19,10 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
     handleSubmit,
     handleReset,
     handleGenerateCertificate,
+    editingCertificateId,
+    handleEditCertificate,
+    handleUpdateCertificate,
+    handleCancelEdit,
   } = useMedicalCertificate();
 
   const [formData, setFormData] = useState({
@@ -30,8 +34,10 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
     remarks: '',
   });
 
-const { medicalHistory, loadingHistory } =
-  useMedicalHistory(selectedPatient?.id);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const { medicalHistory, loadingHistory } =
+    useMedicalHistory(selectedPatient?.id, refreshTrigger);
 
 
 
@@ -75,18 +81,17 @@ const { medicalHistory, loadingHistory } =
                   <p>Enter a patient name or ID to begin generating a medical certificate.</p>
                 </div>
 
-                <form onSubmit={handleSearch}>
+                <form onSubmit={(e) => e.preventDefault()}>
                   <div className="search-input-group">
                     <input
                       type="text"
                       className="search-input-new"
-                      placeholder="Search by name or ID..."
+                      placeholder="Search by name or ID... (type to search)"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
+                      autoComplete="off"
                     />
-                    <button type="submit" className="search-submit-btn" disabled={loading}>
-                      {loading ? 'Searching...' : 'Search'}
-                    </button>
+                    {loading && <span style={{ marginLeft: '10px', color: '#666' }}>🔄 Searching...</span>}
                   </div>
                   {error && <div style={{ color: 'red', marginTop: '6px' }}>{error}</div>}
                 </form>
@@ -196,19 +201,50 @@ const { medicalHistory, loadingHistory } =
             </div>
           </div>
 
-          <button
-            className="btn-primary-lg"
-            onClick={() =>
-              handleGenerateCertificate(
-                formData,
-                selectedPatient,
-                user,
-                setStep
-              )
-            }
-          >
-            Generate Certificate →
-          </button>
+          {editingCertificateId ? (
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                className="btn-primary-lg"
+                onClick={() =>
+                  handleUpdateCertificate(
+                    formData,
+                    refreshTrigger,
+                    setRefreshTrigger
+                  )
+                }
+              >
+                Update Certificate ✓
+              </button>
+              <button
+                className="btn-outline"
+                onClick={() => {
+                  handleCancelEdit();
+                  setFormData({
+                    certificate_no: `MC-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`,
+                    patient_id: '',
+                    impression: '',
+                    remarks: '',
+                  });
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              className="btn-primary-lg"
+              onClick={() =>
+                handleGenerateCertificate(
+                  formData,
+                  selectedPatient,
+                  user,
+                  setStep
+                )
+              }
+            >
+              Generate Certificate →
+            </button>
+          )}
         </div>
 
         {/* RIGHT SIDE - Preview Panel */}
@@ -270,6 +306,25 @@ const { medicalHistory, loadingHistory } =
             title="Print certificate"
           >
             🖨️
+          </button>
+
+          {/* ✏️ EDIT BUTTON */}
+          <button
+            type="button"
+            className="history-print-btn"
+            onClick={() => {
+              const editData = handleEditCertificate(item);
+              setFormData(prev => ({
+                ...prev,
+                certificate_no: editData.certificate_no,
+                impression: editData.impression,
+                remarks: editData.remarks,
+              }));
+            }}
+            title="Edit certificate"
+            style={{ marginLeft: '8px' }}
+          >
+            ✏️
           </button>
 
         </div>

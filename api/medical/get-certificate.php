@@ -49,7 +49,7 @@ try {
                 p.last_name,
                 p.date_of_birth,
                 p.gender,
-                p.barangay_name,
+                COALESCE(p.barangay_name, ba.name) as barangay_name,
                 p.street,
                 p.city_municipality,
                 p.province,

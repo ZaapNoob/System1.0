@@ -102,6 +102,16 @@ export const getMedicalHistory = async (patientId) => {
   );
 };
 
+export const updateMedicalCertificate = async (certificateData) => {
+  return apiFetch(`${API}/medical/update-certificate.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(certificateData),
+  });
+};
+
 export const checkDuplicatePatient = async (payload) => {
 
   const params = new URLSearchParams(payload).toString();

@@ -33,49 +33,49 @@ CREATE TABLE IF NOT EXISTS `barangays` (
 -- Dumping data for table react1.0.barangays: ~43 rows (approximately)
 DELETE FROM `barangays`;
 INSERT INTO `barangays` (`id`, `name`, `last_patient_seq`, `is_special`, `facility_household_seq`) VALUES
-	(1, 'Ariman', 28, 0, 18),
-	(2, 'Bagacay', 9, 0, 19),
-	(3, 'Balud Del Norte (Poblacion)', 5, 0, 19),
-	(4, 'Balud Del Sur (Poblacion)', 14, 0, 20),
-	(5, 'Benguet', 1, 0, 3),
-	(6, 'Bentuco', 7, 0, 12),
-	(7, 'Beriran', 2, 0, 5),
-	(8, 'Buenavista', 0, 0, 0),
-	(9, 'Bulacao', 1, 0, 3),
-	(10, 'Cabigaan', 5, 0, 2),
-	(11, 'Cabiguhan', 4, 0, 8),
-	(12, 'Carriedo', 2, 0, 6),
-	(13, 'Casili', 11, 0, 7),
-	(14, 'Cogon', 4, 0, 5),
-	(15, 'Cota Na Daco (Poblacion)', 5, 0, 6),
-	(16, 'Dita', 3, 0, 3),
-	(17, 'Jupi', 3, 0, 3),
-	(18, 'Lapinig', 3, 0, 4),
-	(19, 'Luna-Candol (Poblacion)', 10, 0, 12),
-	(20, 'Manapao', 2, 0, 4),
-	(21, 'Manook (Poblacion)', 0, 0, 0),
+	(1, 'Ariman', 0, 0, 0),
+	(2, 'Bagacay', 0, 0, 0),
+	(3, 'Balud Del Norte (Poblacion)', 1, 0, 1),
+	(4, 'Balud Del Sur (Poblacion)', 0, 0, 0),
+	(5, 'Benguet', 0, 0, 0),
+	(6, 'Bentuco', 0, 0, 0),
+	(7, 'Beriran', 0, 0, 0),
+	(8, 'Buenavista', 1, 0, 1),
+	(9, 'Bulacao', 0, 0, 0),
+	(10, 'Cabigaan', 0, 0, 0),
+	(11, 'Cabiguhan', 0, 0, 0),
+	(12, 'Carriedo', 0, 0, 0),
+	(13, 'Casili', 0, 0, 0),
+	(14, 'Cogon', 1, 0, 1),
+	(15, 'Cota Na Daco (Poblacion)', 1, 0, 1),
+	(16, 'Dita', 0, 0, 0),
+	(17, 'Jupi', 0, 0, 0),
+	(18, 'Lapinig', 0, 0, 0),
+	(19, 'Luna-Candol (Poblacion)', 0, 0, 0),
+	(20, 'Manapao', 0, 0, 0),
+	(21, 'Manook (Poblacion)', 4, 0, 4),
 	(22, 'Naagtan', 0, 0, 0),
 	(23, 'Nato', 0, 0, 0),
-	(24, 'Nazareno', 0, 0, 0),
+	(24, 'Nazareno', 1, 0, 1),
 	(25, 'Ogao', 0, 0, 0),
-	(26, 'Paco', 0, 0, 0),
-	(27, 'Panganiban (Poblacion)', 0, 0, 0),
+	(26, 'Paco', 1, 0, 1),
+	(27, 'Panganiban (Poblacion)', 1, 0, 1),
 	(28, 'Paradijon (Poblacion)', 0, 0, 0),
 	(29, 'Patag', 0, 0, 0),
-	(30, 'Payawin', 0, 0, 3),
+	(30, 'Payawin', 0, 0, 0),
 	(31, 'Pinontingan (Poblacion)', 0, 0, 0),
 	(32, 'Rizal', 0, 0, 0),
-	(33, 'San Ignacio', 0, 0, 0),
+	(33, 'San Ignacio', 2, 0, 2),
 	(34, 'Sangat', 0, 0, 0),
 	(35, 'Santa Ana', 0, 0, 0),
 	(36, 'Tabi', 0, 0, 0),
-	(37, 'Tagaytay', 2, 0, 7),
+	(37, 'Tagaytay', 0, 0, 0),
 	(38, 'Tigkiw', 0, 0, 0),
 	(39, 'Tiris', 0, 0, 0),
 	(40, 'Togawe', 0, 0, 0),
-	(41, 'Union', 0, 0, 1),
-	(42, 'Villareal', 1, 0, 1),
-	(43, 'Outside Gubat', 17, 1, 16);
+	(41, 'Union', 0, 0, 0),
+	(42, 'Villareal', 0, 0, 0),
+	(43, 'Outside Gubat', 0, 1, 0);
 
 -- Dumping structure for event react1.0.cancel_daily_queues
 DELIMITER //
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `consultations` (
   CONSTRAINT `fk_consult_queue` FOREIGN KEY (`queue_id`) REFERENCES `patient_queue` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table react1.0.consultations: ~11 rows (approximately)
+-- Dumping data for table react1.0.consultations: ~0 rows (approximately)
 DELETE FROM `consultations`;
 
 -- Dumping structure for table react1.0.doctor_patient_queue
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `doctor_patient_queue` (
   CONSTRAINT `fk_dpq_patient_queue` FOREIGN KEY (`patient_queue_id`) REFERENCES `patient_queue` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.doctor_patient_queue: ~8 rows (approximately)
+-- Dumping data for table react1.0.doctor_patient_queue: ~0 rows (approximately)
 DELETE FROM `doctor_patient_queue`;
 
 -- Dumping structure for table react1.0.household_sequence
@@ -162,6 +162,8 @@ CREATE TABLE IF NOT EXISTS `household_sequence` (
 
 -- Dumping data for table react1.0.household_sequence: ~0 rows (approximately)
 DELETE FROM `household_sequence`;
+INSERT INTO `household_sequence` (`year`, `seq`) VALUES
+	(2026, 13);
 
 -- Dumping structure for table react1.0.lab_requests
 CREATE TABLE IF NOT EXISTS `lab_requests` (
@@ -216,7 +218,7 @@ CREATE TABLE IF NOT EXISTS `medical_certificates` (
   CONSTRAINT `medical_certificates_ibfk_3` FOREIGN KEY (`doctor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.medical_certificates: ~20 rows (approximately)
+-- Dumping data for table react1.0.medical_certificates: ~0 rows (approximately)
 DELETE FROM `medical_certificates`;
 
 -- Dumping structure for table react1.0.panels
@@ -226,7 +228,7 @@ CREATE TABLE IF NOT EXISTS `panels` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table react1.0.panels: ~4 rows (approximately)
 DELETE FROM `panels`;
@@ -234,7 +236,8 @@ INSERT INTO `panels` (`id`, `code`, `name`) VALUES
 	(1, 'patient', 'Patient'),
 	(2, 'queuegen', 'Queue Generator'),
 	(3, 'medical', 'Medical'),
-	(4, 'laboratory', 'Laboratory');
+	(4, 'laboratory', 'Laboratory'),
+	(5, 'reports', 'Reports');
 
 -- Dumping structure for table react1.0.patients_db
 CREATE TABLE IF NOT EXISTS `patients_db` (
@@ -284,10 +287,24 @@ CREATE TABLE IF NOT EXISTS `patients_db` (
   KEY `fk_purok_id` (`purok_id`),
   CONSTRAINT `fk_patient_barangay` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_patient_purok` FOREIGN KEY (`purok_id`) REFERENCES `puroks` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table react1.0.patients_db: ~0 rows (approximately)
+-- Dumping data for table react1.0.patients_db: ~12 rows (approximately)
 DELETE FROM `patients_db`;
+INSERT INTO `patients_db` (`id`, `barangay_id`, `purok_id`, `patient_code`, `first_name`, `middle_name`, `last_name`, `suffix`, `date_of_birth`, `birthplace`, `age`, `gender`, `marital_status`, `blood_type`, `mother_name`, `spouse_name`, `contact_number`, `household_no`, `facility_household_no`, `education_level`, `employment_status`, `family_member_type`, `dswd_nhts`, `member_4ps`, `pcb_member`, `philhealth_member`, `philhealth_status_type`, `philhealth_no`, `philhealth_category`, `profile_image`, `status`, `created_at`, `last_household_move_at`, `region`, `province`, `city_municipality`, `barangay_name`, `street`) VALUES
+	(1, 21, NULL, 'manook_(poblacion)_001', 'John Rafael', NULL, 'Escanilla', NULL, '2002-10-25', NULL, 23, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00001', 'RHU-M(-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 03:44:48', '2026-03-09 11:45:08', NULL, NULL, NULL, NULL, NULL),
+	(2, 24, NULL, 'nazareno_001', 'ZENAIDA', 'HABITAN', 'ENCINARES', NULL, '1945-06-27', NULL, 80, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00002', 'RHU-N-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:20:11', NULL, NULL, NULL, NULL, NULL, NULL),
+	(3, 27, NULL, 'panganiban_(poblacion)_001', 'YVONNE', 'ROCHA', 'MACARAEG', '', '1956-10-26', '', 69, 'Female', 'Widowed', '', '', '', '', '2026-00003', 'RHU-P(-00001', 'Unknown', 'Others', NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:24:39', NULL, NULL, NULL, NULL, NULL, NULL),
+	(4, 3, NULL, 'balud_del_norte_(poblacion)_001', 'Luz', 'Flestado', 'Divina', NULL, '1968-03-01', NULL, 58, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00004', 'RHU-BD-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:31:28', NULL, NULL, NULL, NULL, NULL, NULL),
+	(5, 15, NULL, 'cota_na_daco_(poblacion)_001', 'RUTH', 'SALVAN', 'HASOPARDO', NULL, '1963-08-01', NULL, 62, 'Female', 'Co-habitation', NULL, NULL, NULL, NULL, '2026-00005', 'RHU-CN-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:33:11', NULL, NULL, NULL, NULL, NULL, NULL),
+	(6, 8, NULL, 'buenavista_001', 'ISIDRO', 'ESPENIDA', 'FERERRAS', NULL, '1954-08-06', NULL, 71, 'Male', 'Married', NULL, NULL, NULL, NULL, '2026-00006', 'RHU-B-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:38:02', NULL, NULL, NULL, NULL, NULL, NULL),
+	(7, 14, NULL, 'cogon_001', 'ZAFRIAH MADISSON', 'ENANO', 'FEOLINO', NULL, '2025-09-20', NULL, 0, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00007', 'RHU-C-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:40:45', NULL, NULL, NULL, NULL, NULL, NULL),
+	(8, 33, NULL, 'san_ignacio_001', 'DIOGENES', 'ESTREBILLO', 'DOGILLO', NULL, '1947-03-20', NULL, 78, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00008', 'RHU-SI-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:44:30', NULL, NULL, NULL, NULL, NULL, NULL),
+	(9, 21, NULL, 'manook_(poblacion)_002', 'CYNTHIA', 'AGUSTIN', 'MARCIAL', NULL, '1952-08-20', NULL, 73, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00009', 'RHU-M(-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 06:19:53', NULL, NULL, NULL, NULL, NULL, NULL),
+	(10, 26, NULL, 'paco_001', 'ANNIANA', 'ESPENILE', 'BRONOLA', NULL, '2026-01-20', NULL, 0, 'Female', NULL, NULL, NULL, NULL, NULL, '2026-00010', 'RHU-P-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 06:20:55', NULL, NULL, NULL, NULL, NULL, NULL),
+	(11, 33, NULL, 'san_ignacio_002', 'ELENA', 'BALALA', 'ESTAYANE', NULL, '1961-05-20', NULL, 64, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00011', 'RHU-SI-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 06:26:44', NULL, NULL, NULL, NULL, NULL, NULL),
+	(12, 21, 1, 'manook_(poblacion)_003', 'JAMES ALDRIN', 'ESCANILLA', 'TIN', NULL, '2010-03-28', NULL, 15, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00012', 'RHU-M(-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 07:03:32', NULL, NULL, NULL, NULL, NULL, NULL),
+	(13, 21, 1, 'manook_(poblacion)_004', 'DAISY', 'ENCONADO', 'ESCANILLA', NULL, '1988-02-28', NULL, 38, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00013', 'RHU-M(-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 07:08:59', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- Dumping structure for table react1.0.patient_household_history
 CREATE TABLE IF NOT EXISTS `patient_household_history` (
@@ -305,10 +322,12 @@ CREATE TABLE IF NOT EXISTS `patient_household_history` (
   PRIMARY KEY (`id`),
   KEY `fk_phh_patient` (`patient_id`),
   CONSTRAINT `fk_phh_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table react1.0.patient_household_history: ~0 rows (approximately)
 DELETE FROM `patient_household_history`;
+INSERT INTO `patient_household_history` (`id`, `patient_id`, `old_barangay_id`, `old_household_no`, `old_facility_household_no`, `new_barangay_id`, `new_household_no`, `new_facility_household_no`, `move_reason`, `moved_at`, `moved_by`) VALUES
+	(1, 1, 21, NULL, NULL, 21, '2026-00001', 'RHU-M(-00001', 'Patient transfer', '2026-03-09 03:45:08', 1);
 
 -- Dumping structure for table react1.0.patient_queue
 CREATE TABLE IF NOT EXISTS `patient_queue` (
@@ -347,10 +366,15 @@ CREATE TABLE IF NOT EXISTS `puroks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_purok` (`barangay_id`,`purok_name`),
   CONSTRAINT `fk_purok_barangay` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table react1.0.puroks: ~15 rows (approximately)
+-- Dumping data for table react1.0.puroks: ~4 rows (approximately)
 DELETE FROM `puroks`;
+INSERT INTO `puroks` (`id`, `barangay_id`, `purok_name`) VALUES
+	(3, 8, 'Purok 1b'),
+	(4, 14, 'Avocado'),
+	(2, 15, 'Purok 1-d Gumang'),
+	(1, 21, 'Purok 4');
 
 -- Dumping structure for table react1.0.roles
 CREATE TABLE IF NOT EXISTS `roles` (
@@ -361,7 +385,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table react1.0.roles: ~11 rows (approximately)
 DELETE FROM `roles`;
@@ -376,7 +400,8 @@ INSERT INTO `roles` (`id`, `code`, `name`, `description`, `created_at`) VALUES
 	(12, 'cashier', 'Cashier', NULL, '2026-01-24 09:07:18'),
 	(13, 'pet', 'Pet', NULL, '2026-01-25 06:50:35'),
 	(14, 'seller', 'Seller', NULL, '2026-01-25 07:34:46'),
-	(17, 'encoder', 'Encoder', NULL, '2026-03-05 01:03:02');
+	(17, 'encoder', 'Encoder', NULL, '2026-03-05 01:03:02'),
+	(18, 'tv', 'TV', NULL, '2026-03-09 02:25:02');
 
 -- Dumping structure for table react1.0.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -394,13 +419,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email` (`email`),
   KEY `fk_user_role` (`role`),
   CONSTRAINT `fk_user_role` FOREIGN KEY (`role`) REFERENCES `roles` (`code`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.users: ~13 rows (approximately)
+-- Dumping data for table react1.0.users: ~11 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `uuid`, `name`, `email`, `password_hash`, `role`, `status`, `created_at`, `updated_at`) VALUES
 	(5, '550e8400-e29b-41d4-a716-446655440000', 'John Doe', 'john@example.com', '$2y$10$mkFxgzkE8AYnTVgtOQPnMuctPun99qHtq6WGMAmbZx0q3sOm0UV2i', 'user', 'active', '2026-01-08 13:29:09', '2026-01-08 14:53:48'),
-	(12, '9109a251-f911-11f0-a427-34e6d71ed611', 'Ronald Fererras', 'ronald@gmail.com', '$2y$10$hfT.hDCVr0BiFpqbZRPArOoNsmKWburBKASZ8byv0YoJoTCo88riG', 'doctor', 'active', '2026-01-24 10:43:49', '2026-01-24 10:43:49'),
+	(12, '9109a251-f911-11f0-a427-34e6d71ed611', 'Ronald E. Fererras', 'ronald@gmail.com', '$2y$10$hfT.hDCVr0BiFpqbZRPArOoNsmKWburBKASZ8byv0YoJoTCo88riG', 'doctor', 'active', '2026-01-24 10:43:49', '2026-03-09 03:25:23'),
 	(13, '3806a1ac-f912-11f0-a427-34e6d71ed611', 'Rona', 'rona@gmail.com', '$2y$10$BvSZoQYUzjVCz2pGi6A/TeFzIH6a9y3dfH0.lVCnRm8r2E/HsOoXa', 'triage', 'active', '2026-01-24 10:48:29', '2026-01-24 10:48:29'),
 	(14, 'bc13750e-f912-11f0-a427-34e6d71ed611', 'Nurses', 'nurse@gmail.com', '$2y$10$AmAbXIO1htpyPfSNNUY7Yu/YhdivaTXGnL1fi/i03uO.XQe069/ka', 'nurse', 'active', '2026-01-24 10:52:10', '2026-01-24 10:52:10'),
 	(15, '3e4b337c-f913-11f0-a427-34e6d71ed611', 'cashier', 'cashier@gmail.com', '$2y$10$miMxELICWHAH/S7ysZTzFe9do4C4BEqhGxmTWY32HB8b.U2SPu9.a', 'cashier', 'active', '2026-01-24 10:55:49', '2026-01-24 10:55:49'),
@@ -408,10 +433,11 @@ INSERT INTO `users` (`id`, `uuid`, `name`, `email`, `password_hash`, `role`, `st
 	(17, '5d75e27d-f9c0-11f0-a612-34e6d71ed611', 'Seller', 'seller@gmail.com', '$2y$10$7UxBawEgcPd.SKj2xRPwlOxr65OkU7ThuzGIVRiQzRsn9B..dl0xu', 'seller', 'active', '2026-01-25 07:35:04', '2026-01-25 07:35:04'),
 	(18, 'be4d2b2b-f9c0-11f0-a612-34e6d71ed611', 'Rafael', 'rafael@gmail.com', '$2y$10$Yb.9G0N1REL27ANen9lWc.FzFjCtnrf6aFTaGSX96NGJJ7CYHQpxG', 'user', 'active', '2026-01-25 07:37:47', '2026-01-25 07:37:47'),
 	(19, '0a67ad70-fb3f-11f0-92de-34e6d71ed611', 'Ian', 'ian@gmail.com', '$2y$10$rBx8JoTHUwUjZCaWfYKJz.Txgm9Z5jXA6ochFP6tD48qXRXE/aiU.', 'admin', 'active', '2026-01-27 05:14:22', '2026-01-27 05:14:22'),
-	(20, '07266b90-022f-11f1-89a5-34e6d71ed611', 'Mari-Ann Kristine', 'Mari-Ann@gmail.com', '$2y$10$osxlehTAqNnrY8zhB0wjzuXwVWexZSo9gyUSkWHH.1tjr6lO5hVFO', 'doctor', 'active', '2026-02-05 01:07:23', '2026-02-05 01:07:23'),
+	(20, '07266b90-022f-11f1-89a5-34e6d71ed611', 'Mari-Ann Kristine P. Ecleo', 'Mari-Ann@gmail.com', '$2y$10$osxlehTAqNnrY8zhB0wjzuXwVWexZSo9gyUSkWHH.1tjr6lO5hVFO', 'doctor', 'active', '2026-02-05 01:07:23', '2026-03-09 03:26:30'),
 	(23, '19a8551f-182f-11f1-b669-34e6d71ed611', 'encoder', 'encoder@gmail.com', '$2y$10$vTuIy6ilsmDqszx0AZnou.DEpZ8c24V0TgsKQu6JdHzqqoGkQU.uG', 'encoder', 'active', '2026-03-05 01:03:19', '2026-03-05 01:03:19'),
 	(24, 'bb6b7f26-1af6-11f1-b875-34e6d71ed611', 'Johan Joseph E. Gamil', 'gamil@gmail.com', '$2y$10$6LAN6Lqtm6p82JBiBXiaoOPmUFSw8pw6XtEbFDiQIC8CFW4svvWI2', 'doctor', 'active', '2026-03-08 13:57:23', '2026-03-08 13:57:23'),
-	(25, '501a65a4-1af7-11f1-b875-34e6d71ed611', 'Gian Carlo E. Escobedo', 'escobedo@gmail.com', '$2y$10$A9aWwBzyOxc9ZN20eUM63ObjL/dUz8arlTNk6fTTVeawhemrpxZXe', 'doctor', 'active', '2026-03-08 14:01:32', '2026-03-08 14:01:32');
+	(25, '501a65a4-1af7-11f1-b875-34e6d71ed611', 'Gian Carlo E. Escobedo', 'escobedo@gmail.com', '$2y$10$A9aWwBzyOxc9ZN20eUM63ObjL/dUz8arlTNk6fTTVeawhemrpxZXe', 'doctor', 'active', '2026-03-08 14:01:32', '2026-03-08 14:01:32'),
+	(26, '3b2ca3f5-1b5f-11f1-bb49-34e6d71ed611', 'TV', 'TV@gmail.com', '$2y$10$Q5GsW4ddGH8ftEcZEwOnreRouTejiYZOhLoP3xdJZeJRyDHQSW.4y', 'tv', 'active', '2026-03-09 02:25:25', '2026-03-09 02:25:25');
 
 -- Dumping structure for table react1.0.user_panel_access
 CREATE TABLE IF NOT EXISTS `user_panel_access` (
@@ -423,7 +449,7 @@ CREATE TABLE IF NOT EXISTS `user_panel_access` (
   CONSTRAINT `user_panel_access_ibfk_2` FOREIGN KEY (`panel_id`) REFERENCES `panels` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.user_panel_access: ~15 rows (approximately)
+-- Dumping data for table react1.0.user_panel_access: ~16 rows (approximately)
 DELETE FROM `user_panel_access`;
 INSERT INTO `user_panel_access` (`user_id`, `panel_id`) VALUES
 	(13, 1),
@@ -440,7 +466,8 @@ INSERT INTO `user_panel_access` (`user_id`, `panel_id`) VALUES
 	(12, 4),
 	(20, 4),
 	(24, 4),
-	(25, 4);
+	(25, 4),
+	(13, 5);
 
 -- Dumping structure for table react1.0.user_profiles
 CREATE TABLE IF NOT EXISTS `user_profiles` (
@@ -454,7 +481,7 @@ CREATE TABLE IF NOT EXISTS `user_profiles` (
   CONSTRAINT `user_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.user_profiles: ~3 rows (approximately)
+-- Dumping data for table react1.0.user_profiles: ~2 rows (approximately)
 DELETE FROM `user_profiles`;
 INSERT INTO `user_profiles` (`user_id`, `avatar`, `phone`, `address`, `license_no`, `title`) VALUES
 	(12, NULL, '', '', '0120227', 'RM, RN, MD, MPM-HSD, CPC-FP '),
@@ -472,9 +499,9 @@ CREATE TABLE IF NOT EXISTS `user_sessions` (
   UNIQUE KEY `token` (`token`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=364 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=394 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.user_sessions: ~138 rows (approximately)
+-- Dumping data for table react1.0.user_sessions: ~185 rows (approximately)
 DELETE FROM `user_sessions`;
 INSERT INTO `user_sessions` (`id`, `user_id`, `token`, `expires_at`, `created_at`) VALUES
 	(8, 5, 'e9abfddabad8a781cd4481951247055f298a8b5a9dbab05b08c8c2108a9ab6b9', '2026-01-12 04:20:55', '2026-01-11 03:20:55'),
@@ -658,7 +685,15 @@ INSERT INTO `user_sessions` (`id`, `user_id`, `token`, `expires_at`, `created_at
 	(346, 13, '3c3a04c96175a2cc7655599ae91205573e14c1a523ce17edde0a70ab16c27497', '2026-03-09 12:09:42', '2026-03-08 12:09:42'),
 	(349, 13, '2630e26b30d9826c66c7bd8d71375a615d29dd3b2ab8fe4282c2a9cddaf30f3b', '2026-03-09 13:38:27', '2026-03-08 13:38:27'),
 	(362, 12, 'c6405ab6feb2255121e05da787e0c359f374cc1ef173313a2820b085b516556c', '2026-03-09 22:17:19', '2026-03-08 22:17:19'),
-	(363, 12, '4e978bed98519c23f7bac87fabdff60b819f95d74ebcb2fab83352c654aac183', '2026-03-09 22:20:33', '2026-03-08 22:20:33');
+	(364, 13, 'b863cf6cb28a489976d2a744ff444dd389598fa8d5463099b6367982fb875faf', '2026-03-09 22:37:40', '2026-03-08 22:37:40'),
+	(366, 13, '8e9be0e02245c60142c531cfd8e0eaba8c426891d713b0bc5801409a93ab487c', '2026-03-10 00:58:11', '2026-03-09 00:58:11'),
+	(378, 12, '0ca407513b3e230180922a3542211ecdcfb6ac44abe3ef21b6c1eb3fca801e4c', '2026-03-10 02:41:50', '2026-03-09 02:41:50'),
+	(384, 12, '11a5331aaf38a57f24a0f06235357950b27b685439cab89296a195ed17f0daba', '2026-03-10 03:20:06', '2026-03-09 03:20:06'),
+	(386, 20, '240d41c7577f77e7319e3249709f7b64946bf826c91485647792d8afd4809a4b', '2026-03-10 03:20:54', '2026-03-09 03:20:54'),
+	(388, 12, '62416bada5f4d7f2388fe8400beb551dbe7d4fa2075a2354ac3c0df6e6f038e4', '2026-03-10 05:11:28', '2026-03-09 05:11:28'),
+	(389, 13, 'a2246460c614be34e7e249d3ee25ef19e6059b550c774700e33bd363c57a2442', '2026-03-10 05:27:34', '2026-03-09 05:27:34'),
+	(392, 13, 'dd9e5f2344a9f3d019840deec2cfc53d696d8c5adbb2c428fd029e10fd3b9687', '2026-03-11 06:18:06', '2026-03-10 06:18:06'),
+	(393, 13, 'd79e04595a294b23705f6f280632ca7ae36ec701a365ab254c8db04b19fbb297', '2026-03-11 09:22:42', '2026-03-10 09:22:42');
 
 -- Dumping structure for table react1.0.user_widget_access
 CREATE TABLE IF NOT EXISTS `user_widget_access` (
@@ -670,7 +705,7 @@ CREATE TABLE IF NOT EXISTS `user_widget_access` (
   KEY `fk_uw_widget` (`widget_id`),
   CONSTRAINT `fk_uw_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_uw_widget` FOREIGN KEY (`widget_id`) REFERENCES `widgets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Dumping data for table react1.0.user_widget_access: ~8 rows (approximately)
 DELETE FROM `user_widget_access`;
@@ -682,7 +717,8 @@ INSERT INTO `user_widget_access` (`id`, `user_id`, `widget_id`) VALUES
 	(70, 20, 1),
 	(85, 23, 5),
 	(90, 24, 1),
-	(89, 25, 1);
+	(89, 25, 1),
+	(91, 26, 4);
 
 -- Dumping structure for table react1.0.widgets
 CREATE TABLE IF NOT EXISTS `widgets` (

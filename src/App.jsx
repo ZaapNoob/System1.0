@@ -22,6 +22,9 @@ import Laboratory from "./pages/Laboratory";
 // Import QueueGen page component
 import QueueGen from "./pages/QueueGen";
 
+// Import Reports page component
+import Reports from "./pages/Reports";
+
 // Import Profile page component
 import Profile from "./pages/Profile";
 
@@ -230,6 +233,20 @@ if (path.includes("print-laboratory")) {
             onNavigateToProfile={() => setCurrentPage("profile")}
             allowedPages={allowedPages}
             onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
+      </WebSocketProvider>
+    );
+  }
+
+  if (currentPage === "reports") {
+    return (
+      <WebSocketProvider>
+        <ModalProvider>
+          <Reports
+            user={user}
+            selectedPages={allowedPages}
+            onNavigateToDashboard={() => setCurrentPage("dashboard")}
           />
         </ModalProvider>
       </WebSocketProvider>
