@@ -118,3 +118,18 @@ export const checkDuplicatePatient = async (payload) => {
 
   return apiFetch(`${API}/patients/duplicate-check.php?${params}`);
 };
+
+
+
+/* =========================
+   DELETE PATIENT (SOFT DELETE)
+========================= */
+export const deletePatient = async (patientId) => {
+  return apiFetch(`${API}/patients/delete-patient.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ patient_id: patientId }),
+  });
+};

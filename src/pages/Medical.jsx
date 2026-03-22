@@ -3,6 +3,9 @@ import Sidebar from '../components/Sidebar';
 import './medical.css';
 import useMedicalCertificate from '../hooks/useMedicalCertificate';
 import { useMedicalHistory } from "../hooks/useMedicalHistory";
+import { usePatientImage } from "../hooks/image display/usePatientImage";
+import { DEFAULT_AVATAR } from "../utils/image";
+
 export default function Medical({ user, onNavigateToProfile, allowedPages, onNavigate, handleLogout }) {
   const {
     step,
@@ -35,6 +38,9 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
   });
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Get patient image using custom hook
+  const { imageUrl, isLoading: imageLoading, fullPatient } = usePatientImage(selectedPatient);
 
   const { medicalHistory, loadingHistory } =
     useMedicalHistory(selectedPatient?.id, refreshTrigger);
@@ -158,6 +164,36 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
             <div className="stat-content">
               <h3>Patient</h3>
               <div className="stat-number">{selectedPatient.name}</div>
+              <div className="patient-image-container">
+                <img
+                  src={imageUrl}
+                  alt="Patient"
+                  className="patient-image-display"
+                  onLoad={() => console.log("✅ Patient image loaded")}
+                  onError={(e) => {
+                    e.target.src = DEFAULT_AVATAR;
+                  }}
+                />
+                <div className="patient-info-section">
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Patient Code</span>
+                    <span className="patient-info-value">{fullPatient?.patient_code || 'N/A'}</span>
+                  </div>
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Gender</span>
+                    <span className="patient-info-value">{fullPatient?.gender || 'N/A'}</span>
+                  </div>
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Age</span>
+                    <span className="patient-info-value">{fullPatient?.age || 'N/A'}</span>
+                  </div>
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Date of Birth</span>
+                    <span className="patient-info-value">{fullPatient?.date_of_birth || 'N/A'}</span>
+                  </div>
+                </div>
+                {imageLoading && <p style={{ fontSize: '12px', color: '#666', position: 'absolute', top: '10px' }}>Loading image...</p>}
+              </div>
             </div>
           </div>
 

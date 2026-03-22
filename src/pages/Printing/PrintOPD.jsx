@@ -11,6 +11,7 @@ export default function PrintOPD() {
   const [isOpen, setIsOpen] = useState(false);
   const [patient, setPatient] = useState(null);
   const [record, setRecord] = useState(null);
+  const [isEditingDoctor, setIsEditingDoctor] = useState(false);
   const { doctors } = useDoctors();
   const { selectedDoctor, handleDoctorSelect } = useDoctorSelection(doctors);
 
@@ -81,7 +82,7 @@ export default function PrintOPD() {
       Print & Close
     </button>
 
-    {!record?.attending_physician ? (
+    {!record?.attending_physician || isEditingDoctor ? (
       <div className="doctor-selector">
         <label htmlFor="doctor-select">
           Select Doctor
@@ -89,7 +90,10 @@ export default function PrintOPD() {
         <select
           id="doctor-select"
           value={selectedDoctor}
-          onChange={(e) => handleDoctorSelect(e, setRecord)}
+          onChange={(e) => {
+            handleDoctorSelect(e, setRecord);
+            setIsEditingDoctor(false);
+          }}
           className="doctor-dropdown"
         >
           <option value="">-- Select a Doctor --</option>
@@ -101,8 +105,23 @@ export default function PrintOPD() {
         </select>
       </div>
     ) : (
-      <div className="doctor-info" style={{ color: "#27ae60", fontWeight: "bold" }}>
-        ✅ Consulting Doctor: {record?.attending_physician}
+      <div className="doctor-info" style={{ display: "flex", alignItems: "center", gap: "10px", color: "#27ae60", fontWeight: "bold" }}>
+        <span>✅ Consulting Doctor: {record?.attending_physician}</span>
+        <button
+          onClick={() => setIsEditingDoctor(true)}
+          style={{
+            padding: "4px 12px",
+            backgroundColor: "#f39c12",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "12px",
+            fontWeight: "600"
+          }}
+        >
+          Change Doctor
+        </button>
       </div>
     )}
   </div>

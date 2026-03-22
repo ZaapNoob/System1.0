@@ -26,6 +26,7 @@ if ($patient_id <= 0) {
 
 $sql = "SELECT 
             c.id,
+            c.patient_id,
             c.doctor_id,
             c.visit_date,
             c.purpose_visit,

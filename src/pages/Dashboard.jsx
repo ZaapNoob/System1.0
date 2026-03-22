@@ -43,6 +43,12 @@ import useCancelWaitingQueues from "../hooks/useCancelWaitingQueues";
 // Encoder queue filter hook
 import { useEncoderQueueFilter } from "../hooks/useEncoderQueueFilter";
 
+// Encoder queue hook (date-filtered, API-only)
+import { useEncoderQueue } from "../hooks/useEncoderQueue";
+
+// Queue stats hook
+import { useQueueStats } from "../hooks/useQueueStats";
+
 
 export default function Dashboard({
   user,
@@ -69,14 +75,9 @@ export default function Dashboard({
   };
 
   // ===============================
-  // MOCK TASKS
+  // QUEUE STATISTICS (Real data from database)
   // ===============================
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Review project proposal", status: "In Progress", priority: "High" },
-    { id: 2, title: "Update documentation", status: "Pending", priority: "Medium" },
-    { id: 3, title: "Fix critical bugs", status: "Completed", priority: "High" },
-    { id: 4, title: "Design new features", status: "In Progress", priority: "Medium" }
-  ]);
+  const { stats, loading: statsLoading, error: statsError, refreshStats } = useQueueStats(user);
 
   // ===============================
   // POLLING RESET TRIGGER & WEBSOCKET HANDLERS
@@ -131,21 +132,16 @@ export default function Dashboard({
   });
 
   // ===============================
-  // ENCODER QUEUE (AUTO REFRESH) - Uses WebSocket live fetch, fallback to polling
+  // ENCODER QUEUE (DATE-FILTERED API POLLING - NO WEBSOCKET)
   // ===============================
-  // Fetches ALL DONE patients needing consultation encoding
-  // ✅ No filtering - displays all encoder queue data for anyone
-  const encoderQueue = useAutoFetchStable(
-    'encoder-queue',
-    `${API}/consultation/encoder/get-encoder-queue.php`,
-    20000,  // Fallback polling interval (only used if WebSocket is down)
-    null  // ✅ No doctor filtering - show all encoder data
-  );
+  // Fetches DONE patients for the selected date from API only
+  // ✅ Bypasses WebSocket to allow proper date filtering
+  const { encoderQueue, encoderFilterDate, setEncoderFilterDate } = useEncoderQueue();
 
   // ===============================
   // ENCODER QUEUE FILTER HOOK
   // ===============================
-  const { search: encoderSearch, setSearch: setEncoderSearch, filterDate: encoderFilterDate, setFilterDate: setEncoderFilterDate, filteredQueue: filteredEncoderQueue } = useEncoderQueueFilter(encoderQueue);
+  const { search: encoderSearch, setSearch: setEncoderSearch, filteredQueue: filteredEncoderQueue } = useEncoderQueueFilter(encoderQueue);
 
   // ===============================
   // ACCEPT QUEUE HOOK
@@ -153,7 +149,8 @@ export default function Dashboard({
   const { handleAcceptQueue, loading: accepting } = useAcceptQueue({
     onAccepted: (patient) => {
       setServingPatient(patient);
-    }
+    },
+    user
   });
 
   // ===============================
@@ -292,7 +289,7 @@ export default function Dashboard({
         </header>
 
         {/* Main content */}
-        <main className="dashboard-main">
+        <main className="dashboard-main1">
 
           {/* Welcome message */}
           <div className="left-panel">
@@ -310,41 +307,28 @@ export default function Dashboard({
               <div className="stat-card">
                 <div className="stat-icon">📋</div>
                 <div className="stat-content">
-                  <h3>Total Tasks</h3>
-                  <p className="stat-number">{tasks.length}</p>
+                  <h3>Over All completed</h3>
+                  <p className="stat-number">{statsLoading ? "..." : stats.overallCompleted}</p>
                 </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-icon">✅</div>
                 <div className="stat-content">
-                  <h3>Completed</h3>
-                  <p className="stat-number">
-                    {tasks.filter(t => t.status === "Completed").length}
-                  </p>
+                  <h3>Today Completed</h3>
+                  <p className="stat-number">{statsLoading ? "..." : stats.todayCompleted}</p>
                 </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-icon">⚡</div>
                 <div className="stat-content">
-                  <h3>In Progress</h3>
-                  <p className="stat-number">
-                    {tasks.filter(t => t.status === "In Progress").length}
-                  </p>
+                  <h3>Waiting</h3>
+                  <p className="stat-number">{statsLoading ? "..." : stats.waiting}</p>
                 </div>
               </div>
 
-              <div className="stat-card">
-                <div className="stat-icon">⏳</div>
-                <div className="stat-content">
-                  <h3>Pending</h3>
-                  <p className="stat-number">
-                    {tasks.filter(t => t.status === "Pending").length}
-                  </p>
-                </div>
-              </div>
-
+             
             </section>
           </div>
 
@@ -600,6 +584,8 @@ export default function Dashboard({
                     </div>
                   </div>
                 )}
+
+
                 {selectedWidgets.includes("encoder") && (
                   <div className="widget-card widget-encoder">
 
@@ -637,11 +623,10 @@ export default function Dashboard({
                               fontSize: "14px"
                             }}
                           />
-                          {(encoderSearch || encoderFilterDate) && (
+                          {encoderSearch && (
                             <button
                               onClick={() => {
                                 setEncoderSearch("");
-                                setEncoderFilterDate("");
                               }}
                               style={{
                                 padding: "8px 16px",

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Consultation from "./modal/consultation";
+import EditConsultationModal from "../components/patients-display/EditConsultationModal";
 import { useConsultationHistory } from "../hooks/useConsultationHistory";
 import { useRefresh } from "../hooks/useRefresh";
 import { useModal } from "../components/modal/ModalProvider";
@@ -7,7 +8,6 @@ import "./ConsultationHistoryView.css";
 
 export default function ConsultationHistoryView({ patient }) {
 
-  const [editingConsultation, setEditingConsultation] = useState(null);
   const [loading, setLoading] = useState(false);
   
   // Modal context
@@ -23,43 +23,26 @@ export default function ConsultationHistoryView({ patient }) {
   );
 
   const handleEdit = (consultation) => {
-    setEditingConsultation(consultation);
-  };
-
-  const handleCloseEdit = () => {
-    setEditingConsultation(null);
-    // Auto-refresh after closing edit
-    triggerRefresh();
+    console.log("🎯 Opening EditConsultationModal for consultation:", consultation.id);
+    openModal(
+      <EditConsultationModal
+        consultation={consultation}
+        patient={patient}
+        onUpdate={() => {
+          console.log("✅ Consultation updated, refreshing history...");
+          closeModal();
+          triggerRefresh();
+        }}
+        onClose={() => {
+          closeModal();
+        }}
+      />
+    );
   };
 
   // If editing, show the Consultation form instead of the table
-  if (editingConsultation) {
-    return (
-      <div className="consultation-history">
-        <button
-          className="back-btn"
-          onClick={() => setEditingConsultation(null)}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#f0f0f0",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: "14px",
-            marginBottom: "10px"
-          }}
-        >
-          ← Back to History
-        </button>
-        <Consultation 
-          patient={patient} 
-          consultation={editingConsultation}
-          isEditing={true}
-          onClose={handleCloseEdit}
-          onSaved={triggerRefresh}
-        />
-      </div>
-    );
+  if (false) {
+    return null; // This section is no longer used - we use modal instead
   }
 
   return (

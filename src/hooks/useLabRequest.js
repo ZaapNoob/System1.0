@@ -14,6 +14,8 @@ export default function useLabRequest() {
   const [error, setError] = useState("");
   const [savedLabRequestId, setSavedLabRequestId] = useState(null);
   const [editingLabRequestId, setEditingLabRequestId] = useState(null);
+  const [printPreviewId, setPrintPreviewId] = useState(null);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   // -----------------------
   // LIVE SEARCH WITH DEBOUNCING
@@ -108,11 +110,6 @@ export default function useLabRequest() {
         return null;
       }
 
-      if (selectedTests.length === 0) {
-        setError("Please select at least one test");
-        return null;
-      }
-
       setLoading(true);
       setError("");
 
@@ -168,11 +165,6 @@ export default function useLabRequest() {
         return;
       }
 
-      if (selectedTests.length === 0) {
-        setError("Please select at least one test");
-        return;
-      }
-
       setLoading(true);
       setError("");
 
@@ -180,8 +172,15 @@ export default function useLabRequest() {
       const result = await updateLabRequest(formData, selectedTests);
 
       if (result) {
-        alert("Lab request updated successfully!");
+        // Reset step to 1 to show left panel
+        setStep(1);
+        // Set print preview ID to trigger auto-open
+        setPrintPreviewId(formData.id);
         setEditingLabRequestId(null);
+        // Clear selected patient to hide the form
+        setSelectedPatient(null);
+        // Set success flag
+        setUpdateSuccess(true);
         // Trigger refresh of history
         setRefreshTrigger(refreshTrigger + 1);
       }
@@ -198,6 +197,15 @@ export default function useLabRequest() {
   // -----------------------
   const handleCancelEditLab = () => {
     setEditingLabRequestId(null);
+    setPrintPreviewId(null);
+  };
+
+  const clearPrintPreviewId = () => {
+    setPrintPreviewId(null);
+  };
+
+  const clearUpdateSuccess = () => {
+    setUpdateSuccess(false);
   };
 
   return {
@@ -211,6 +219,8 @@ export default function useLabRequest() {
     error,
     savedLabRequestId,
     editingLabRequestId,
+    printPreviewId,
+    updateSuccess,
     handleSearch,
     handleSelectPatientForm,
     handleReset,
@@ -219,5 +229,7 @@ export default function useLabRequest() {
     handleEditLabRequest,
     handleUpdateLabRequest,
     handleCancelEditLab,
+    clearPrintPreviewId,
+    clearUpdateSuccess,
   };
 }

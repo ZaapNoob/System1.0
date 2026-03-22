@@ -137,6 +137,77 @@
   width: 300px;   /* 👈 control preview width here */
   max-width: 100%;
 }
+
+
+
+
+
+
+
+
+
+
+
+/* ═══════════════════════════════
+   PATIENT IMAGE DISPLAY
+═══════════════════════════════ */
+.patient-image-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.patient-image-display {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #e8edf2;
+  flex-shrink: 0;
+}
+
+.patient-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.patient-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.patient-info-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.patient-info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  background: #f0f4f8;
+}
+
+.patient-image-display:hover {
+  border-color: #cbd5e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+
+
+
+
 .dashboard-main.full-width {
   grid-template-columns: 1fr;
   gap: 24px;

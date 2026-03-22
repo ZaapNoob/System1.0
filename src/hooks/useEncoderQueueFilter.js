@@ -1,13 +1,13 @@
 import { useState, useMemo } from "react";
 
 /**
- * Custom hook for filtering encoder queue by search term and date
+ * Custom hook for filtering encoder queue by search term only
+ * (Date filtering is now handled by API - pass queue_date parameter to fetch the correct date)
  * @param {Array} encoderQueue - The encoder queue data to filter
- * @returns {Object} - { search, setSearch, filterDate, setFilterDate, filteredQueue }
+ * @returns {Object} - { search, setSearch, filteredQueue }
  */
 export const useEncoderQueueFilter = (encoderQueue) => {
   const [search, setSearch] = useState("");
-  const [filterDate, setFilterDate] = useState("");
 
   // Memoized filtered queue to prevent unnecessary recalculations
   const filteredQueue = useMemo(() => {
@@ -18,21 +18,13 @@ export const useEncoderQueueFilter = (encoderQueue) => {
         patient.patient_name.toLowerCase().includes(search.toLowerCase()) ||
         String(patient.queue_number).toLowerCase().includes(search.toLowerCase());
 
-      // Filter by date (queue date or visit date)
-      const matchesDate =
-        filterDate === "" ||
-        patient.queue_date === filterDate ||
-        patient.visit_date === filterDate;
-
-      return matchesSearch && matchesDate;
+      return matchesSearch;
     });
-  }, [encoderQueue, search, filterDate]);
+  }, [encoderQueue, search]);
 
   return {
     search,
     setSearch,
-    filterDate,
-    setFilterDate,
     filteredQueue,
   };
 };

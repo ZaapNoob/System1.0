@@ -1,0 +1,151 @@
+.camera-wrapper{
+  width:100%;
+  max-width:420px;
+  margin:auto;
+  background:#ffffff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.camera-header{
+  text-align:center;
+  font-size:18px;
+  font-weight:600;
+  color:#374151;
+}
+
+/* Upload Section */
+
+.upload-section{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.url-input{
+  width:100%;
+  padding:10px;
+  border:1px solid #d1d5db;
+  border-radius:6px;
+  font-size:13px;
+}
+
+.upload-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.upload-buttons button{
+  flex:1;
+  padding:8px 10px;
+  font-size:13px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  background:#e5e7eb;
+  transition:0.2s;
+}
+
+.upload-buttons button:hover{
+  background:#d1d5db;
+}
+
+/* Camera */
+
+.camera-preview{
+  display:flex;
+  justify-content:center;
+}
+
+.camera-preview video{
+  width:100%;
+  max-width:380px;
+  border-radius:8px;
+  background:black;
+}
+
+/* Preview Image */
+
+.preview-container{
+  display:flex;
+  justify-content:center;
+}
+
+.preview-image{
+  width:100%;
+  max-width:380px;
+  border-radius:8px;
+  background:#f3f4f6;
+}
+
+/* Controls */
+
+.camera-controls{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.camera-controls button{
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.btn-primary{
+  background:#3b82f6;
+  color:white;
+}
+
+.btn-primary:hover{
+  background:#2563eb;
+}
+
+.btn-success{
+  background:#10b981;
+  color:white;
+}
+
+.btn-success:hover{
+  background:#059669;
+}
+
+.btn-secondary{
+  background:#e5e7eb;
+}
+
+.btn-secondary:hover{
+  background:#d1d5db;
+}
+
+.btn-close{
+  background:#ef4444;
+  color:white;
+}
+
+.btn-close:hover{
+  background:#dc2626;
+}
+
+.full{
+  width:100%;
+}
+
+/* Warning */
+
+.warning-box{
+  padding:10px;
+  background:#fef3c7;
+  color:#92400e;
+  border-radius:6px;
+  font-size:12px;
+  text-align:center;
+}

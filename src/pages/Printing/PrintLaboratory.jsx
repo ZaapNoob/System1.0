@@ -250,18 +250,23 @@ const PrintLaboratory = () => {
 
       {/* DOCTOR */}
       <div className="doctor">
-        <p className="doctor-name">
-          {labRequestData?.doctor_name ||
-            "Rural Health Physician"}
-        </p>
-        {labRequestData?.license_no && (
-          <p className="doctor-license">Lic. No.: {labRequestData.license_no}</p>
-        )}
-        <p>
-          {labRequestData?.title || "Rural Health Physician"}
-        </p>
-        <p>Rural Health Unit - Gubat</p>
-      </div>
+  <div className="doctor-header">
+  <p className="doctor-name">
+  {labRequestData?.doctor_name || "Rural Health Physician"}
+  {labRequestData?.title && `, ${labRequestData.title}`}
+</p>
+
+            
+  </div>
+
+  {labRequestData?.license_no && (
+    <p className="doctor-license">
+      Lic. No.: {labRequestData.license_no}
+    </p>
+  )}
+
+  <p>Rural Health Unit - Gubat</p>
+</div>
     </>
   );
 

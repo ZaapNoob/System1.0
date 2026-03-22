@@ -51,7 +51,7 @@ try {
         SELECT DISTINCT household_no, facility_household_no,
                COUNT(*) OVER (PARTITION BY household_no) AS member_count
         FROM patients_db
-        WHERE barangay_id = ? AND household_no LIKE ?
+        WHERE barangay_id = ? AND household_no LIKE ? AND deleted_at IS NULL
         LIMIT 20
         ";
 
@@ -63,7 +63,7 @@ try {
         SELECT DISTINCT household_no, facility_household_no,
                COUNT(*) OVER (PARTITION BY household_no) AS member_count
         FROM patients_db
-        WHERE barangay_id = ? AND facility_household_no LIKE ?
+        WHERE barangay_id = ? AND facility_household_no LIKE ? AND deleted_at IS NULL
         LIMIT 20
         ";
 
@@ -74,7 +74,7 @@ try {
         $sql = "
         SELECT DISTINCT household_no, facility_household_no
         FROM patients_db
-        WHERE barangay_id = ? AND patient_code LIKE ?
+        WHERE barangay_id = ? AND patient_code LIKE ? AND deleted_at IS NULL
         LIMIT 20
         ";
 
@@ -85,7 +85,7 @@ try {
         $sql = "
         SELECT DISTINCT household_no, facility_household_no
         FROM patients_db
-        WHERE barangay_id = ?
+        WHERE barangay_id = ? AND deleted_at IS NULL
         AND (
             first_name LIKE ? OR
             last_name LIKE ? OR

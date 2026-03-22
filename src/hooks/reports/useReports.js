@@ -81,6 +81,29 @@ export const useReports = () => {
   };
 
   /**
+   * Clear all filters to default values
+   */
+  const handleClearFilters = () => {
+    setFilters({
+      startDate: "",
+      endDate: "",
+      barangay: "all",
+      doctor: "all",
+      consultationType: "all",
+      gender: "all",
+      ageGroup: "all",
+      visitType: "all",
+      referral: "all",
+      labRequest: "all",
+      certificate: "all",
+      patientStatus: "all",
+      reportType: "consultations"
+    });
+    setReportData([]);
+    setPatientList([]);
+  };
+
+  /**
    * Generate report based on selected report type
    */
   const handleGenerate = async () => {
@@ -94,38 +117,22 @@ export const useReports = () => {
 
       switch (filters.reportType) {
         /**
-         * PATIENT REPORT
+         * PATIENT REPORT (Patients per Barangay)
+         * Shows summary of patients grouped by barangay
          */
         case "patients":
-          let patientResponse;
 
-          // Prioritize specific patient filters
-          if (filters.labRequest !== "all") {
-            patientResponse = await fetchPatientsWithLabRequests(filters);
-          } else if (filters.certificate !== "all") {
-            patientResponse = await fetchPatientsWithMedicalCertificates(filters);
-          } else if (filters.consultationType !== "all" || filters.visitType !== "all") {
-            patientResponse = await fetchPatientsWithConsultations(filters);
-          } else {
-            patientResponse = await fetchPatientsList(filters);
-          }
-
-          // Optionally fetch chart data if relevant
+          // Fetch barangay summary data for both chart and table
           const chartResponse = await fetchPatientsPerBarangay(filters);
 
-          if (chartResponse?.length) {
+          if (chartResponse && Array.isArray(chartResponse)) {
             const formattedData = chartResponse.map(item => ({
               label: item.barangay,
-              value: item.total
+              value: item.total,
+              barangay_id: item.barangay_id
             }));
             setReportData(formattedData);
-          }
-
-          if (patientResponse?.length) {
-            setPatientList(patientResponse);
-          }
-
-          if (!chartResponse?.length && !patientResponse?.length) {
+          } else {
             setError("No patient data found for selected filters");
           }
           break;
@@ -138,7 +145,8 @@ export const useReports = () => {
           if (response?.length) {
             const formattedData = response.map(item => ({
               label: item.barangay,
-              value: item.total
+              value: item.total,
+              barangay_id: item.barangay_id
             }));
             setReportData(formattedData);
           } else {
@@ -154,7 +162,8 @@ export const useReports = () => {
           if (response?.length) {
             const formattedData = response.map(item => ({
               label: item.barangay,
-              value: item.total
+              value: item.total,
+              barangay_id: item.barangay_id
             }));
             setReportData(formattedData);
           } else {
@@ -171,7 +180,8 @@ export const useReports = () => {
           if (response?.length) {
             const formattedData = response.map(item => ({
               label: item.barangay,
-              value: item.total
+              value: item.total,
+              barangay_id: item.barangay_id
             }));
             setReportData(formattedData);
           } else {
@@ -192,6 +202,7 @@ export const useReports = () => {
     // Filters
     filters,
     handleChange,
+    handleClearFilters,
 
     // Chart & Table Data
     reportData,

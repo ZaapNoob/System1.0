@@ -5,6 +5,8 @@
   border-radius:10px;
 }
 
+/* TITLE */
+
 .bargraph-title{
   text-align:center;
   margin-bottom:20px;
@@ -44,6 +46,26 @@
   border-bottom:2px solid #ddd;
   padding:15px;
   overflow-x:auto;
+  position:relative;
+}
+
+/* GRID LINES */
+
+.bargraph::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  bottom:0;
+  background: repeating-linear-gradient(
+    to top,
+    rgba(0,0,0,0.05),
+    rgba(0,0,0,0.05) 1px,
+    transparent 1px,
+    transparent 20%
+  );
+  pointer-events:none;
 }
 
 /* BAR WRAPPER */
@@ -55,29 +77,33 @@
   justify-content:flex-end;
   width:70px;
   flex-shrink:0;
+  height:100%;
 }
 
 /* BAR */
 
 .bar{
   width:45px;
-  background:#2c7be5;
+  background: linear-gradient(to top, #2c7be5, #6ea8fe);
   border-radius:6px 6px 0 0;
   transition:0.3s;
+  margin-bottom:5px;
 }
+
+/* HOVER */
 
 .bar:hover{
-  background:#1a5edb;
   transform:scale(1.05);
+  background: linear-gradient(to top, #1a5edb, #4d8df5);
 }
 
-/* VALUE ABOVE BAR */
+/* VALUE */
 
 .bar-count{
   font-size:13px;
   font-weight:600;
-  margin-bottom:5px;
-  color:#333;
+  margin-bottom:6px;
+  color:#222;
 }
 
 /* LABEL */

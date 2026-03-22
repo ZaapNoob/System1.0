@@ -213,3 +213,79 @@ export const fetchPatientsWithMedicalCertificates = async (filters = {}) => {
     return [];
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+====================================
+FETCH PATIENT DETAILS BY BARANGAY
+====================================
+*/
+export const fetchPatientsPerBarangayDetails = async (filters = {}) => {
+  try {
+    const params = new URLSearchParams();
+
+    if (filters.barangay) {
+      params.append("barangay", filters.barangay);
+    }
+
+    // Determine which endpoint to call based on filter type
+    let action = "patientsList"; // default
+
+    if (filters.hasConsultations) {
+      action = "patientsWithConsultations";
+    } else if (filters.hasLabRequests) {
+      action = "patientsWithLabRequests";
+    } else if (filters.hasMedicalCerts) {
+      action = "patientsWithMedicalCertificates";
+    }
+
+    const response = await fetch(
+      `${API}/Generate Reports/reports-api.php?action=${action}&${params.toString()}`,
+      { method: "GET", credentials: "include" }
+    );
+
+    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+    const data = await response.json();
+    
+    return data.success ? data.data : [];
+  } catch (error) {
+    console.error("Error fetching patient details:", error);
+    return [];
+  }
+};

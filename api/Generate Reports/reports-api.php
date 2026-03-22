@@ -88,13 +88,14 @@ try {
 
         $stmt = $pdo->prepare("
             SELECT 
+                b.id AS barangay_id,
                 b.name AS barangay,
                 COUNT(c.id) AS total
             FROM consultations c
             JOIN patients_db p ON p.id = c.patient_id
             JOIN barangays b ON b.id = p.barangay_id
             $where
-            GROUP BY b.name
+            GROUP BY b.id, b.name
             ORDER BY total DESC
         ");
 
@@ -116,6 +117,14 @@ try {
         $conditions = [];
         $params = [];
 
+        if ($startDate) {
+            $conditions[] = "p.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "p.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
         if ($barangay && $barangay !== "all") {
             $conditions[] = "p.barangay_id = :barangay";
             $params[':barangay'] = $barangay;
@@ -128,6 +137,9 @@ try {
             $conditions[] = "p.status = :patientStatus";
             $params[':patientStatus'] = $patientStatus;
         }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
 
         switch ($ageGroup) {
             case "0-5":
@@ -151,12 +163,13 @@ try {
 
         $stmt = $pdo->prepare("
             SELECT 
+                b.id AS barangay_id,
                 b.name AS barangay,
                 COUNT(DISTINCT p.id) AS total
             FROM patients_db p
             LEFT JOIN barangays b ON b.id = p.barangay_id
             $where
-            GROUP BY b.name
+            GROUP BY b.id, b.name
             ORDER BY total DESC
         ");
 
@@ -178,6 +191,14 @@ try {
         $conditions = [];
         $params = [];
 
+        if ($startDate) {
+            $conditions[] = "lr.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "lr.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
         if ($barangay && $barangay !== "all") {
             $conditions[] = "p.barangay_id = :barangay";
             $params[':barangay'] = $barangay;
@@ -194,6 +215,9 @@ try {
             $conditions[] = "lr.doctor_id = :doctor";
             $params[':doctor'] = $doctor;
         }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
 
         switch ($ageGroup) {
             case "0-5":
@@ -216,12 +240,15 @@ try {
         $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
 
         $stmt = $pdo->prepare("
-            SELECT b.name AS barangay, COUNT(lr.id) AS total
+            SELECT 
+                b.id AS barangay_id,
+                b.name AS barangay,
+                COUNT(lr.id) AS total
             FROM lab_requests lr
             JOIN patients_db p ON p.id = lr.patient_id
             LEFT JOIN barangays b ON b.id = p.barangay_id
             $where
-            GROUP BY b.name
+            GROUP BY b.id, b.name
             ORDER BY total DESC
         ");
         $stmt->execute($params);
@@ -242,6 +269,14 @@ try {
         $conditions = [];
         $params = [];
 
+        if ($startDate) {
+            $conditions[] = "mc.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "mc.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
         if ($barangay && $barangay !== "all") {
             $conditions[] = "p.barangay_id = :barangay";
             $params[':barangay'] = $barangay;
@@ -258,6 +293,9 @@ try {
             $conditions[] = "mc.doctor_id = :doctor";
             $params[':doctor'] = $doctor;
         }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
 
         switch ($ageGroup) {
             case "0-5":
@@ -280,12 +318,15 @@ try {
         $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
 
         $stmt = $pdo->prepare("
-            SELECT b.name AS barangay, COUNT(mc.id) AS total
+            SELECT 
+                b.id AS barangay_id,
+                b.name AS barangay,
+                COUNT(mc.id) AS total
             FROM medical_certificates mc
             JOIN patients_db p ON p.id = mc.patient_id
             LEFT JOIN barangays b ON b.id = p.barangay_id
             $where
-            GROUP BY b.name
+            GROUP BY b.id, b.name
             ORDER BY total DESC
         ");
         $stmt->execute($params);
@@ -337,21 +378,27 @@ try {
                 break;
         }
 
-        $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
-
-        $stmt = $pdo->prepare("
+        $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
                 CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,
-                b.name AS barangay
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
             FROM patients_db p
             LEFT JOIN barangays b ON b.id = p.barangay_id
-            $where
-            ORDER BY b.name,p.last_name,p.first_name
-        ");
+        ";
+
+        if ($conditions) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $sql .= " ORDER BY b.name,p.last_name,p.first_name";
+
+        $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
         echo json_encode([
@@ -399,6 +446,9 @@ try {
             $params[':patientStatus'] = $patientStatus;
         }
 
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
         switch ($ageGroup) {
             case "0-5":
                 $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
@@ -417,22 +467,30 @@ try {
                 break;
         }
 
-        $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
+        $conditions[] = "c.id IS NOT NULL";  // Always require consultation exists
 
-        $stmt = $pdo->prepare("
+        $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
                 CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,
-                b.name AS barangay
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
             FROM patients_db p
             LEFT JOIN barangays b ON b.id = p.barangay_id
             LEFT JOIN consultations c ON c.patient_id = p.id
-            $where
-            ORDER BY b.name,p.last_name,p.first_name
-        ");
+        ";
+
+        if ($conditions) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $sql .= " ORDER BY b.name,p.last_name,p.first_name";
+
+        $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
         echo json_encode([
@@ -451,6 +509,14 @@ try {
         $conditions = [];
         $params = [];
 
+        if ($startDate) {
+            $conditions[] = "lr.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "lr.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
         if ($barangay && $barangay !== "all") {
             $conditions[] = "p.barangay_id = :barangay";
             $params[':barangay'] = $barangay;
@@ -482,22 +548,29 @@ try {
                 break;
         }
 
-        $where = $conditions ? "WHERE lr.id IS NOT NULL AND " . implode(" AND ", $conditions) : "WHERE lr.id IS NOT NULL";
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
 
-        $stmt = $pdo->prepare("
+        $conditions[] = "lr.id IS NOT NULL";  // Always require lab request exists
+
+        $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
                 CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,
-                b.name AS barangay
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
             FROM patients_db p
             LEFT JOIN barangays b ON b.id = p.barangay_id
             LEFT JOIN lab_requests lr ON lr.patient_id = p.id
-            $where
+            WHERE " . implode(" AND ", $conditions) . "
             ORDER BY b.name,p.last_name,p.first_name
-        ");
+        ";
+
+        $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
         echo json_encode([
@@ -516,6 +589,14 @@ try {
         $conditions = [];
         $params = [];
 
+        if ($startDate) {
+            $conditions[] = "mc.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "mc.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
         if ($barangay && $barangay !== "all") {
             $conditions[] = "p.barangay_id = :barangay";
             $params[':barangay'] = $barangay;
@@ -547,22 +628,29 @@ try {
                 break;
         }
 
-        $where = $conditions ? "WHERE mc.id IS NOT NULL AND " . implode(" AND ", $conditions) : "WHERE mc.id IS NOT NULL";
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
 
-        $stmt = $pdo->prepare("
+        $conditions[] = "mc.id IS NOT NULL";  // Always require medical certificate exists
+
+        $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
                 CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,
-                b.name AS barangay
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
             FROM patients_db p
             LEFT JOIN barangays b ON b.id = p.barangay_id
             LEFT JOIN medical_certificates mc ON mc.patient_id = p.id
-            $where
+            WHERE " . implode(" AND ", $conditions) . "
             ORDER BY b.name,p.last_name,p.first_name
-        ");
+        ";
+
+        $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
         echo json_encode([
@@ -577,11 +665,11 @@ try {
     DEFAULT DASHBOARD RESPONSE
     ======================================
     */
-    // Counts
-    $consultations = $pdo->query("SELECT COUNT(*) AS total FROM consultations")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-    $labRequests = $pdo->query("SELECT COUNT(*) AS total FROM lab_requests")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-    $certificates = $pdo->query("SELECT COUNT(*) AS total FROM medical_certificates")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
-    $referrals = $pdo->query("SELECT COUNT(*) AS total FROM consultations WHERE referral='Yes'")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    // Counts (excluding deleted patients)
+    $consultations = $pdo->query("SELECT COUNT(*) AS total FROM consultations c JOIN patients_db p ON c.patient_id = p.id WHERE p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    $labRequests = $pdo->query("SELECT COUNT(*) AS total FROM lab_requests lr JOIN patients_db p ON lr.patient_id = p.id WHERE p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    $certificates = $pdo->query("SELECT COUNT(*) AS total FROM medical_certificates mc JOIN patients_db p ON mc.patient_id = p.id WHERE p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    $referrals = $pdo->query("SELECT COUNT(*) AS total FROM consultations c JOIN patients_db p ON c.patient_id = p.id WHERE referral='Yes' AND p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 
     echo json_encode([
         "success" => true,

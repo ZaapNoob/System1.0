@@ -175,7 +175,7 @@ body {
   }
 
 
-  .doctor-name {
+  .doctor-name .doctor-title{
     font-weight: bold;
     margin-top: 8px;
     font-size: 10px;

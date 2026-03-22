@@ -18,18 +18,24 @@ if (!isset($input['queue_id'])) {
 }
 
 $queueId = (int)$input['queue_id'];
-error_log("[ACCEPT] 🟡 Processing accept for queue_id: " . $queueId);
+$administeredBy = isset($input['administered_by']) ? (int)$input['administered_by'] : null;
+
+error_log("[ACCEPT] 🟡 Processing accept for queue_id: " . $queueId . " | administered_by: " . ($administeredBy ?? 'null'));
 
 try {
     // 1. Mark as triage (patient accepted but not yet assigned to doctor)
-    error_log("[ACCEPT] 📝 Updating status to 'triage'");
+    error_log("[ACCEPT] 📝 Updating status to 'triage' and administered_by");
     $stmt = $pdo->prepare("
         UPDATE patient_queue
-        SET status = 'triage'
+        SET status = 'triage',
+            administered_by = :administered_by
         WHERE id = :id
           AND status = 'waiting'
     ");
-    $stmt->execute(['id' => $queueId]);
+    $stmt->execute([
+        'id' => $queueId,
+        'administered_by' => $administeredBy
+    ]);
 
     if ($stmt->rowCount() === 0) {
         error_log("[ACCEPT] ❌ Update failed - rowCount is 0");
@@ -43,18 +49,20 @@ try {
 
     error_log("[ACCEPT] ✅ Update successful - rowCount: " . $stmt->rowCount());
 
-    // 2. Fetch full queue + patient info including vitals, barangay, and purok details
+    // 2. Fetch full queue + patient info including vitals, barangay, purok, and accepted by user
     $stmt = $pdo->prepare("
         SELECT pq.*, 
                p.first_name, p.middle_name, p.last_name, p.suffix, p.date_of_birth,
                p.age, p.gender, p.blood_type, p.contact_number, p.profile_image, p.patient_code,
                p.region, p.province, p.city_municipality, p.barangay_name, p.street,
                b.name as barangay_name_db, b.is_special,
-               pr.purok_name
+               pr.purok_name,
+               u.name as administered_by_name, u.role as administered_by_role
         FROM patient_queue pq
         INNER JOIN patients_db p ON pq.patient_id = p.id
         LEFT JOIN barangays b ON p.barangay_id = b.id
         LEFT JOIN puroks pr ON p.purok_id = pr.id
+        LEFT JOIN users u ON pq.administered_by = u.id
         WHERE pq.id = :id
     ");
     $stmt->execute(['id' => $queueId]);
