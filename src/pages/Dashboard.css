@@ -377,12 +377,49 @@
   color: white;
   padding: 18px 24px;
   margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.widget-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
 }
 
 .widget-header h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
+  flex: 1;
+}
+
+/* Expand button styling */
+.expand-btn {
+  background: linear-gradient(135deg, #3d5afe 0%, #1a237e 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(61, 94, 254, 0.3);
+}
+
+.expand-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(61, 94, 254, 0.5);
+  background: linear-gradient(135deg, #5c7cfa 0%, #2d3a8c 100%);
+}
+
+.expand-btn:active {
+  transform: translateY(0);
 }
 
 .widget-content {
@@ -846,6 +883,17 @@
   border-radius: 4px;
   text-transform: uppercase;
   font-weight: bold;
+}
+
+.tv-queue-type-badge {
+  font-size: 13px;
+  color: #0f0;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  border: 1px solid #0f0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .tv-no-queue {

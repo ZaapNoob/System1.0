@@ -82,6 +82,17 @@ export default function LabRequest({
     refreshTrigger
   );
 
+  const today = new Date().toDateString();
+
+const todayRequests = labHistory.filter(
+  (item) => new Date(item.created_at).toDateString() === today
+);
+
+const olderRequests = labHistory.filter(
+  (item) => new Date(item.created_at).toDateString() !== today
+);
+
+
   // Get patient image using custom hook
   const { imageUrl, isLoading: imageLoading, fullPatient } = usePatientImage(selectedPatient);
 
@@ -342,86 +353,147 @@ export default function LabRequest({
                   </div>
 
                   {/* HISTORY SECTION AT TOP */}
-                  {showLabHistory && (
-                  <div className="history-box">
-                    <h3>Previous Lab Requests</h3>
+                 {showLabHistory && (
+  <div className="history-box">
+    <h3>Previous Lab Requests</h3>
 
-                    {loadingHistory && (
-                      <p>Loading history...</p>
-                    )}
+    {loadingHistory && <p>Loading history...</p>}
 
-                    {!loadingHistory &&
-                      labHistory.length === 0 && (
-                        <p className="no-history">
-                          No lab request history.
-                        </p>
-                      )}
+    {!loadingHistory && labHistory.length === 0 && (
+      <p className="no-history">No lab request history.</p>
+    )}
 
-                    {!loadingHistory &&
-                      labHistory.length > 0 && (
-                        <ul className="history-list">
-                          {labHistory.map((item) => (
-                            <li
-                              key={item.id}
-                              className="history-list-item"
-                            >
-                              <div className="history-item-info">
-                                <div className="history-date">
-                                  {new Date(
-                                    item.created_at
-                                  ).toLocaleDateString()}
-                                </div>
-                                <div className="history-doctor">
-                                  Dr.{" "}
-                                  {item.doctor_name ||
-                                    "N/A"}
-                                </div>
-                              </div>
-                              <button
-                                className="history-print-btn"
-                                onClick={() => {
-                                  openLabPrintPreview(
-                                    item.id
-                                  );
-                                }}
-                              >
-                                Print
-                              </button>
+    {!loadingHistory && labHistory.length > 0 && (
+      <div className="history-columns">
+        {/* LEFT COLUMN - OLDER / PREVIOUS */}
+        <div className="history-column">
+          <div className="history-column-header">Previous / Yesterday</div>
 
-                              {/* ✏️ EDIT BUTTON */}
-                              <button
-                                type="button"
-                                className="history-print-btn"
-                                onClick={() => {
-                                  const editData = handleEditLabRequest(item);
-                                  setFormData(prev => ({
-                                    ...prev,
-                                    id: item.id,
-                                    request_no: item.request_no,
-                                    diagnosis: editData.diagnosis || "",
-                                    xray_findings: editData.xray_findings || "",
-                                    utz_findings: editData.utz_findings || "",
-                                  }));
-                                  // Set selected tests from history
-                                  if (editData.tests && editData.tests.length > 0) {
-                                    setSelectedTests(editData.tests);
-                                  }
-                                  setShowLabHistory(false);
-                                  setTimeout(() => {
-                                    diagnosisRef.current?.scrollIntoView({ behavior: 'smooth' });
-                                  }, 100);
-                                }}
-                                title="Edit lab request"
-                                style={{ marginLeft: '8px' }}
-                              >
-                                ✏️
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+          {olderRequests.length === 0 ? (
+            <p className="no-history">No previous requests.</p>
+          ) : (
+            <ul className="history-list">
+              {olderRequests.map((item) => (
+                <li key={item.id} className="history-list-item">
+                  <div className="history-item-info">
+                    <div className="history-date">
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </div>
+                    <div className="history-doctor">
+                      Dr. {item.doctor_name || "N/A"}
+                    </div>
                   </div>
-                  )}
+
+                  <div className="history-actions">
+                    <button
+                      className="history-print-btn"
+                      onClick={() => openLabPrintPreview(item.id)}
+                    >
+                      Print
+                    </button>
+
+                    <button
+                      type="button"
+                      className="history-edit-btn"
+                      onClick={() => {
+                        const editData = handleEditLabRequest(item);
+                        setFormData((prev) => ({
+                          ...prev,
+                          id: item.id,
+                          request_no: item.request_no,
+                          diagnosis: editData.diagnosis || "",
+                          xray_findings: editData.xray_findings || "",
+                          utz_findings: editData.utz_findings || "",
+                        }));
+
+                        if (editData.tests && editData.tests.length > 0) {
+                          setSelectedTests(editData.tests);
+                        }
+
+                        setShowLabHistory(false);
+                        setTimeout(() => {
+                          diagnosisRef.current?.scrollIntoView({
+                            behavior: "smooth",
+                          });
+                        }, 100);
+                      }}
+                      title="Edit lab request"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* RIGHT COLUMN - TODAY */}
+        <div className="history-column today-column">
+          <div className="history-column-header today-header">Today</div>
+
+          {todayRequests.length === 0 ? (
+            <p className="no-history">No requests today.</p>
+          ) : (
+            <ul className="history-list">
+              {todayRequests.map((item) => (
+                <li key={item.id} className="history-list-item">
+                  <div className="history-item-info">
+                    <div className="history-date">
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </div>
+                    <div className="history-doctor">
+                      Dr. {item.doctor_name || "N/A"}
+                    </div>
+                  </div>
+
+                  <div className="history-actions">
+                    <button
+                      className="history-print-btn"
+                      onClick={() => openLabPrintPreview(item.id)}
+                    >
+                      Print
+                    </button>
+
+                    <button
+                      type="button"
+                      className="history-edit-btn"
+                      onClick={() => {
+                        const editData = handleEditLabRequest(item);
+                        setFormData((prev) => ({
+                          ...prev,
+                          id: item.id,
+                          request_no: item.request_no,
+                          diagnosis: editData.diagnosis || "",
+                          xray_findings: editData.xray_findings || "",
+                          utz_findings: editData.utz_findings || "",
+                        }));
+
+                        if (editData.tests && editData.tests.length > 0) {
+                          setSelectedTests(editData.tests);
+                        }
+
+                        setShowLabHistory(false);
+                        setTimeout(() => {
+                          diagnosisRef.current?.scrollIntoView({
+                            behavior: "smooth",
+                          });
+                        }, 100);
+                      }}
+                      title="Edit lab request"
+                    >
+                      ✏️
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+)}
 
                   {/* SHOW HISTORY BUTTON */}
                   {!showLabHistory && (

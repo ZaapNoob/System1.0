@@ -37,6 +37,9 @@ import PintMEDICAL from "./pages/Printing/PintMEDICAL";
 // Import PrintLaboratory page component
 import PrintLaboratory from "./pages/Printing/PrintLaboratory";
 
+// Import TVDisplayFullscreen page component
+import TVDisplayFullscreen from "./pages/TVDisplayFullscreen";
+
 // Import ModalProvider
 import { ModalProvider } from "./components/modal/ModalProvider";
 
@@ -65,6 +68,7 @@ export default function App() {
   const [allowedPages, setAllowedPages] = useState([]);
 
   const path = window.location.pathname;
+  const search = window.location.search;
 
   // -----------------------------
   // RUN ON APP LOAD (AUTH CHECK)
@@ -166,6 +170,15 @@ if (path.includes("printing/medical")) {
   // If URL is /print-laboratory → render PrintLaboratory page in new tab
 if (path.includes("print-laboratory")) {
   return <PrintLaboratory />;
+}
+
+  // If URL is ?view=tv-display → render TVDisplayFullscreen page in fullscreen
+if (search.includes("view=tv-display")) {
+  return (
+    <WebSocketProvider>
+      <TVDisplayFullscreen />
+    </WebSocketProvider>
+  );
 }
 
   // If user IS logged in, conditionally show Dashboard, Patient, QueueGen, or Profile

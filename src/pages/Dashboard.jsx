@@ -818,10 +818,20 @@ function TVDisplayWidget() {
     all_keys: Object.keys(q)  // Show ALL available fields
   })));
 
+  // Handle expand button click
+  const handleExpandTV = () => {
+    window.open(`${window.location.origin}?view=tv-display`, 'TV-Display', 'width=1920,height=1080,fullscreen=yes');
+  };
+
   return (
     <div className="widget-card widget-tv">
       <div className="widget-header">
-        <h3>📺 TV Display Panel - Now Serving</h3>
+        <div className="widget-header-content">
+          <h3>📺 TV Display Panel - Now Serving</h3>
+          <button onClick={handleExpandTV} className="expand-btn" title="Open in new tab for TV display">
+            🖥️ Expand to TV
+          </button>
+        </div>
       </div>
 
       <div className="widget-content">
@@ -836,7 +846,10 @@ function TVDisplayWidget() {
                 <div className="tv-doctor-label">Dr. {queue.doctor_name || `Doctor ${queue.doctor_id}`}</div>
                 <div className="tv-queue-display">
                   <div className="tv-queue-id">
-                    {queue.patient_queue_id || queue.queue_number || queue.id || '---'}
+                    {queue.queue_code || queue.queue_number || queue.patient_queue_id || queue.id || '---'}
+                  </div>
+                  <div className="tv-queue-type-badge">
+                    {queue.queue_type?.toUpperCase() === 'PRIORITY' ? '⚡ PRIORITY' : '📋 REGULAR'}
                   </div>
                   <div className="tv-status-badge">
                     {queue.status.toUpperCase()}

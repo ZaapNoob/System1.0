@@ -170,3 +170,16 @@
 {"queue_id":9,"patient_id":14,"doctor_id":12}
 {"queue_id":10,"patient_id":1,"doctor_id":12}
 {"queue_id":11,"patient_id":14,"doctor_id":12}
+{"queue_id":15,"patient_id":12,"doctor_id":24}
+{"queue_id":13,"patient_id":1,"doctor_id":20}
+{"queue_id":14,"patient_id":13,"doctor_id":12}
+{"queue_id":16,"patient_id":14,"doctor_id":20}
+{"queue_id":17,"patient_id":96,"doctor_id":20}
+{"queue_id":19,"patient_id":1,"doctor_id":12}
+{"queue_id":20,"patient_id":14,"doctor_id":24}
+{"queue_id":21,"patient_id":1,"doctor_id":12}
+{"queue_id":22,"patient_id":14,"doctor_id":20}
+{"queue_id":23,"patient_id":12,"doctor_id":12}
+{"queue_id":24,"patient_id":96,"doctor_id":12}
+{"queue_id":25,"patient_id":1,"doctor_id":12}
+{"queue_id":26,"patient_id":14,"doctor_id":12}
