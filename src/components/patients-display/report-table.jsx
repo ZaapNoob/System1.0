@@ -3,7 +3,7 @@ import "./report-table.css";
 import { useModal } from "../modal/ModalProvider";
 import PatientDetailsModal from "./PatientDetailsModal";
 
-export default function ReportTable({ data = [], reportType = "consultations" }) {
+export default function ReportTable({ data = [], reportType = "consultations", filters = {} }) {
   const { openModal } = useModal();
   const [selectedBarangay, setSelectedBarangay] = useState(null);
 
@@ -32,16 +32,23 @@ export default function ReportTable({ data = [], reportType = "consultations" })
     }
   };
 
-  // Handle View Details click
+  // Handle View Details click - Pass filters to modal
   const handleViewDetails = (item) => {
     const barangayId = item.barangay_id;
     const barangayName = item.label || item.barangay;
     setSelectedBarangay(barangayName);
+    console.log("Report Table - Viewing details:", {
+      barangayId,
+      barangayName,
+      reportType,
+      filters
+    });
     openModal(
       <PatientDetailsModal 
         barangayId={barangayId}
         barangayName={barangayName}
         reportType={reportType}
+        filters={filters}
       />
     );
   };
@@ -60,21 +67,19 @@ export default function ReportTable({ data = [], reportType = "consultations" })
             <tr>
               <th>#</th>
               <th>Barangay</th>
-              <th>Count</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {data.length === 0 ? (
               <tr>
-                <td colSpan="4">No report data available</td>
+                <td colSpan="3">No report data available</td>
               </tr>
             ) : (
               data.map((item, index) => (
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.label || item.barangay}</td>
-                  <td>{getItemCount(item)}</td>
                   <td>
                     <button 
                       className="report-btn"
@@ -89,14 +94,7 @@ export default function ReportTable({ data = [], reportType = "consultations" })
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan="2"><strong>Total</strong></td>
-              <td>
-                <strong>{totalCount}</strong>
-              </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td colSpan="4">
+              <td colSpan="3">
                 <p><strong>Note:</strong> This table shows summarized report data per barangay.</p>
               </td>
             </tr>

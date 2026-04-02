@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import BaseTable from "../BaseTable";
-import { fetchPatientsPerBarangayDetails } from "../../api/reports";
+import {
+  fetchPatientsWithConsultations,
+  fetchPatientsWithLabRequests,
+  fetchPatientsWithMedicalCertificates,
+  fetchPatientsList
+} from "../../api/reports";
 import { getFullPatientDetails } from "../../api/patients";
 import { useModal } from "../modal/ModalProvider";
 import ViewPatientModal from "./ViewPatientModal";
 import "./patient-details-modal.css";
 
-export default function PatientDetailsModal({ barangayId, barangayName, reportType }) {
+export default function PatientDetailsModal({ barangayId, barangayName, reportType, filters = {} }) {
   const { openModal } = useModal();
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,26 +23,24 @@ export default function PatientDetailsModal({ barangayId, barangayName, reportTy
       setError(null);
 
       try {
+        // Merge barangay ID with provided filters
+        const mergedFilters = {
+          ...filters,
+          barangay: barangayId
+        };
+
         let data;
 
+        // Choose the correct API function based on report type
         if (reportType === "patients") {
-          data = await fetchPatientsPerBarangayDetails({ barangay: barangayId });
+          data = await fetchPatientsList(mergedFilters);
         } else if (reportType === "labRequests") {
-          data = await fetchPatientsPerBarangayDetails({
-            barangay: barangayId,
-            hasLabRequests: true,
-          });
+          data = await fetchPatientsWithLabRequests(mergedFilters);
         } else if (reportType === "medicalCertificates") {
-          data = await fetchPatientsPerBarangayDetails({
-            barangay: barangayId,
-            hasMedicalCerts: true,
-          });
+          data = await fetchPatientsWithMedicalCertificates(mergedFilters);
         } else {
           // consultations
-          data = await fetchPatientsPerBarangayDetails({
-            barangay: barangayId,
-            hasConsultations: true,
-          });
+          data = await fetchPatientsWithConsultations(mergedFilters);
         }
 
         setPatients(data || []);
@@ -52,7 +55,7 @@ export default function PatientDetailsModal({ barangayId, barangayName, reportTy
     if (barangayId) {
       fetchPatients();
     }
-  }, [barangayId, reportType]);
+  }, [barangayId, reportType, filters]);
 
   // Handle View Profile
   const handleViewProfile = async (row) => {

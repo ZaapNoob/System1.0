@@ -189,7 +189,6 @@ export default function EditConsultationModal({ consultation, patient, onUpdate 
           <option value="">-- Select --</option>
           <option value="New Consultation">New Consultation</option>
           <option value="Follow-up Consultation">Follow-up Consultation</option>
-          <option value="Problem Consultation (New Symptoms)">Problem Consultation (New Symptoms)</option>
         </select>
       </div>
     </div>

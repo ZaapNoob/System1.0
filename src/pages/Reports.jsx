@@ -292,27 +292,6 @@ export default function Reports({ user, selectedPages, onNavigateToDashboard }) 
               </div>
             </div>
 
-            {/* VISIT TYPE */}
-            {isConsultationReport && (
-              <div className="filter-group">
-                <label>Visit Type</label>
-                <div className="custom-combobox visitType">
-                  <select
-                    value={filters.visitType}
-                    onChange={(e) => handleChange("visitType", e.target.value)}
-                  >
-                    <option value="all">All</option>
-                    <option value="New Consultation">New Consultation</option>
-                    <option value="Follow-up Consultation">Follow-up Consultation</option>
-                    <option value="Problem Consultation (New Symptoms)">
-                      Problem Consultation (New Symptoms)
-                    </option>
-                  </select>
-                  <span className="arrow">▼</span>
-                </div>
-              </div>
-            )}
-
             {/* REFERRAL STATUS */}
             {isConsultationReport && (
               <div className="filter-group">
@@ -389,7 +368,7 @@ export default function Reports({ user, selectedPages, onNavigateToDashboard }) 
                 )}
 
                 {viewMode === "table" && reportData.length > 0 && (
-                  <ReportTable data={reportData} reportType={filters.reportType} />
+                  <ReportTable data={reportData} reportType={filters.reportType} filters={filters} />
                 )}
               </>
             )}
