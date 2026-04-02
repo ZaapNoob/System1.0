@@ -282,12 +282,13 @@ ORDER BY queue_number ASC";
         }
 
         try {
-            // 🔄 Fetch doctor queue assignments with patient information
+            // 🔄 Fetch doctor queue assignments with patient information + queue_type
             $sql = "
                 SELECT 
                     dpq.id,
                     dpq.patient_id,
                     dpq.doctor_id,
+                    dpq.patient_queue_id,
                     dpq.queue_number,
                     dpq.queue_date,
                     dpq.status,
@@ -295,10 +296,13 @@ ORDER BY queue_number ASC";
                     dpq.created_at,
                     p.first_name,
                     p.last_name,
-                    u.name as doctor_name
+                    u.name as doctor_name,
+                    pq.queue_type,
+                    pq.queue_code
                 FROM doctor_patient_queue dpq
                 JOIN patients_db p ON p.id = dpq.patient_id
                 JOIN users u ON u.id = dpq.doctor_id
+                LEFT JOIN patient_queue pq ON pq.id = dpq.patient_queue_id
                 WHERE dpq.queue_date = CURDATE()
                   AND dpq.status IN ('waiting', 'serving')
             ";
@@ -316,9 +320,10 @@ ORDER BY queue_number ASC";
 
             echo "[" . date('Y-m-d H:i:s') . "] 📊 Query result: " . count($doctorQueue) . " doctor assignments\n";
 
-            // Log details of each assignment
+            // Log details of each assignment - INCLUDING patient_queue_id and queue_type
             foreach ($doctorQueue as $idx => $assignment) {
-                echo "[" . date('Y-m-d H:i:s') . "]   Assignment {$idx}: ID={$assignment['id']}, DoctorID={$assignment['doctor_id']}, Patient={$assignment['first_name']} {$assignment['last_name']}, Status={$assignment['status']}\n";
+                $queueType = $assignment['queue_type'] ?? 'REGULAR';
+                echo "[" . date('Y-m-d H:i:s') . "]   Assignment {$idx}: ID={$assignment['id']}, PatientQueueID={$assignment['patient_queue_id']}, DoctorID={$assignment['doctor_id']}, Patient={$assignment['first_name']} {$assignment['last_name']}, Type={$queueType}, Status={$assignment['status']}, IsActive={$assignment['is_active']}\n";
             }
 
             // ✅ Broadcast to all connected clients

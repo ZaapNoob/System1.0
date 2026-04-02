@@ -102,9 +102,34 @@ export const getMedicalHistory = async (patientId) => {
   );
 };
 
+export const updateMedicalCertificate = async (certificateData) => {
+  return apiFetch(`${API}/medical/update-certificate.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(certificateData),
+  });
+};
+
 export const checkDuplicatePatient = async (payload) => {
 
   const params = new URLSearchParams(payload).toString();
 
   return apiFetch(`${API}/patients/duplicate-check.php?${params}`);
+};
+
+
+
+/* =========================
+   DELETE PATIENT (SOFT DELETE)
+========================= */
+export const deletePatient = async (patientId) => {
+  return apiFetch(`${API}/patients/delete-patient.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ patient_id: patientId }),
+  });
 };

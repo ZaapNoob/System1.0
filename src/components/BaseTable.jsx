@@ -38,7 +38,7 @@ export default function BaseTable({
             >
               {columns.map((col) => (
                 <td key={col.key}>
-                  {col.render ? col.render(row) : row[col.key]}
+                  {col.render ? col.render(row, idx) : row[col.key]}
                 </td>
               ))}
             </tr>

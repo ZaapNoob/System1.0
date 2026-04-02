@@ -1,0 +1,147 @@
+/* Full-Screen TV Display CSS */
+
+.tv-fullscreen-container {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #0a0e27;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Arial', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+
+.tv-fullscreen-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1f3a, #0a0e27);
+}
+
+.tv-no-queue-message {
+  font-size: 8vw;
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+.tv-fullscreen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(25vw, 1fr));
+  gap: 2vw;
+  padding: 3vw;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: linear-gradient(135deg, #1a1f3a, #0a0e27);
+}
+
+.tv-fullscreen-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  border-radius: 2vw;
+  padding: 2vw;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  border: 3px solid #3d5afe;
+  transition: all 0.3s ease;
+  min-height: 30vh;
+}
+
+.tv-fullscreen-slot:hover {
+  transform: scale(1.05);
+  box-shadow: 0 12px 40px rgba(61, 94, 254, 0.6);
+}
+
+.tv-fullscreen-number {
+  font-size: 15vw;
+  font-weight: 900;
+  color: #00ff00;
+  text-shadow: 0 0 20px rgba(0, 255, 0, 0.8), 0 0 40px rgba(0, 255, 0, 0.4);
+  letter-spacing: 5px;
+  line-height: 1;
+  margin-bottom: 1.5vw;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+}
+
+.tv-fullscreen-type-badge {
+  font-size: 2vw;
+  color: #00ff00;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+  letter-spacing: 1px;
+  margin: 1vw 0;
+  padding: 0.5vw 1vw;
+  background-color: rgba(0, 255, 0, 0.1);
+  border-radius: 0.5vw;
+  border: 2px solid rgba(0, 255, 0, 0.4);
+}
+
+.tv-fullscreen-doctor {
+  font-size: 2.5vw;
+  color: #ffffff;
+  text-align: center;
+  font-weight: 600;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+  margin-top: 1vw;
+}
+
+/* Close button */
+.tv-fullscreen-close {
+  position: fixed;
+  top: 2vw;
+  right: 2vw;
+  width: 5vw;
+  height: 5vw;
+  background-color: rgba(255, 0, 0, 0.8);
+  border: none;
+  border-radius: 50%;
+  font-size: 2.5vw;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+}
+
+.tv-fullscreen-close:hover {
+  background-color: rgba(255, 0, 0, 1);
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.8);
+}
+
+.tv-fullscreen-close:active {
+  transform: scale(0.95);
+}
+
+/* Responsive for different screen sizes */
+@media (max-width: 1920px) {
+  .tv-fullscreen-number {
+    font-size: 12vw;
+  }
+  
+  .tv-fullscreen-doctor {
+    font-size: 2vw;
+  }
+}
+
+@media (max-width: 1280px) {
+  .tv-fullscreen-number {
+    font-size: 10vw;
+  }
+  
+  .tv-fullscreen-doctor {
+    font-size: 1.5vw;
+  }
+}

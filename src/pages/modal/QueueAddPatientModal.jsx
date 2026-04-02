@@ -1,6 +1,8 @@
 import { useModal } from "../../components/modal/ModalProvider";
 import useAddPatient from "../../hooks/useAddPatient";
 import { calculateAge } from "../../hooks/DOBAuto-Age";
+import Camera from "../../components/Camera";
+import useCamera from "../../hooks/camera/useCamera";
 
 import "./QueueAddPatientModal.css";
 
@@ -33,11 +35,27 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
 
   const { closeModal } = useModal();
 
+  // =======================
+  // CAMERA INTEGRATION
+  // =======================
+  const {
+    showCamera,
+    patientImage,
+    currentPatientId,
+    handleOpenCamera,
+    handleCloseCamera,
+    handleImageUpload,
+    handleCaptureImage,
+    handleSavePatientWithCamera,
+    clearPatientImage
+  } = useCamera(newPatient, handleSavePatient);
+
   const handleCancel = () => {
     setShowAdditionalInfo(false);
     setShowCreatePurok(false);
     setIsFamilyMember(false);
     setNewPatient(initialPatientState);
+    clearPatientImage();
     closeModal();
   };
 
@@ -47,6 +65,32 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
       <div className="patient-basic-card">
         {/* HEADER */}
         <div className="patient-modal-header">
+
+          {/* PROFILE PHOTO SECTION */}
+<div className="profile-section">
+
+  <div className="profile-avatar">
+    {patientImage ? (
+      <img src={patientImage} alt="Patient" />
+    ) : newPatient.photo ? (
+      <img src={newPatient.photo} alt="Patient" />
+    ) : (
+      <div className="avatar-placeholder">No Photo</div>
+    )}
+  </div>
+
+  <div className="profile-actions">
+    <button 
+      type="button" 
+      className="capture-btn"
+      onClick={handleOpenCamera}
+      title="Open camera to capture photo"
+    >
+      📷 Capture
+    </button>
+  </div>
+
+</div>
     <h2>Add Patient</h2>
     <p>Fill in the patient’s basic information</p>
           <button className="cancel-btn" onClick={handleCancel}>
@@ -626,12 +670,26 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
           <button
             type="button"
             className="save-btn"
-            onClick={handleSavePatient}
+            onClick={handleSavePatientWithCamera}
             disabled={loading}
           >
             {loading ? "Saving..." : "Save Patient"}
           </button>
         </div>
+
+        {/* CAMERA MODAL */}
+        {showCamera && (
+          <div className="modal-overlay" onClick={handleCloseCamera}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <Camera
+                patientId={currentPatientId || newPatient.id}
+                onClose={handleCloseCamera}
+                onUpload={handleImageUpload}
+                onCapture={handleCaptureImage}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

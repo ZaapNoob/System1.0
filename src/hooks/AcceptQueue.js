@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useWebSocketContext } from "../context/WebSocketContext";
 import { acceptQueuePatient } from "../api/queue";
 
-export default function useAcceptQueue({ onAccepted }) {
+export default function useAcceptQueue({ onAccepted, user }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { send: wsSend } = useWebSocketContext();
@@ -14,9 +14,9 @@ export default function useAcceptQueue({ onAccepted }) {
     setError(null);
 
     try {
-      // 1️⃣ Call API to accept patient
-      console.log('🟡 [AcceptQueue] Calling API to accept patient:', queueItem.id);
-      const res = await acceptQueuePatient(queueItem.id);
+      // 1️⃣ Call API to accept patient with user ID
+      console.log('🟡 [AcceptQueue] Calling API to accept patient:', queueItem.id, 'administered_by:', user?.id);
+      const res = await acceptQueuePatient(queueItem.id, user?.id);
 
       if (!res.success) {
         setError(res.message || "Failed to accept patient");

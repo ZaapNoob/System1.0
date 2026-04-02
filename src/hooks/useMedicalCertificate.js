@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { searchPatientsQueue, saveMedicalCertificate, getCertificateDetails } from '../api/patients';
+import { useState, useEffect } from 'react';
+import { searchPatientsQueue, saveMedicalCertificate, getCertificateDetails, updateMedicalCertificate } from '../api/patients';
 
 export default function useMedicalCertificate() {
   const [step, setStep] = useState(1);
@@ -8,21 +8,37 @@ export default function useMedicalCertificate() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [editingCertificateId, setEditingCertificateId] = useState(null);
 
   // -----------------------
-  // HANDLE SEARCH
+  // LIVE SEARCH WITH DEBOUNCING
   // -----------------------
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
+  useEffect(() => {
+    // Debounce timer
+    const debounceTimer = setTimeout(() => {
+      if (!searchQuery.trim()) {
+        setSearchResults([]);
+        setError('');
+        return;
+      }
 
+      // Perform the search
+      performSearch(searchQuery);
+    }, 300); // 300ms delay before fetching
+
+    return () => clearTimeout(debounceTimer); // Cleanup timer on unmount or query change
+  }, [searchQuery]);
+
+  // -----------------------
+  // PERFORM SEARCH
+  // -----------------------
+  const performSearch = async (query) => {
     setLoading(true);
     setError('');
     setSearchResults([]);
-    setSelectedPatient(null);
 
     try {
-      const response = await searchPatientsQueue(0, searchQuery);
+      const response = await searchPatientsQueue(0, query);
 
       if (response?.success && Array.isArray(response.patients) && response.patients.length > 0) {
         setSearchResults(response.patients);
@@ -35,6 +51,17 @@ export default function useMedicalCertificate() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // -----------------------
+  // HANDLE SEARCH (Optional - keep for form submit)
+  // -----------------------
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    // Just perform the search directly (debouncing is already done via useEffect)
+    await performSearch(searchQuery);
   };
 
   // -----------------------
@@ -129,6 +156,62 @@ export default function useMedicalCertificate() {
     }
   };
 
+  // -----------------------
+  // EDIT CERTIFICATE
+  // -----------------------
+  const handleEditCertificate = (historyItem) => {
+    setEditingCertificateId(historyItem.id);
+    // Pre-fill form with history data
+    return {
+      certificate_no: historyItem.certificate_no,
+      impression: historyItem.impression,
+      remarks: historyItem.remarks,
+    };
+  };
+
+  // -----------------------
+  // UPDATE CERTIFICATE
+  // -----------------------
+  const handleUpdateCertificate = async (formData, refreshTrigger, setRefreshTrigger) => {
+    if (!formData.impression.trim()) {
+      alert('Please enter clinical impression');
+      return;
+    }
+    if (!formData.remarks.trim()) {
+      alert('Please enter clinical remarks');
+      return;
+    }
+
+    try {
+      const updatePayload = {
+        id: editingCertificateId,
+        impression: formData.impression,
+        remarks: formData.remarks,
+      };
+
+      const response = await updateMedicalCertificate(updatePayload);
+
+      if (response?.success) {
+        alert('Medical certificate updated successfully!');
+        setEditingCertificateId(null);
+        // Trigger refresh of history
+        setRefreshTrigger(refreshTrigger + 1);
+      } else {
+        alert('Error updating certificate: ' + (response?.message || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Error updating certificate:', error);
+      alert('Failed to update certificate. Please try again.');
+    }
+  };
+
+  // -----------------------
+  // CANCEL EDIT
+  // -----------------------
+  const handleCancelEdit = () => {
+    setEditingCertificateId(null);
+  };
+
   return {
     // State
     step,
@@ -141,6 +224,7 @@ export default function useMedicalCertificate() {
     setSelectedPatient,
     loading,
     error,
+    editingCertificateId,
 
     // Handlers
     handleSearch,
@@ -149,5 +233,8 @@ export default function useMedicalCertificate() {
     handleSubmit,
     handleReset,
     handleGenerateCertificate,
+    handleEditCertificate,
+    handleUpdateCertificate,
+    handleCancelEdit,
   };
 }

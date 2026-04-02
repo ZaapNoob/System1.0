@@ -115,6 +115,7 @@ try {
             p.date_of_birth,
             p.contact_number,
             p.blood_type,
+            p.profile_image,
 
             q.queue_number,
             q.queue_code,

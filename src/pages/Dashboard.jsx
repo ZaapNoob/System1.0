@@ -43,6 +43,12 @@ import useCancelWaitingQueues from "../hooks/useCancelWaitingQueues";
 // Encoder queue filter hook
 import { useEncoderQueueFilter } from "../hooks/useEncoderQueueFilter";
 
+// Encoder queue hook (date-filtered, API-only)
+import { useEncoderQueue } from "../hooks/useEncoderQueue";
+
+// Queue stats hook
+import { useQueueStats } from "../hooks/useQueueStats";
+
 
 export default function Dashboard({
   user,
@@ -69,14 +75,9 @@ export default function Dashboard({
   };
 
   // ===============================
-  // MOCK TASKS
+  // QUEUE STATISTICS (Real data from database)
   // ===============================
-  const [tasks, setTasks] = useState([
-    { id: 1, title: "Review project proposal", status: "In Progress", priority: "High" },
-    { id: 2, title: "Update documentation", status: "Pending", priority: "Medium" },
-    { id: 3, title: "Fix critical bugs", status: "Completed", priority: "High" },
-    { id: 4, title: "Design new features", status: "In Progress", priority: "Medium" }
-  ]);
+  const { stats, loading: statsLoading, error: statsError, refreshStats } = useQueueStats(user);
 
   // ===============================
   // POLLING RESET TRIGGER & WEBSOCKET HANDLERS
@@ -95,6 +96,13 @@ export default function Dashboard({
     20000  // Fallback polling interval (only used if WebSocket is down)
   );
   const [servingPatient, setServingPatient] = useState(null);
+  const [showAllPriority, setShowAllPriority] = useState(false);
+  const [showAllRegular, setShowAllRegular] = useState(false);
+
+  const priorityQueue = waitingQueue.filter(q => q.queue_type === "PRIORITY");
+  const regularQueue = waitingQueue.filter(q => q.queue_type === "REGULAR");
+  const displayPriority = showAllPriority ? priorityQueue : priorityQueue.slice(0, 3);
+  const displayRegular = showAllRegular ? regularQueue : regularQueue.slice(0, 3);
 
   // ===============================
   // TRIAGE AUTO-REVERT HOOK
@@ -131,21 +139,16 @@ export default function Dashboard({
   });
 
   // ===============================
-  // ENCODER QUEUE (AUTO REFRESH) - Uses WebSocket live fetch, fallback to polling
+  // ENCODER QUEUE (DATE-FILTERED API POLLING - NO WEBSOCKET)
   // ===============================
-  // Fetches ALL DONE patients needing consultation encoding
-  // ✅ No filtering - displays all encoder queue data for anyone
-  const encoderQueue = useAutoFetchStable(
-    'encoder-queue',
-    `${API}/consultation/encoder/get-encoder-queue.php`,
-    20000,  // Fallback polling interval (only used if WebSocket is down)
-    null  // ✅ No doctor filtering - show all encoder data
-  );
+  // Fetches DONE patients for the selected date from API only
+  // ✅ Bypasses WebSocket to allow proper date filtering
+  const { encoderQueue, encoderFilterDate, setEncoderFilterDate } = useEncoderQueue();
 
   // ===============================
   // ENCODER QUEUE FILTER HOOK
   // ===============================
-  const { search: encoderSearch, setSearch: setEncoderSearch, filterDate: encoderFilterDate, setFilterDate: setEncoderFilterDate, filteredQueue: filteredEncoderQueue } = useEncoderQueueFilter(encoderQueue);
+  const { search: encoderSearch, setSearch: setEncoderSearch, filteredQueue: filteredEncoderQueue } = useEncoderQueueFilter(encoderQueue);
 
   // ===============================
   // ACCEPT QUEUE HOOK
@@ -153,7 +156,8 @@ export default function Dashboard({
   const { handleAcceptQueue, loading: accepting } = useAcceptQueue({
     onAccepted: (patient) => {
       setServingPatient(patient);
-    }
+    },
+    user
   });
 
   // ===============================
@@ -292,7 +296,7 @@ export default function Dashboard({
         </header>
 
         {/* Main content */}
-        <main className="dashboard-main">
+        <main className="dashboard-main1">
 
           {/* Welcome message */}
           <div className="left-panel">
@@ -310,41 +314,28 @@ export default function Dashboard({
               <div className="stat-card">
                 <div className="stat-icon">📋</div>
                 <div className="stat-content">
-                  <h3>Total Tasks</h3>
-                  <p className="stat-number">{tasks.length}</p>
+                  <h3>Over All completed</h3>
+                  <p className="stat-number">{statsLoading ? "..." : stats.overallCompleted}</p>
                 </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-icon">✅</div>
                 <div className="stat-content">
-                  <h3>Completed</h3>
-                  <p className="stat-number">
-                    {tasks.filter(t => t.status === "Completed").length}
-                  </p>
+                  <h3>Today Completed</h3>
+                  <p className="stat-number">{statsLoading ? "..." : stats.todayCompleted}</p>
                 </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-icon">⚡</div>
                 <div className="stat-content">
-                  <h3>In Progress</h3>
-                  <p className="stat-number">
-                    {tasks.filter(t => t.status === "In Progress").length}
-                  </p>
+                  <h3>Waiting</h3>
+                  <p className="stat-number">{statsLoading ? "..." : stats.waiting}</p>
                 </div>
               </div>
 
-              <div className="stat-card">
-                <div className="stat-icon">⏳</div>
-                <div className="stat-content">
-                  <h3>Pending</h3>
-                  <p className="stat-number">
-                    {tasks.filter(t => t.status === "Pending").length}
-                  </p>
-                </div>
-              </div>
-
+             
             </section>
           </div>
 
@@ -362,92 +353,84 @@ export default function Dashboard({
               <div className="widgets-grid">
 
                 {/* Doctor Widget */}
-                {selectedWidgets.includes("doctor") && (
-                  <div className="widget-card widget-doctor">
-                    <div className="widget-header">
-                      <h3>👨‍⚕️ Doctor Panel</h3>
-                    </div>
-                    <div className="widget-content">
-                      <div className="doctor-widget">
+               {selectedWidgets.includes("doctor") && (
+  <div className="widget-card widget-doctor-new">
 
+    <div className="widget-header-new">
+      <div className="doctor-title">
+        <h3>Doctor Panel</h3>
+        <span>Patient Consultations</span>
+      </div>
+    </div>
 
-                        <div className="widget-section">
-                          <h4>📋 Patient Consultations</h4>
-                          <table className="consultation-table">
-                            <thead>
-                              <tr>
-                                <th>Patient Name</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {doctorAssignmentsLoading && (
-                                <tr>
-                                  <td colSpan="3">Loading assignments...</td>
-                                </tr>
-                              )}
+    <div className="widget-content-new">
+      <table className="consultation-table-new">
+        <thead>
+          <tr>
+            <th>Patient Name</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
 
-                              {!doctorAssignmentsLoading && doctorAssignments.length === 0 && (
-                                <tr>
-                                  <td colSpan="3">No assigned patients</td>
-                                </tr>
-                              )}
+        <tbody>
+          {doctorAssignmentsLoading && (
+            <tr>
+              <td colSpan="3">Loading assignments...</td>
+            </tr>
+          )}
 
-                              {doctorAssignments.map((item) => (
-                                <tr key={item.id}>
-                                  <td>{item.patient_name}</td>
-                                  <td>
-                                    <span className={`status-badge ${getStatusColor(item.status)}`}>
-                                      {item.status}
-                                    </span>
-                                  </td>
-                                  <td>
-                                    {item.status !== "done" && (
-                                      <button
-                                        className="btn btn-primary btn-sm"
-                                        onClick={async () => {
-                                          try {
-                                            // ✅ 1. Mark patient as active & get full patient data
-                                            const patientData = await setActive(item.id);
+          {!doctorAssignmentsLoading && doctorAssignments.length === 0 && (
+            <tr>
+              <td colSpan="3">No assigned patients</td>
+            </tr>
+          )}
 
-                                            // ✅ 2. Open modal with full patient data
-                                            openModal(
-                                              <DoctorModal
-                                                patient={patientData}
-                                                onDone={async () => {
-                                                  await markDone(item.id); // mark as done
+          {doctorAssignments.map((item) => (
+            <tr key={item.id}>
+              <td className="patient-name-cell">{item.patient_name}</td>
 
-                                                  // 📡 Trigger WebSocket live fetch after marking done
-                                                  wsSend({ type: 'refresh-doctor-queue-now', doctor_id: user?.id });
-                                                  console.log('📡 Patient marked done - triggering WebSocket live fetch');
+              <td>
+                <span className={`status-badge-new ${getStatusColor(item.status)}`}>
+                  {item.status}
+                </span>
+              </td>
 
-                                                  closeModal();
-                                                }}
-                                              />
-                                            );
-                                          } catch (err) {
-                                            console.error("Error selecting patient:", err);
-                                          }
-                                        }}
-                                      >
-                                        Select
-                                      </button>
-                                    )}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
+              <td className="action-cell">
+                {item.status !== "done" && (
+                  <button
+                    className="select-btn-new"
+                    onClick={async () => {
+                      const patientData = await setActive(item.id);
 
+                      wsSend({
+                        type: 'doctor-assignment-updated',
+                        doctor_id: user?.id
+                      });
 
-
-                      </div>
-                    </div>
-                  </div>
+                      openModal(
+                        <DoctorModal
+                          patient={patientData}
+                          onDone={async () => {
+                            await markDone(item.id);
+                            wsSend({ type: 'refresh-doctor-queue-now', doctor_id: user?.id });
+                            closeModal();
+                          }}
+                        />
+                      );
+                    }}
+                  >
+                    Select
+                  </button>
                 )}
-
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+)}
 
 
 
@@ -457,289 +440,357 @@ export default function Dashboard({
 
 
                 {/* Triage Widget */}
-                {selectedWidgets.includes("triage") && (
-                  <div className="widget-card widget-triage">
-                 <div className="widget-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-  <h3>🚨 Triage Panel</h3>
+{selectedWidgets.includes("triage") && (
+  <div className="widget-card widget-triage">
 
-  <button
-    className="btn btn-danger btn-sm"
-    onClick={handleCancelWaitingQueues}
-  >
-    Cancel Waiting
-  </button>
-</div>
-                    <div className="widget-content">
-                      <div className="triage-widget">
+    {/* 🔥 HEADER WITH STATS */}
+    <div className="widget-header triage-header-redesign">
+      <div className="triage-title-group">
+        <h3>🚨 Triage Panel</h3>
+        <span className="triage-subtitle">Live waiting queue monitor</span>
+      </div>
 
-                        {/* Patient Queue */}
-                        <div className="widget-section">
-                          <h4>⏱️ Patient Queue</h4>
-                          <div className="queue-list">
-                            {waitingQueue.length === 0 && (
-                              <div className="empty-queue">No patients waiting</div>
-                            )}
+      <div className="triage-header-stats">
+        <div className="header-stat priority">
+          <span>Priority</span>
+          <strong>
+            {waitingQueue.filter(q => q.queue_type === "PRIORITY").length}
+          </strong>
+        </div>
 
-                            {waitingQueue.map((q) => {
-                              const waitMinutes = Math.floor(
-                                (Date.now() - new Date(q.created_at)) / 60000
-                              );
+        <div className="header-stat regular">
+          <span>Regular</span>
+          <strong>
+            {waitingQueue.filter(q => q.queue_type === "REGULAR").length}
+          </strong>
+        </div>
 
-                              return (
-                                <div
-                                  key={q.id}
-                                  className={`queue-item ${q.queue_type === "PRIORITY"
-                                      ? "priority-high"
-                                      : "priority-low"
-                                    }`}
-                                >
-                                  <span className="queue-number">{q.queue_code}</span>
+        <div className="header-stat total">
+          <span>Total</span>
+          <strong>{waitingQueue.length}</strong>
+        </div>
+      </div>
+    </div>
 
-                                  <span className="patient-info">
-                                    {q.first_name} {q.last_name}
-                                  </span>
+    <div className="widget-content">
+      <div className="triage-widget">
 
-                                  <span className="wait-time">
-                                    Wait: {waitMinutes} min
-                                  </span>
+        {/* =========================
+            PATIENT QUEUE
+        ========================== */}
+        <div className="widget-section">
+          <h4>⏱️ Patient Queue</h4>
 
-                                  {/* ✅ Accept Button Opens Modal */}
-                                  <button
-                                    className="accept-btn"
-                                    disabled={accepting}
-                                    onClick={() => {
-                                      // Accept hook will trigger WebSocket live fetch automatically
-                                      handleAcceptQueue(q, (patient) => {
-                                        // 📝 Store triage state in localStorage for recovery
-                                        const patientQueueId = patient.id;
-                                        localStorage.setItem("activeTriageQueueId", patientQueueId);
-                                        localStorage.setItem("triageAssignmentCompleted", "false");
+          <div className="queue-list">
+            {waitingQueue.length === 0 && (
+              <div className="empty-queue">No patients waiting</div>
+            )}
 
-                                        // Track in state
-                                        setTriageQueueId(patientQueueId);
-                                        setAssignmentCompleted(false);
+            <div className="queue-group priority-group">
+              <div className="queue-group-title priority">🔥 Priority Patients</div>
+              {displayPriority.length === 0 && (
+                <div className="empty-queue">No priority patients</div>
+              )}
+              {displayPriority.map((q) => {
+                const waitMinutes = Math.floor(
+                  (Date.now() - new Date(q.created_at)) / 60000
+                );
 
-                                        // Open Triage Modal after accepting
-                                        openModal(
-                                          <TriageModal
-                                            patient={patient}
-                                            triggerPollingReset={triggerPollingReset}
-                                            onAssign={() => {
-                                              // ✅ Mark assignment as completed
-                                              setAssignmentCompleted(true);
-                                              localStorage.setItem("triageAssignmentCompleted", "true");
-                                              console.log("✅ Doctor assigned - triage complete");
-                                            }}
-                                            onClose={async () => {
-                                              // ✅ Close modal & cleanup
-                                              if (!assignmentCompleted) {
-                                                // Auto-revert this specific triage back to waiting
-                                                await revertTriage(patientQueueId); // 🔄 Wait for revert to complete
+                return (
+                  <div key={q.id} className="queue-item priority-high">
+                    <span className="queue-number">{q.queue_code}</span>
 
-                                                // 📡 After revert completes, trigger WebSocket live fetch
-                                                // This will broadcast updated queue to all connected dashboards
-                                                wsSend({ type: 'refresh-queue-now' });
-                                                console.log('📡 Patient reverted to waiting - triggering WebSocket live fetch');
-                                              }
+                    <span className="patient-info">
+                      {q.first_name} {q.last_name}
+                    </span>
 
-                                              // Clean up state
-                                              setTriageQueueId(null);
-                                              setAssignmentCompleted(false);
-                                              localStorage.removeItem("activeTriageQueueId");
-                                              localStorage.removeItem("triageAssignmentCompleted");
-                                              closeModal();
-                                            }}
-                                          />
-                                        );
-                                      })
-                                    }}
-                                  >
-                                    {accepting ? "Accepting..." : "Accept"}
-                                  </button>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
+                    <span className="wait-time">Wait: {waitMinutes} min</span>
 
+                    <button
+                      className="accept-btn"
+                      disabled={accepting}
+                      onClick={() => {
+                        handleAcceptQueue(q, (patient) => {
+                          const patientQueueId = patient.id;
 
+                          localStorage.setItem("activeTriageQueueId", patientQueueId);
+                          localStorage.setItem("triageAssignmentCompleted", "false");
 
-                        {/* Triage Statistics */}
-                        <div className="widget-section">
-                          <h4>📊 Triage Statistics</h4>
-                          <div className="stats-mini">
-                            <div className="stat-box critical">
-                              <span className="stat-label">Priority</span>
-                              <span className="stat-count">
-                                {waitingQueue.filter(q => q.queue_type === "PRIORITY").length}
-                              </span>
-                            </div>
-                            <div className="stat-box low">
-                              <span className="stat-label">Regular</span>
-                              <span className="stat-count">
-                                {waitingQueue.filter(q => q.queue_type === "REGULAR").length}
-                              </span>
-                            </div>
-                            <div className="stat-box total">
-                              <span className="stat-label">Total</span>
-                              <span className="stat-count">{waitingQueue.length}</span>
-                            </div>
-                          </div>
-                        </div>
+                          setTriageQueueId(patientQueueId);
+                          setAssignmentCompleted(false);
 
-                      </div>
+                          openModal(
+                            <TriageModal
+                              patient={patient}
+                              triggerPollingReset={triggerPollingReset}
+
+                                onAssign={() => {
+                                  setAssignmentCompleted(true);
+                                  localStorage.setItem("triageAssignmentCompleted", "true");
+                                  console.log("✅ Doctor assigned - triage complete");
+                                }}
+
+                                onClose={async () => {
+                                  if (!assignmentCompleted) {
+                                    await revertTriage(patientQueueId);
+
+                                    wsSend({ type: "refresh-queue-now" });
+                                    console.log("📡 Patient reverted to waiting");
+                                  }
+
+                                  setTriageQueueId(null);
+                                  setAssignmentCompleted(false);
+                                  localStorage.removeItem("activeTriageQueueId");
+                                  localStorage.removeItem("triageAssignmentCompleted");
+
+                                  closeModal();
+                                }}
+                              />
+                            );
+                          });
+                        }}
+                      >
+                        {accepting ? "Accepting..." : "Accept"}
+                      </button>
                     </div>
-                  </div>
-                )}
-                {selectedWidgets.includes("encoder") && (
-                  <div className="widget-card widget-encoder">
+                  );
+                })}
+            </div>
+            {priorityQueue.length > 3 && (
+              <button
+                className="queue-group-toggle"
+                onClick={() => setShowAllPriority(!showAllPriority)}
+              >
+                {showAllPriority ? "Show less priority" : `Show all ${priorityQueue.length} priority`}
+              </button>
+            )}
 
-                    <div className="widget-header">
-                      <h3>🧾 Encoder Panel</h3>
+            <div className="queue-group regular-group">
+              <div className="queue-group-title regular">🧍 Regular Patients</div>
+              {displayRegular.length === 0 && (
+                <div className="empty-queue">No regular patients</div>
+              )}
+              {displayRegular.map((q) => {
+                  const waitMinutes = Math.floor(
+                    (Date.now() - new Date(q.created_at)) / 60000
+                  );
+
+                  return (
+                    <div key={q.id} className="queue-item priority-low">
+                      <span className="queue-number">{q.queue_code}</span>
+
+                      <span className="patient-info">
+                        {q.first_name} {q.last_name}
+                      </span>
+
+                      <span className="wait-time">Wait: {waitMinutes} min</span>
+
+                      <button
+                        className="accept-btn"
+                        disabled={accepting}
+                        onClick={() => {
+                          handleAcceptQueue(q, (patient) => {
+                            const patientQueueId = patient.id;
+
+                            localStorage.setItem("activeTriageQueueId", patientQueueId);
+                            localStorage.setItem("triageAssignmentCompleted", "false");
+
+                            setTriageQueueId(patientQueueId);
+                            setAssignmentCompleted(false);
+
+                            openModal(
+                              <TriageModal
+                                patient={patient}
+                                triggerPollingReset={triggerPollingReset}
+
+                                onAssign={() => {
+                                  setAssignmentCompleted(true);
+                                  localStorage.setItem("triageAssignmentCompleted", "true");
+                                  console.log("✅ Doctor assigned - triage complete");
+                                }}
+
+                                onClose={async () => {
+                                  if (!assignmentCompleted) {
+                                    await revertTriage(patientQueueId);
+
+                                    wsSend({ type: "refresh-queue-now" });
+                                    console.log("📡 Patient reverted to waiting");
+                                  }
+
+                                  setTriageQueueId(null);
+                                  setAssignmentCompleted(false);
+                                  localStorage.removeItem("activeTriageQueueId");
+                                  localStorage.removeItem("triageAssignmentCompleted");
+
+                                  closeModal();
+                                }}
+                              />
+                            );
+                          });
+                        }}
+                      >
+                        {accepting ? "Accepting..." : "Accept"}
+                      </button>
                     </div>
+                  );
+                })}
+            </div>
+            {regularQueue.length > 3 && (
+              <button
+                className="queue-group-toggle"
+                onClick={() => setShowAllRegular(!showAllRegular)}
+              >
+                {showAllRegular ? "Show less regular" : `Show all ${regularQueue.length} regular`}
+              </button>
+            )}
 
-                    {/* STEP 1 : QUEUE */}
-                    {!selectedPatient && (
-                      <div className="widget-content">
-                        {/* Search and Filter Section */}
-                        <div style={{ marginBottom: "15px", display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                          <input
-                            type="text"
-                            placeholder="Search patient name or queue #..."
-                            value={encoderSearch}
-                            onChange={(e) => setEncoderSearch(e.target.value)}
-                            style={{
-                              flex: 1,
-                              minWidth: "250px",
-                              padding: "8px 12px",
-                              border: "1px solid #ddd",
-                              borderRadius: "4px",
-                              fontSize: "14px"
-                            }}
-                          />
-                          <input
-                            type="date"
-                            value={encoderFilterDate}
-                            onChange={(e) => setEncoderFilterDate(e.target.value)}
-                            style={{
-                              padding: "8px 12px",
-                              border: "1px solid #ddd",
-                              borderRadius: "4px",
-                              fontSize: "14px"
-                            }}
-                          />
-                          {(encoderSearch || encoderFilterDate) && (
-                            <button
-                              onClick={() => {
-                                setEncoderSearch("");
-                                setEncoderFilterDate("");
-                              }}
-                              style={{
-                                padding: "8px 16px",
-                                backgroundColor: "#f0f0f0",
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
-                                cursor: "pointer",
-                                fontSize: "14px"
-                              }}
-                            >
-                              Clear Filters
-                            </button>
-                          )}
-                        </div>
+          </div>
+        </div>
 
-                        {/* Results count */}
-                        {filteredEncoderQueue.length !== encoderQueue.length && (
-                          <div style={{ marginBottom: "10px", fontSize: "12px", color: "#666" }}>
-                            Showing {filteredEncoderQueue.length} of {encoderQueue.length} patients
-                          </div>
-                        )}
+        {/* =========================
+            ACTION SECTION
+        ========================== */}
+        <div className="widget-section triage-action-section">
+          <h4>📊 Queue Actions</h4>
 
-                        <table className="consultation-table">
-                          <thead>
-                            <tr>
-                              <th>Patient Name</th>
-                              <th>Queue #</th>
-                              <th>Queue Date</th>
-                              <th>Visit Date</th>
-                              <th>Status</th>
-                              <th>Action</th>
-                            </tr>
-                          </thead>
+          <button
+            className="cancel-waiting-action-btn"
+            onClick={handleCancelWaitingQueues}
+          >
+            ⚠️ Cancel All Waiting Patients
+          </button>
+        </div>
 
-                          <tbody>
-                            {filteredEncoderQueue.length === 0 && (
-                              <tr>
-                                <td colSpan="6">
-                                  {encoderQueue.length === 0 ? "No patients to encode" : "No matching patients found"}
-                                </td>
-                              </tr>
-                            )}
+      </div>
+    </div>
+  </div>
+)}
 
-                            {filteredEncoderQueue.map((patient) => (
-                              <tr key={patient.queue_id}>
-                                <td>{patient.patient_name}</td>
-                                <td>{patient.queue_number}</td>
-                                <td>{patient.queue_date}</td>
-                                <td>{patient.visit_date || "-"}</td>
 
-                                <td>
-                                  <span
-                                    className={`status-badge ${parseInt(patient.has_consultation) > 0 ? "done" : "pending"
-                                      }`}
-                                  >
-                                    {parseInt(patient.has_consultation) > 0 ? "Encoded" : "Pending"}
-                                  </span>
-                                </td>
 
-                                <td>
-                                  <button
-                                    className="encode-btn"
-                                    onClick={() => handleEncode(patient)}
-                                  >
-                                    ✏️ Encode
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
 
-                    {/* STEP 2 : CONSULTATION HISTORY */}
-                    {selectedPatient && (
-                      <div className="widget-content">
-                        <div style={{ marginBottom: "15px" }}>
-                          <button
-                            className="back-btn"
-                            onClick={() => {
-                              setSelectedPatient(null);
-                              setEditingConsultation(null);
-                            }}
-                            style={{
-                              padding: "8px 16px",
-                              backgroundColor: "#f0f0f0",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                              cursor: "pointer",
-                              fontSize: "14px"
-                            }}
-                          >
-                            ← Back to Queue
-                          </button>
-                        </div>
 
-                        <div style={{ marginBottom: "10px", fontWeight: "bold" }}>
-                          Patient: {selectedPatient.patient_name}
-                        </div>
+{selectedWidgets.includes("encoder") && (
+  <div className="widget-card widget-encoder-new">
 
-                        {/* Use ConsultationHistoryView Component */}
-                        <ConsultationHistoryView patient={selectedPatient} />
-                      </div>
-                    )}
+    {/* HEADER */}
+    <div className="encoder-header">
+      <div>
+        <h3>🧾 Encoder Panel</h3>
+        <span>Manage and encode patient consultations</span>
+      </div>
+    </div>
+
+    {/* STEP 1: QUEUE */}
+    {!selectedPatient && (
+      <div className="encoder-body">
+
+        {/* FILTER BAR */}
+        <div className="encoder-filters">
+          <input
+            type="text"
+            placeholder="🔍 Search patient or queue #"
+            value={encoderSearch}
+            onChange={(e) => setEncoderSearch(e.target.value)}
+          />
+
+          <input
+            type="date"
+            value={encoderFilterDate}
+            onChange={(e) => setEncoderFilterDate(e.target.value)}
+          />
+
+          {encoderSearch && (
+            <button
+              className="clear-btn"
+              onClick={() => setEncoderSearch("")}
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        {/* RESULT INFO */}
+        <div className="encoder-info">
+          {filteredEncoderQueue.length} / {encoderQueue.length} patients
+        </div>
+
+        {/* LIST */}
+        <div className="encoder-list">
+          {filteredEncoderQueue.length === 0 ? (
+            <div className="empty-state">
+              {encoderQueue.length === 0
+                ? "No patients to encode"
+                : "No matching results"}
+            </div>
+          ) : (
+            filteredEncoderQueue.map((patient) => (
+              <div key={patient.queue_id} className="encoder-item">
+
+                <div className="encoder-main">
+                  <div className="patient-name">
+                    {patient.patient_name}
                   </div>
-                )}
+                  <div className="queue-meta">
+                    #{patient.queue_number} • {patient.queue_date}
+                  </div>
+                </div>
+
+                <div className="encoder-status">
+                  <span
+                    className={`status-pill ${
+                      parseInt(patient.has_consultation) > 0
+                        ? "done"
+                        : "pending"
+                    }`}
+                  >
+                    {parseInt(patient.has_consultation) > 0
+                      ? "Encoded"
+                      : "Pending"}
+                  </span>
+                </div>
+
+                <div className="encoder-action">
+                  <button
+                    className="encode-btn"
+                    onClick={() => handleEncode(patient)}
+                  >
+                    ✏️ Encode
+                  </button>
+                </div>
+
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    )}
+
+    {/* STEP 2: HISTORY */}
+    {selectedPatient && (
+      <div className="encoder-body">
+
+        <div className="encoder-topbar">
+          <button
+            className="back-btn"
+            onClick={() => {
+              setSelectedPatient(null);
+              setEditingConsultation(null);
+            }}
+          >
+            ← Back
+          </button>
+
+          <div className="selected-patient">
+            {selectedPatient.patient_name}
+          </div>
+        </div>
+
+        <ConsultationHistoryView patient={selectedPatient} />
+      </div>
+    )}
+  </div>
+)}
 
 
 
@@ -747,18 +798,7 @@ export default function Dashboard({
 
                 {/* TV Widget */}
                 {selectedWidgets.includes("tv") && (
-                  <div className="widget-card widget-tv">
-                    <div className="widget-header">
-                      <h3>📺 TV Display Panel</h3>
-                    </div>
-
-                    <div className="widget-content">
-                      <div className="tv-widget">
-                        <div className="tv-queue-number">Q001</div>
-                        <p className="tv-subtext">Now Serving</p>
-                      </div>
-                    </div>
-                  </div>
+                  <TVDisplayWidget />
                 )}
 
 
@@ -794,6 +834,88 @@ export default function Dashboard({
           </section>
 
         </main>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * TV Display Widget Component
+ * Shows all active queues in real-time via WebSocket
+ * Displays all doctors' current patients (up to doctor capacity)
+ */
+function TVDisplayWidget() {
+  const { doctorAssignments } = useWebSocketContext();
+
+  console.log('📺 [TV-RENDER] All doctorAssignments from WebSocket:', doctorAssignments);
+
+  // Get all active queues (is_active = 1 OR status = 'serving')
+  const activeQueues = doctorAssignments
+    .filter(q => q.is_active === 1 || q.status === 'serving')
+    .sort((a, b) => {
+      // Sort by doctor_id first, then by patient_queue_id
+      if (a.doctor_id !== b.doctor_id) {
+        return a.doctor_id - b.doctor_id;
+      }
+      const aId = a.patient_queue_id || a.id;
+      const bId = b.patient_queue_id || b.id;
+      return aId - bId;
+    });
+
+  // Debug: Log active queues with ALL fields
+  console.log('📺 [TV-ACTIVE] Filtered active queues:', activeQueues.map(q => ({
+    id: q.id,
+    patient_queue_id: q.patient_queue_id,
+    queue_number: q.queue_number,
+    doctor_id: q.doctor_id,
+    doctor_name: q.doctor_name,
+    patient_name: `${q.first_name} ${q.last_name}`,
+    status: q.status,
+    is_active: q.is_active,
+    all_keys: Object.keys(q)  // Show ALL available fields
+  })));
+
+  // Handle expand button click
+  const handleExpandTV = () => {
+    window.open(`${window.location.origin}?view=tv-display`, 'TV-Display', 'width=1920,height=1080,fullscreen=yes');
+  };
+
+  return (
+    <div className="widget-card widget-tv">
+      <div className="widget-header">
+        <div className="widget-header-content">
+          <h3>📺 TV Display Panel - Now Serving</h3>
+          <button onClick={handleExpandTV} className="expand-btn" title="Open in new tab for TV display">
+            🖥️ Expand to TV
+          </button>
+        </div>
+      </div>
+
+      <div className="widget-content">
+        <div className="tv-widget-grid">
+          {activeQueues.length === 0 ? (
+            <div className="tv-no-queue">
+              <p>No Active Queues</p>
+            </div>
+          ) : (
+            activeQueues.map((queue, index) => (
+              <div key={`${queue.doctor_id}-${index}`} className="tv-queue-slot">
+                <div className="tv-doctor-label">Dr. {queue.doctor_name || `Doctor ${queue.doctor_id}`}</div>
+                <div className="tv-queue-display">
+                  <div className="tv-queue-id">
+                    {queue.queue_code || queue.queue_number || queue.patient_queue_id || queue.id || '---'}
+                  </div>
+                  <div className="tv-queue-type-badge">
+                    {queue.queue_type?.toUpperCase() === 'PRIORITY' ? '⚡ PRIORITY' : '📋 REGULAR'}
+                  </div>
+                  <div className="tv-status-badge">
+                    {queue.status.toUpperCase()}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

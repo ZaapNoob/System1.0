@@ -9,14 +9,21 @@ export default function useCameraStream(onClose) {
   // Function to stop camera
   // -----------------------------
   const stopCamera = () => {
+    console.log("🛑 Stopping camera stream...");
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach(track => {
+        track.stop();
+        console.log("✅ Stopped track:", track.kind, track.readyState);
+      });
       streamRef.current = null;
     }
 
     if (videoRef.current) {
       videoRef.current.srcObject = null;
+      videoRef.current.pause();
+      console.log("✅ Video stopped and cleared");
     }
+    console.log("✅ Camera cleanup complete");
   };
 
   useEffect(() => {

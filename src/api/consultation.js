@@ -1,3 +1,4 @@
+
 import API from "../config/api";
 
 /**
@@ -191,6 +192,35 @@ export const updateConsultation = async (consultationData) => {
 
   } catch (error) {
     console.error("Error updating consultation:", error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a consultation record
+ * @param {number} consultation_id - Consultation ID to delete
+ * @returns {Promise} API response
+ */
+export const deleteConsultation = async (consultation_id) => {
+  try {
+    const response = await fetch(`${API}/consultation/delete-consultation.php`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: consultation_id }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Failed to delete consultation");
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("Error deleting consultation:", error);
     throw error;
   }
 };

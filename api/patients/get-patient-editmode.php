@@ -19,9 +19,18 @@ try {
     }
 
     $query = "
-        SELECT *
-        FROM patients_db
-        WHERE id = ?
+        SELECT 
+            p.*,
+            CONCAT(
+                p.first_name, ' ',
+                IFNULL(p.middle_name, ''), ' ',
+                p.last_name,
+                IFNULL(CONCAT(' ', p.suffix), '')
+            ) AS name,
+            b.name AS barangay_name
+        FROM patients_db p
+        LEFT JOIN barangays b ON b.id = p.barangay_id
+        WHERE p.id = ? AND p.deleted_at IS NULL
     ";
 
     $stmt = $pdo->prepare($query);
@@ -29,7 +38,12 @@ try {
     $patient = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$patient) {
-        throw new Exception('Patient not found');
+        throw new Exception('Patient not found or has been deleted');
+    }
+
+    // Return only filename - frontend will construct URL based on current protocol
+    if (!empty($patient['profile_image'])) {
+        $patient['profile_image'] = basename($patient['profile_image']);
     }
 
     echo json_encode([

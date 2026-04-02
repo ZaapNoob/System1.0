@@ -56,7 +56,7 @@ try {
         FROM patients_db p
         LEFT JOIN barangays b 
             ON p.barangay_id = b.id
-        WHERE 1=1
+        WHERE p.deleted_at IS NULL
     ";
 
     $params = [];

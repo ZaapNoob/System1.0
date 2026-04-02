@@ -1,0 +1,689 @@
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+session_start();
+require_once '../../config/db.php';
+
+try {
+    $action = $_GET['action'] ?? 'dashboard';
+
+    // COMMON FILTERS
+    $startDate = $_GET['startDate'] ?? null;
+    $endDate = $_GET['endDate'] ?? null;
+    $barangay = $_GET['barangay'] ?? null;
+    $gender = $_GET['gender'] ?? null;
+    $ageGroup = $_GET['ageGroup'] ?? null;
+    $visitType = $_GET['visitType'] ?? null;
+    $consultationType = $_GET['consultationType'] ?? null;
+    $referral = $_GET['referral'] ?? null;
+    $patientStatus = $_GET['patientStatus'] ?? null;
+    $doctor = $_GET['doctor'] ?? null;
+    $certificate = $_GET['certificate'] ?? null;
+    $labRequest = $_GET['labRequest'] ?? null;
+
+    /*
+    ======================================
+    BARANGAY STATISTICS (CONSULTATIONS)
+    ======================================
+    */
+    if ($action === "barangayStats") {
+        $conditions = [];
+        $params = [];
+
+        if ($startDate) {
+            $conditions[] = "c.visit_date >= :startDate";
+            $params[':startDate'] = $startDate;
+        }
+        if ($endDate) {
+            $conditions[] = "c.visit_date <= :endDate";
+            $params[':endDate'] = $endDate;
+        }
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($consultationType && $consultationType !== "all") {
+            $conditions[] = "c.purpose_visit = :consultationType";
+            $params[':consultationType'] = $consultationType;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($doctor && $doctor !== "all") {
+            $conditions[] = "c.doctor_id = :doctor";
+            $params[':doctor'] = $doctor;
+        }
+        if ($referral && $referral !== "all") {
+            $conditions[] = "c.referral = :referral";
+            $params[':referral'] = $referral;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
+
+        $stmt = $pdo->prepare("
+            SELECT 
+                b.id AS barangay_id,
+                b.name AS barangay,
+                COUNT(c.id) AS total
+            FROM consultations c
+            JOIN patients_db p ON p.id = c.patient_id
+            JOIN barangays b ON b.id = p.barangay_id
+            $where
+            GROUP BY b.id, b.name
+            ORDER BY total DESC
+        ");
+
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    PATIENTS PER BARANGAY (CHART)
+    ======================================
+    */
+    if ($action === "patientsPerBarangay") {
+        $conditions = [];
+        $params = [];
+
+        if ($startDate) {
+            $conditions[] = "p.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "p.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
+
+        $stmt = $pdo->prepare("
+            SELECT 
+                b.id AS barangay_id,
+                b.name AS barangay,
+                COUNT(DISTINCT p.id) AS total
+            FROM patients_db p
+            LEFT JOIN barangays b ON b.id = p.barangay_id
+            $where
+            GROUP BY b.id, b.name
+            ORDER BY total DESC
+        ");
+
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    LAB REQUESTS PER BARANGAY
+    ======================================
+    */
+    if ($action === "labRequestsPerBarangay") {
+        $conditions = [];
+        $params = [];
+
+        if ($startDate) {
+            $conditions[] = "lr.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "lr.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+        if ($doctor && $doctor !== "all") {
+            $conditions[] = "lr.doctor_id = :doctor";
+            $params[':doctor'] = $doctor;
+        }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
+
+        $stmt = $pdo->prepare("
+            SELECT 
+                b.id AS barangay_id,
+                b.name AS barangay,
+                COUNT(lr.id) AS total
+            FROM lab_requests lr
+            JOIN patients_db p ON p.id = lr.patient_id
+            LEFT JOIN barangays b ON b.id = p.barangay_id
+            $where
+            GROUP BY b.id, b.name
+            ORDER BY total DESC
+        ");
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    MEDICAL CERTIFICATES PER BARANGAY
+    ======================================
+    */
+    if ($action === "medicalCertificatesPerBarangay") {
+        $conditions = [];
+        $params = [];
+
+        if ($startDate) {
+            $conditions[] = "mc.issued_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "mc.issued_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+        if ($doctor && $doctor !== "all") {
+            $conditions[] = "mc.doctor_id = :doctor";
+            $params[':doctor'] = $doctor;
+        }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        $where = $conditions ? "WHERE " . implode(" AND ", $conditions) : "";
+
+        $stmt = $pdo->prepare("
+            SELECT 
+                b.id AS barangay_id,
+                b.name AS barangay,
+                COUNT(mc.id) AS total
+            FROM medical_certificates mc
+            JOIN patients_db p ON p.id = mc.patient_id
+            LEFT JOIN barangays b ON b.id = p.barangay_id
+            $where
+            GROUP BY b.id, b.name
+            ORDER BY total DESC
+        ");
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    PATIENTS LIST
+    ======================================
+    */
+    if ($action === "patientsList") {
+        $conditions = [];
+        $params = [];
+
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        $sql = "
+            SELECT DISTINCT
+                p.id AS patient_id,
+                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                p.gender,
+                TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
+                p.status,
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
+            FROM patients_db p
+            LEFT JOIN barangays b ON b.id = p.barangay_id
+        ";
+
+        if ($conditions) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $sql .= " ORDER BY b.name,p.last_name,p.first_name";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    PATIENTS WITH CONSULTATIONS
+    ======================================
+    */
+    if ($action === "patientsWithConsultations") {
+        $conditions = [];
+        $params = [];
+
+        if ($startDate) {
+            $conditions[] = "c.visit_date >= :startDate";
+            $params[':startDate'] = $startDate;
+        }
+        if ($endDate) {
+            $conditions[] = "c.visit_date <= :endDate";
+            $params[':endDate'] = $endDate;
+        }
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($consultationType && $consultationType !== "all") {
+            $conditions[] = "c.purpose_visit = :consultationType";
+            $params[':consultationType'] = $consultationType;
+        }
+        if ($visitType && $visitType !== "all") {
+            $conditions[] = "c.nature_visit = :visitType";
+            $params[':visitType'] = $visitType;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        $conditions[] = "c.id IS NOT NULL";  // Always require consultation exists
+
+        $sql = "
+            SELECT DISTINCT
+                p.id AS patient_id,
+                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                p.gender,
+                TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
+                p.status,
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
+            FROM patients_db p
+            LEFT JOIN barangays b ON b.id = p.barangay_id
+            LEFT JOIN consultations c ON c.patient_id = p.id
+        ";
+
+        if ($conditions) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+
+        $sql .= " ORDER BY b.name,p.last_name,p.first_name";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    PATIENTS WITH LAB REQUESTS
+    ======================================
+    */
+    if ($action === "patientsWithLabRequests") {
+        $conditions = [];
+        $params = [];
+
+        if ($startDate) {
+            $conditions[] = "lr.created_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "lr.created_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
+        $conditions[] = "lr.id IS NOT NULL";  // Always require lab request exists
+
+        $sql = "
+            SELECT DISTINCT
+                p.id AS patient_id,
+                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                p.gender,
+                TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
+                p.status,
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
+            FROM patients_db p
+            LEFT JOIN barangays b ON b.id = p.barangay_id
+            LEFT JOIN lab_requests lr ON lr.patient_id = p.id
+            WHERE " . implode(" AND ", $conditions) . "
+            ORDER BY b.name,p.last_name,p.first_name
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    PATIENTS WITH MEDICAL CERTIFICATES
+    ======================================
+    */
+    if ($action === "patientsWithMedicalCertificates") {
+        $conditions = [];
+        $params = [];
+
+        if ($startDate) {
+            $conditions[] = "mc.issued_at >= :startDate";
+            $params[':startDate'] = $startDate . " 00:00:00";
+        }
+        if ($endDate) {
+            $conditions[] = "mc.issued_at <= :endDate";
+            $params[':endDate'] = $endDate . " 23:59:59";
+        }
+        if ($barangay && $barangay !== "all") {
+            $conditions[] = "p.barangay_id = :barangay";
+            $params[':barangay'] = $barangay;
+        }
+        if ($gender && $gender !== "all") {
+            $conditions[] = "p.gender = :gender";
+            $params[':gender'] = $gender;
+        }
+        if ($patientStatus && $patientStatus !== "all") {
+            $conditions[] = "p.status = :patientStatus";
+            $params[':patientStatus'] = $patientStatus;
+        }
+
+        switch ($ageGroup) {
+            case "0-5":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
+                break;
+            case "6-12":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 6 AND 12";
+                break;
+            case "13-17":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 13 AND 17";
+                break;
+            case "18-59":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 18 AND 59";
+                break;
+            case "60+":
+                $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) >= 60";
+                break;
+        }
+
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
+        $conditions[] = "mc.id IS NOT NULL";  // Always require medical certificate exists
+
+        $sql = "
+            SELECT DISTINCT
+                p.id AS patient_id,
+                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                p.gender,
+                TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
+                p.status,
+                b.name AS barangay,
+                p.last_name,
+                p.first_name
+            FROM patients_db p
+            LEFT JOIN barangays b ON b.id = p.barangay_id
+            LEFT JOIN medical_certificates mc ON mc.patient_id = p.id
+            WHERE " . implode(" AND ", $conditions) . "
+            ORDER BY b.name,p.last_name,p.first_name
+        ";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        echo json_encode([
+            "success" => true,
+            "data" => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        ]);
+        exit;
+    }
+
+    /*
+    ======================================
+    DEFAULT DASHBOARD RESPONSE
+    ======================================
+    */
+    // Counts (excluding deleted patients)
+    $consultations = $pdo->query("SELECT COUNT(*) AS total FROM consultations c JOIN patients_db p ON c.patient_id = p.id WHERE p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    $labRequests = $pdo->query("SELECT COUNT(*) AS total FROM lab_requests lr JOIN patients_db p ON lr.patient_id = p.id WHERE p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    $certificates = $pdo->query("SELECT COUNT(*) AS total FROM medical_certificates mc JOIN patients_db p ON mc.patient_id = p.id WHERE p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+    $referrals = $pdo->query("SELECT COUNT(*) AS total FROM consultations c JOIN patients_db p ON c.patient_id = p.id WHERE referral='Yes' AND p.deleted_at IS NULL")->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
+
+    echo json_encode([
+        "success" => true,
+        "data" => [
+            "consultations" => (int)$consultations,
+            "labRequests" => (int)$labRequests,
+            "medicalCertificates" => (int)$certificates,
+            "referrals" => (int)$referrals
+        ]
+    ]);
+} catch (Throwable $e) {
+    http_response_code(500);
+    echo json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]);
+}

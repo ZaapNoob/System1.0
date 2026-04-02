@@ -33,49 +33,49 @@ CREATE TABLE IF NOT EXISTS `barangays` (
 -- Dumping data for table react1.0.barangays: ~43 rows (approximately)
 DELETE FROM `barangays`;
 INSERT INTO `barangays` (`id`, `name`, `last_patient_seq`, `is_special`, `facility_household_seq`) VALUES
-	(1, 'Ariman', 28, 0, 18),
-	(2, 'Bagacay', 9, 0, 19),
-	(3, 'Balud Del Norte (Poblacion)', 5, 0, 19),
-	(4, 'Balud Del Sur (Poblacion)', 14, 0, 20),
-	(5, 'Benguet', 1, 0, 3),
-	(6, 'Bentuco', 7, 0, 12),
-	(7, 'Beriran', 2, 0, 5),
-	(8, 'Buenavista', 0, 0, 0),
-	(9, 'Bulacao', 1, 0, 3),
-	(10, 'Cabigaan', 5, 0, 2),
-	(11, 'Cabiguhan', 4, 0, 8),
-	(12, 'Carriedo', 2, 0, 6),
-	(13, 'Casili', 11, 0, 7),
-	(14, 'Cogon', 4, 0, 5),
-	(15, 'Cota Na Daco (Poblacion)', 5, 0, 6),
-	(16, 'Dita', 3, 0, 3),
-	(17, 'Jupi', 3, 0, 3),
-	(18, 'Lapinig', 3, 0, 4),
-	(19, 'Luna-Candol (Poblacion)', 10, 0, 12),
-	(20, 'Manapao', 2, 0, 4),
-	(21, 'Manook (Poblacion)', 0, 0, 0),
-	(22, 'Naagtan', 0, 0, 0),
+	(1, 'Ariman', 7, 0, 5),
+	(2, 'Bagacay', 4, 0, 2),
+	(3, 'Balud Del Norte (Poblacion)', 6, 0, 6),
+	(4, 'Balud Del Sur (Poblacion)', 0, 0, 0),
+	(5, 'Benguet', 0, 0, 0),
+	(6, 'Bentuco', 0, 0, 0),
+	(7, 'Beriran', 3, 0, 2),
+	(8, 'Buenavista', 4, 0, 3),
+	(9, 'Bulacao', 3, 0, 2),
+	(10, 'Cabigaan', 0, 0, 0),
+	(11, 'Cabiguhan', 0, 0, 0),
+	(12, 'Carriedo', 4, 0, 4),
+	(13, 'Casili', 2, 0, 2),
+	(14, 'Cogon', 11, 0, 11),
+	(15, 'Cota Na Daco (Poblacion)', 8, 0, 8),
+	(16, 'Dita', 0, 0, 0),
+	(17, 'Jupi', 0, 0, 0),
+	(18, 'Lapinig', 1, 0, 1),
+	(19, 'Luna-Candol (Poblacion)', 7, 0, 7),
+	(20, 'Manapao', 2, 0, 2),
+	(21, 'Manook (Poblacion)', 6, 0, 6),
+	(22, 'Naagtan', 4, 0, 3),
 	(23, 'Nato', 0, 0, 0),
-	(24, 'Nazareno', 0, 0, 0),
-	(25, 'Ogao', 0, 0, 0),
-	(26, 'Paco', 0, 0, 0),
-	(27, 'Panganiban (Poblacion)', 0, 0, 0),
-	(28, 'Paradijon (Poblacion)', 0, 0, 0),
-	(29, 'Patag', 0, 0, 0),
-	(30, 'Payawin', 0, 0, 3),
-	(31, 'Pinontingan (Poblacion)', 0, 0, 0),
-	(32, 'Rizal', 0, 0, 0),
-	(33, 'San Ignacio', 0, 0, 0),
-	(34, 'Sangat', 0, 0, 0),
-	(35, 'Santa Ana', 0, 0, 0),
-	(36, 'Tabi', 0, 0, 0),
-	(37, 'Tagaytay', 2, 0, 7),
-	(38, 'Tigkiw', 0, 0, 0),
-	(39, 'Tiris', 0, 0, 0),
-	(40, 'Togawe', 0, 0, 0),
-	(41, 'Union', 0, 0, 1),
-	(42, 'Villareal', 1, 0, 1),
-	(43, 'Outside Gubat', 17, 1, 16);
+	(24, 'Nazareno', 1, 0, 1),
+	(25, 'Ogao', 3, 0, 3),
+	(26, 'Paco', 5, 0, 5),
+	(27, 'Panganiban (Poblacion)', 6, 0, 6),
+	(28, 'Paradijon (Poblacion)', 3, 0, 3),
+	(29, 'Patag', 1, 0, 1),
+	(30, 'Payawin', 2, 0, 2),
+	(31, 'Pinontingan (Poblacion)', 4, 0, 4),
+	(32, 'Rizal', 3, 0, 3),
+	(33, 'San Ignacio', 3, 0, 2),
+	(34, 'Sangat', 2, 0, 2),
+	(35, 'Santa Ana', 1, 0, 1),
+	(36, 'Tabi', 3, 0, 3),
+	(37, 'Tagaytay', 2, 0, 2),
+	(38, 'Tigkiw', 2, 0, 2),
+	(39, 'Tiris', 4, 0, 3),
+	(40, 'Togawe', 1, 0, 1),
+	(41, 'Union', 1, 0, 1),
+	(42, 'Villareal', 3, 0, 3),
+	(43, 'Outside Gubat', 5, 1, 7);
 
 -- Dumping structure for event react1.0.cancel_daily_queues
 DELIMITER //
@@ -124,10 +124,20 @@ CREATE TABLE IF NOT EXISTS `consultations` (
   KEY `fk_consult_doctor` (`doctor_id`),
   CONSTRAINT `fk_consult_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_consult_queue` FOREIGN KEY (`queue_id`) REFERENCES `patient_queue` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table react1.0.consultations: ~11 rows (approximately)
+-- Dumping data for table react1.0.consultations: ~8 rows (approximately)
 DELETE FROM `consultations`;
+INSERT INTO `consultations` (`id`, `queue_id`, `patient_id`, `doctor_id`, `referral`, `referred_to`, `reason_for_referral`, `referred_by`, `purpose_visit`, `nature_visit`, `visit_date`, `systolic_bp`, `diastolic_bp`, `temperature`, `pulse_rate`, `respiratory_rate`, `oxygen_saturation`, `weight`, `height`, `chief_complaint`, `diagnosis`, `treatment`, `patient_illness`, `remarks`, `created_at`) VALUES
+	(1, 1, 1, 20, NULL, NULL, NULL, NULL, 'Child Care', 'New Consultation', '2026-03-10', 120, 90, 80.0, 90, 80, 90, 90.00, 80.00, '>HEAD ACHE', 'UTI', 'TRATMENT', 'ILLNES', '', '2026-03-10 10:49:19'),
+	(2, 2, 13, 24, NULL, NULL, NULL, NULL, 'Prenatal', 'Follow-up Consultation', '2026-03-10', 120, 50, 2.0, 210, 21, 21, 241.00, 1.00, '>HEADKNEE\n', 'have been KNEE', 'PLANNER', 'STORY', '', '2026-03-10 10:55:07'),
+	(3, 3, 14, 24, NULL, NULL, NULL, NULL, 'Dental Care', 'Problem Consultation (New Symptoms)', '2026-03-10', 120, 12, 120.0, 120, 45, 78, 78.00, 78.00, '>HEADBACK', 'JUS', 'JUS', 'JUS', NULL, '2026-03-10 10:55:59'),
+	(4, NULL, 1, 25, NULL, NULL, NULL, NULL, 'General', 'Follow-up Consultation', '2026-03-12', 120, 80, 36.0, 90, 20, 90, 120.00, 80.00, '>ULCER', '---------', '---------', '----------', '---------', '2026-03-12 02:58:42'),
+	(5, NULL, 13, 24, NULL, NULL, NULL, NULL, 'General', 'New Consultation', '2026-03-10', 190, 80, 36.0, 90, 20, 90, 120.00, 80.00, '>EYE SORE', '>GIVVEN', '>PLANNED', '>NONE', NULL, '2026-03-12 05:58:13'),
+	(6, NULL, 13, 20, 'No', NULL, NULL, NULL, NULL, NULL, '2026-03-10', 120, 90, 80.0, 80, 80, 80, 80.00, 80.00, NULL, NULL, NULL, NULL, NULL, '2026-03-12 05:58:53'),
+	(7, 8, 1, 20, 'No', NULL, NULL, NULL, 'General', 'New Consultation', '2026-03-17', 120, 80, 36.0, 90, 18, 90, 120.00, 80.00, '>HEAD ACHE', NULL, NULL, NULL, NULL, '2026-03-17 06:48:21'),
+	(8, 9, 14, 12, NULL, NULL, NULL, NULL, 'General', 'New Consultation', '2026-03-17', 120, 90, 36.0, 90, 20, 90, 120.00, 80.00, '>KNEE HEAD', NULL, NULL, NULL, NULL, '2026-03-17 06:55:51'),
+	(9, 10, 1, 12, 'No', NULL, NULL, NULL, 'Sick Children', 'Follow-up Consultation', '2026-03-18', 120, 80, 36.0, 90, 18, 90, 120.00, 80.00, 'HEAD ACHE', NULL, NULL, NULL, NULL, '2026-03-18 02:20:39');
 
 -- Dumping structure for table react1.0.doctor_patient_queue
 CREATE TABLE IF NOT EXISTS `doctor_patient_queue` (
@@ -148,10 +158,26 @@ CREATE TABLE IF NOT EXISTS `doctor_patient_queue` (
   CONSTRAINT `fk_dpq_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_dpq_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_dpq_patient_queue` FOREIGN KEY (`patient_queue_id`) REFERENCES `patient_queue` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.doctor_patient_queue: ~8 rows (approximately)
+-- Dumping data for table react1.0.doctor_patient_queue: ~13 rows (approximately)
 DELETE FROM `doctor_patient_queue`;
+INSERT INTO `doctor_patient_queue` (`id`, `patient_queue_id`, `patient_id`, `doctor_id`, `queue_number`, `queue_date`, `status`, `created_at`, `is_active`) VALUES
+	(1, 1, 1, 24, 1, '2026-03-10', 'done', '2026-03-10 10:49:27', 0),
+	(2, 2, 13, 20, 1, '2026-03-10', 'done', '2026-03-10 10:55:14', 0),
+	(3, 3, 14, 24, 2, '2026-03-10', 'done', '2026-03-10 10:56:06', 0),
+	(4, 4, 1, 20, 1, '2026-03-12', 'done', '2026-03-12 02:28:43', 0),
+	(5, 8, 1, 20, 1, '2026-03-17', 'serving', '2026-03-17 06:48:55', 0),
+	(6, 9, 14, 12, 1, '2026-03-17', 'done', '2026-03-17 06:56:00', 0),
+	(7, 10, 1, 12, 1, '2026-03-18', 'done', '2026-03-18 02:20:42', 0),
+	(8, 11, 14, 12, 2, '2026-03-18', 'done', '2026-03-18 03:00:02', 0),
+	(9, 15, 12, 24, 1, '2026-03-22', 'serving', '2026-03-22 10:20:25', 0),
+	(10, 13, 1, 20, 1, '2026-03-22', 'done', '2026-03-22 10:20:49', 0),
+	(11, 14, 13, 12, 1, '2026-03-22', 'serving', '2026-03-22 10:21:00', 0),
+	(12, 16, 14, 20, 2, '2026-03-22', 'done', '2026-03-22 10:54:48', 0),
+	(13, 17, 96, 20, 3, '2026-03-22', 'serving', '2026-03-22 10:58:13', 1),
+	(14, 19, 1, 12, 1, '2026-03-25', 'serving', '2026-03-25 05:18:14', 1),
+	(15, 20, 14, 24, 1, '2026-03-25', 'serving', '2026-03-25 05:22:36', 1);
 
 -- Dumping structure for table react1.0.household_sequence
 CREATE TABLE IF NOT EXISTS `household_sequence` (
@@ -162,6 +188,8 @@ CREATE TABLE IF NOT EXISTS `household_sequence` (
 
 -- Dumping data for table react1.0.household_sequence: ~0 rows (approximately)
 DELETE FROM `household_sequence`;
+INSERT INTO `household_sequence` (`year`, `seq`) VALUES
+	(2026, 119);
 
 -- Dumping structure for table react1.0.lab_requests
 CREATE TABLE IF NOT EXISTS `lab_requests` (
@@ -179,10 +207,39 @@ CREATE TABLE IF NOT EXISTS `lab_requests` (
   KEY `doctor_id` (`doctor_id`),
   CONSTRAINT `lab_requests_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE,
   CONSTRAINT `lab_requests_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table react1.0.lab_requests: ~0 rows (approximately)
+-- Dumping data for table react1.0.lab_requests: ~26 rows (approximately)
 DELETE FROM `lab_requests`;
+INSERT INTO `lab_requests` (`id`, `request_no`, `patient_id`, `doctor_id`, `diagnosis`, `xray_findings`, `utz_findings`, `created_at`) VALUES
+	(1, 'LR-2026-9274', 1, 20, 'Diagnosis', 'RAYS', 'SOUNDD', '2026-03-10 20:12:41'),
+	(2, 'LR-2026-6844', 1, 24, 'URTI', NULL, NULL, '2026-03-16 08:21:58'),
+	(3, 'LR-2026-4928', 1, 24, 'Pneumonia', 'Chest PA view', NULL, '2026-03-16 08:22:56'),
+	(4, 'LR-2026-7445', 1, 24, 'URTI', 'Chest PA view', NULL, '2026-03-16 08:23:51'),
+	(5, 'LR-2026-5270', 1, 24, 'URTI', 'Chest PA View', NULL, '2026-03-16 08:27:39'),
+	(6, 'LR-2026-9266', 1, 20, 'htn', NULL, NULL, '2026-03-17 08:24:12'),
+	(7, 'LR-2026-8210', 93, 20, 'Hypertension St II', NULL, NULL, '2026-03-17 09:10:20'),
+	(8, 'LR-2026-8270', 1, 12, 'R/o AGE', NULL, NULL, '2026-03-18 14:43:29'),
+	(9, 'LR-2026-7090', 1, 12, 'AGE', NULL, NULL, '2026-03-18 14:56:46'),
+	(10, 'LR-2026-7142', 1, 12, 'LUCKY ONE', NULL, NULL, '2026-03-19 06:31:17'),
+	(11, 'LR-2026-6183', 1, 12, 'JIEL', NULL, NULL, '2026-03-19 06:54:01'),
+	(12, 'LR-2026-4888', 1, 12, 'ehey', NULL, NULL, '2026-03-19 07:11:17'),
+	(13, 'LR-2026-3601', 97, 24, 'AKI', NULL, NULL, '2026-03-19 08:19:13'),
+	(14, 'LR-2026-8101', 104, 24, 'R/O Cardiomyopathy', NULL, NULL, '2026-03-19 08:47:42'),
+	(15, 'LR-2026-2786', 104, 24, 'R/O Cardiomyopathy', NULL, NULL, '2026-03-19 08:48:05'),
+	(16, 'LR-2026-1347', 104, 24, 'T/C Dyslipidemia', NULL, NULL, '2026-03-19 08:49:57'),
+	(17, 'LR-2026-5164', 105, 24, 't/c Hyperuricemia , Dyslipidemia', NULL, NULL, '2026-03-19 09:01:53'),
+	(18, 'LR-2026-5888', 106, 24, 'For Employment requirement', 'chest PA View', NULL, '2026-03-19 09:07:18'),
+	(19, 'LR-2026-6959', 106, 24, 'for Employment', 'Chest PA View', NULL, '2026-03-19 09:08:09'),
+	(20, 'LR-2026-7957', 108, 24, 't/c PTB', NULL, NULL, '2026-03-19 09:13:38'),
+	(21, 'LR-2026-9123', 108, 24, 'T/C PTB', NULL, NULL, '2026-03-19 09:14:05'),
+	(22, 'LR-2026-2318', 113, 24, 'T/C Adhesive capsulitis of shoulder; R/O dislocation', 'Xray Shoulder AP/L, right', NULL, '2026-03-19 09:51:33'),
+	(23, 'LR-2026-7553', 113, 24, 'T/C Adhesive capsulitis of shoulder, R/O Dislocation', 'Shoulder AP/L, right', NULL, '2026-03-19 09:52:20'),
+	(24, 'LR-2026-9204', 113, 24, 'T/C DM, Dsylipidemia', NULL, NULL, '2026-03-19 09:52:55'),
+	(25, 'LR-2026-4032', 1, 12, 'jose', 'jose', 'jose', '2026-03-19 09:59:15'),
+	(26, 'LR-2026-8005', 116, 24, 'T/C UTI', NULL, NULL, '2026-03-19 10:06:34'),
+	(27, 'LR-2026-4887', 116, 24, 't/c uti', NULL, NULL, '2026-03-19 10:06:53'),
+	(28, 'LR-2026-5796', 1, 24, 'YOSI', 'YOSI', 'YOSI', '2026-03-22 18:33:41');
 
 -- Dumping structure for table react1.0.lab_request_tests
 CREATE TABLE IF NOT EXISTS `lab_request_tests` (
@@ -194,10 +251,82 @@ CREATE TABLE IF NOT EXISTS `lab_request_tests` (
   PRIMARY KEY (`id`),
   KEY `lab_request_id` (`lab_request_id`),
   CONSTRAINT `lab_request_tests_ibfk_1` FOREIGN KEY (`lab_request_id`) REFERENCES `lab_requests` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=415 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table react1.0.lab_request_tests: ~0 rows (approximately)
+-- Dumping data for table react1.0.lab_request_tests: ~65 rows (approximately)
 DELETE FROM `lab_request_tests`;
+INSERT INTO `lab_request_tests` (`id`, `lab_request_id`, `category`, `test_name`, `other_value`) VALUES
+	(2, 2, 'Chemistry', 'FBS', NULL),
+	(3, 2, 'Chemistry', 'Crea', NULL),
+	(4, 2, 'Chemistry', 'BUN', NULL),
+	(5, 2, 'Chemistry', 'BUA', NULL),
+	(6, 2, 'Chemistry', 'Lipid Profile', NULL),
+	(7, 2, 'Chemistry', 'AST/ALT', NULL),
+	(8, 3, 'Cardiology', 'Others', NULL),
+	(10, 6, 'Urinalysis & Others', 'Fecalysis', NULL),
+	(11, 7, 'Chemistry', 'BUN', NULL),
+	(12, 7, 'Chemistry', 'Crea', NULL),
+	(13, 7, 'Chemistry', 'FBS', NULL),
+	(14, 7, 'Chemistry', 'Lipid Profile', NULL),
+	(15, 7, 'Chemistry', 'AST/ALT', NULL),
+	(16, 7, 'Chemistry', 'BUA', NULL),
+	(17, 8, 'Urinalysis & Others', 'Fecalysis', NULL),
+	(18, 8, 'Urinalysis & Others', 'Urinalysis', NULL),
+	(19, 9, 'Urinalysis & Others', 'Urinalysis', NULL),
+	(20, 9, 'Urinalysis & Others', 'Fecalysis', NULL),
+	(65, 10, 'Chemistry', 'CI', NULL),
+	(265, 4, 'Chemistry', 'Others', NULL),
+	(364, 1, 'Chemistry', 'CI', NULL),
+	(365, 1, 'Chemistry', 'Cl', NULL),
+	(366, 1, 'Cardiology', '2D Echo', NULL),
+	(367, 1, 'Cardiology', 'ECG', NULL),
+	(368, 1, 'Chemistry', 'BUN', NULL),
+	(369, 1, 'Chemistry', 'BUA', NULL),
+	(370, 1, 'Chemistry', 'Na', NULL),
+	(371, 1, 'Chemistry', 'Crea', NULL),
+	(372, 1, 'Chemistry', 'K', NULL),
+	(373, 1, 'Chemistry', 'FBS', NULL),
+	(374, 1, 'Chemistry', 'Lipid Profile', NULL),
+	(375, 1, 'Chemistry', 'HbA1c', NULL),
+	(376, 1, 'Chemistry', 'AST/ALT', NULL),
+	(377, 1, 'Bacteriology', 'Gen Expert', NULL),
+	(378, 1, 'Bacteriology', 'AFB Stain', NULL),
+	(379, 1, 'Hematology', 'CBC', NULL),
+	(380, 1, 'Hematology', 'PC', NULL),
+	(381, 1, 'Hematology', 'Blood Typing', NULL),
+	(382, 1, 'Urinalysis & Others', 'Fecalysis', NULL),
+	(383, 1, 'Urinalysis & Others', 'Urinalysis', NULL),
+	(384, 1, 'Urinalysis & Others', 'Covid 19 Test', NULL),
+	(385, 1, 'Cardiology', 'Others', NULL),
+	(386, 1, 'Bacteriology', 'Others', NULL),
+	(387, 1, 'Hematology', 'Others', NULL),
+	(388, 1, 'Urinalysis & Others', 'Others', NULL),
+	(389, 12, 'Chemistry', 'BUN', NULL),
+	(390, 12, 'Chemistry', 'BUA', NULL),
+	(391, 12, 'Chemistry', 'Others', NULL),
+	(392, 12, 'Chemistry', 'Na', NULL),
+	(393, 12, 'Chemistry', 'Crea', NULL),
+	(394, 13, 'Chemistry', 'BUN', NULL),
+	(395, 13, 'Chemistry', 'BUA', NULL),
+	(396, 14, 'Cardiology', 'ECG', NULL),
+	(397, 15, 'Cardiology', 'ECG', NULL),
+	(398, 16, 'Chemistry', 'Lipid Profile', NULL),
+	(399, 17, 'Chemistry', 'BUA', NULL),
+	(400, 17, 'Chemistry', 'Lipid Profile', NULL),
+	(401, 18, 'Hematology', 'CBC', NULL),
+	(402, 18, 'Urinalysis & Others', 'Urinalysis', NULL),
+	(403, 18, 'Urinalysis & Others', 'Fecalysis', NULL),
+	(404, 19, 'Hematology', 'CBC', NULL),
+	(405, 19, 'Urinalysis & Others', 'Fecalysis', NULL),
+	(406, 19, 'Urinalysis & Others', 'Urinalysis', NULL),
+	(407, 20, 'Bacteriology', 'Gen Expert', NULL),
+	(408, 21, 'Bacteriology', 'Gen Expert', NULL),
+	(409, 24, 'Chemistry', 'Lipid Profile', NULL),
+	(410, 24, 'Chemistry', 'FBS', NULL),
+	(411, 26, 'Urinalysis & Others', 'Fecalysis', NULL),
+	(412, 27, 'Urinalysis & Others', 'Urinalysis', NULL),
+	(413, 28, 'Chemistry', 'BUN', NULL),
+	(414, 28, 'Cardiology', '2D Echo', NULL);
 
 -- Dumping structure for table react1.0.medical_certificates
 CREATE TABLE IF NOT EXISTS `medical_certificates` (
@@ -214,10 +343,20 @@ CREATE TABLE IF NOT EXISTS `medical_certificates` (
   KEY `doctor_id` (`doctor_id`),
   CONSTRAINT `medical_certificates_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE,
   CONSTRAINT `medical_certificates_ibfk_3` FOREIGN KEY (`doctor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.medical_certificates: ~20 rows (approximately)
+-- Dumping data for table react1.0.medical_certificates: ~7 rows (approximately)
 DELETE FROM `medical_certificates`;
+INSERT INTO `medical_certificates` (`id`, `certificate_no`, `patient_id`, `doctor_id`, `impression`, `remarks`, `issued_at`) VALUES
+	(2, 'MC-2026-2091', 1, 24, 'Upper Respiratory Tract Infection', 'advised bedrest for 3 -5 days, for compliance with prescribed treatment regimen', '2026-03-16 08:21:20'),
+	(3, 'MC-2026-6396', 25, 24, 'Bronchial Asthma, controlled on Inhaler Therapy\nOtherwise, Physically fit and mentally stable', 'advised to continue the current controller inhaler as prescribed and avoid known asthma triggers.\nPhysically Fit to attend class', '2026-03-16 08:47:42'),
+	(4, 'MC-2026-9837', 30, 24, 'Chronic Kidney Disease secondary to Hyperuricemic Nephropathy; Hypertension Stage II', 'for compliance with prescribed treatment regimen', '2026-03-16 09:10:26'),
+	(5, 'MC-2026-1738', 39, 24, 'Mucus Retention Cyst, Left Maxillary Sinus', 'for compliance with prescribed treatment regimen', '2026-03-16 10:00:44'),
+	(6, 'MC-2026-3007', 50, 24, 'Amblyopia; VA 20/200 right eye, Light perception left eye;', 'Patient is legally blind and qualified for PWD\nVisual Disability secondary to Amblyopia', '2026-03-16 10:43:02'),
+	(10, 'MC-2026-9299', 83, 24, 'Varicella (Chickenpox), uncomplicated', 'Advised home isolation until lesions crusted. Supportive treatment given. Increase oral fluids. Avoid scratching. Follow-up if symptoms worsen.', '2026-03-16 16:25:12'),
+	(11, 'MC-2026-9771', 86, 24, 'PHYSICALLY FIT AND MENTALLY STABLE', 'MAY RESUME WORK,PHYSICALLY FIT TO WORK', '2026-03-16 16:58:11'),
+	(12, 'MC-2026-7380', 1, 20, 'essentially Normal at the time of Examination', 'physical fit', '2026-03-17 08:23:21'),
+	(13, 'MC-2026-4318', 127, 24, 'Physically fit and mentally stable', 'Free from communicable or contagious disease; may resume work, PHYSICALLY FIT TO WORK', '2026-03-19 10:51:34');
 
 -- Dumping structure for table react1.0.panels
 CREATE TABLE IF NOT EXISTS `panels` (
@@ -226,7 +365,7 @@ CREATE TABLE IF NOT EXISTS `panels` (
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table react1.0.panels: ~4 rows (approximately)
 DELETE FROM `panels`;
@@ -234,7 +373,8 @@ INSERT INTO `panels` (`id`, `code`, `name`) VALUES
 	(1, 'patient', 'Patient'),
 	(2, 'queuegen', 'Queue Generator'),
 	(3, 'medical', 'Medical'),
-	(4, 'laboratory', 'Laboratory');
+	(4, 'laboratory', 'Laboratory'),
+	(5, 'reports', 'Reports');
 
 -- Dumping structure for table react1.0.patients_db
 CREATE TABLE IF NOT EXISTS `patients_db` (
@@ -276,6 +416,7 @@ CREATE TABLE IF NOT EXISTS `patients_db` (
   `city_municipality` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `barangay_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `street` text COLLATE utf8mb4_general_ci,
+  `deleted_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_patient_code` (`patient_code`),
   UNIQUE KEY `uq_barangay_patient` (`barangay_id`,`patient_code`),
@@ -284,10 +425,138 @@ CREATE TABLE IF NOT EXISTS `patients_db` (
   KEY `fk_purok_id` (`purok_id`),
   CONSTRAINT `fk_patient_barangay` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_patient_purok` FOREIGN KEY (`purok_id`) REFERENCES `puroks` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table react1.0.patients_db: ~0 rows (approximately)
+-- Dumping data for table react1.0.patients_db: ~121 rows (approximately)
 DELETE FROM `patients_db`;
+INSERT INTO `patients_db` (`id`, `barangay_id`, `purok_id`, `patient_code`, `first_name`, `middle_name`, `last_name`, `suffix`, `date_of_birth`, `birthplace`, `age`, `gender`, `marital_status`, `blood_type`, `mother_name`, `spouse_name`, `contact_number`, `household_no`, `facility_household_no`, `education_level`, `employment_status`, `family_member_type`, `dswd_nhts`, `member_4ps`, `pcb_member`, `philhealth_member`, `philhealth_status_type`, `philhealth_no`, `philhealth_category`, `profile_image`, `status`, `created_at`, `last_household_move_at`, `region`, `province`, `city_municipality`, `barangay_name`, `street`, `deleted_at`) VALUES
+	(1, 21, NULL, 'manook_(poblacion)_001', 'John Rafael', '', 'Escanilla', '', '2002-10-25', 'Quezon City, Philippines', 23, 'Male', 'Single', 'A+', 'Daisy Escanilla', 'GEGE', '09753896256', '2026-00001', 'RHU-M(-00001', 'College', 'Unemployed', NULL, 'No', 'No', 'No', 'Yes', 'Member', '0912376123', 'DIRECT CONTRIBUTOR - SELF-EARNING INDIVIDUAL - SOLE PROPRIETOR', NULL, 'active', '2026-03-09 03:44:48', '2026-03-09 11:45:08', NULL, NULL, NULL, NULL, NULL, NULL),
+	(2, 24, NULL, 'nazareno_001', 'ZENAIDA', 'HABITAN', 'ENCINARES', NULL, '1945-06-27', NULL, 80, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00002', 'RHU-N-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:20:11', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(3, 27, NULL, 'panganiban_(poblacion)_001', 'YVONNE', 'ROCHA', 'MACARAEG', '', '1956-10-26', '', 69, 'Female', 'Widowed', '', '', '', '', '2026-00003', 'RHU-P(-00001', 'Unknown', 'Others', NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:24:39', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(4, 3, NULL, 'balud_del_norte_(poblacion)_001', 'Luz', 'Flestado', 'Divina', NULL, '1968-03-01', NULL, 58, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00004', 'RHU-BD-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:31:28', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(5, 15, NULL, 'cota_na_daco_(poblacion)_001', 'RUTH', 'SALVAN', 'HASOPARDO', NULL, '1963-08-01', NULL, 62, 'Female', 'Co-habitation', NULL, NULL, NULL, NULL, '2026-00005', 'RHU-CN-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:33:11', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(6, 8, NULL, 'buenavista_001', 'ISIDRO', 'ESPENIDA', 'FERERRAS', NULL, '1954-08-06', NULL, 71, 'Male', 'Married', NULL, NULL, NULL, NULL, '2026-00006', 'RHU-B-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:38:02', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(7, 14, NULL, 'cogon_001', 'ZAFRIAH MADISSON', 'ENANO', 'FEOLINO', NULL, '2025-09-20', NULL, 0, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00007', 'RHU-C-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:40:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(8, 33, NULL, 'san_ignacio_001', 'DIOGENES', 'ESTREBILLO', 'DOGILLO', NULL, '1947-03-20', NULL, 78, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00008', 'RHU-SI-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 05:44:30', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(9, 21, NULL, 'manook_(poblacion)_002', 'CYNTHIA', 'AGUSTIN', 'MARCIAL', NULL, '1952-08-20', NULL, 73, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00009', 'RHU-M(-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 06:19:53', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(10, 26, NULL, 'paco_001', 'ANNIANA', 'ESPENILE', 'BRONOLA', NULL, '2026-01-20', NULL, 0, 'Female', NULL, NULL, NULL, NULL, NULL, '2026-00010', 'RHU-P-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 06:20:55', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(11, 33, NULL, 'san_ignacio_002', 'ELENA', 'BALALA', 'ESTAYANE', NULL, '1961-05-20', NULL, 64, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00011', 'RHU-SI-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 06:26:44', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(12, 21, 1, 'manook_(poblacion)_003', 'JAMES ALDRIN', 'ESCANILLA', 'TIN', '', '2010-03-28', '', 15, 'Male', 'Single', '', '', '', '', '2026-00001', 'RHU-M(-00001', 'Unknown', NULL, 'Son', 'No', 'No', 'No', 'No', NULL, '', NULL, NULL, 'active', '2026-03-09 07:03:32', '2026-03-16 14:18:41', NULL, NULL, NULL, NULL, NULL, NULL),
+	(13, 21, 1, 'manook_(poblacion)_004', 'DAISY', 'ENCONADO', 'ESCANILLA', '', '1988-02-28', '', 38, 'Female', 'Single', '', '', '', '', '2026-00001', 'RHU-M(-00001', 'Unknown', 'Others', 'Mother', 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-09 07:08:59', '2026-03-16 14:19:26', NULL, NULL, NULL, NULL, NULL, NULL),
+	(14, 43, NULL, 'outside_gubat_001', 'ELPIDIA', 'ENCONADO', 'ESCANILLA', '', '1950-01-28', '', 76, 'Female', 'Married', '', 'ELPIDIA ESCANILLA', 'JAVIER', '09876912456', '2026-00014', 'RHU-OG-00001', 'Unknown', 'Others', 'Father', 'Yes', 'Yes', 'Yes', 'Yes', 'Member', '12-345678901-2', 'DIRECT CONTRIBUTOR - SELF-EARNING INDIVIDUAL - SOLE PROPRIETOR', NULL, 'active', '2026-03-10 10:48:08', '2026-03-12 16:16:27', NULL, NULL, NULL, NULL, NULL, NULL),
+	(15, 43, NULL, 'outside_gubat_002', 'Jomar', '', 'Ariola', '', '2002-11-11', '', 23, 'Male', 'Single', '', '', '', '', '2026-00017', 'RHU-OG-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_15_1773421290.jpg', 'active', '2026-03-13 03:24:55', NULL, 'V', 'Quezon', 'Lucban', 'San Isidro', 'Purok 1', NULL),
+	(16, 43, NULL, 'outside_gubat_003', 'Jan Reys', '', 'Borlains', '', '2002-01-01', '', 24, 'Male', 'Single', '', '', '', '', '2026-00018', 'RHU-OG-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_16_1773501675.jpg', 'active', '2026-03-13 03:26:16', NULL, 'V', 'Quezon', 'Lucban', 'San Isidro', 'Purok 1', NULL),
+	(17, 1, NULL, 'ariman_001', 'BRIDGE', 'BRIDGE', 'BRIDGE', NULL, '2002-12-20', NULL, 23, 'Male', 'Single', NULL, NULL, NULL, NULL, NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-14 16:00:05', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(18, 1, NULL, 'ariman_002', 'ROT', NULL, 'ROT', NULL, '2002-12-22', NULL, 23, 'Male', 'Single', NULL, NULL, NULL, NULL, NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, '2Q==', 'active', '2026-03-14 16:25:24', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(19, 7, NULL, 'beriran_001', 'd', 'd', 'd', '', '1999-11-11', '', 26, 'Male', 'Single', '', '', '', '', NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_19_1773507458.jpg', 'active', '2026-03-14 16:34:39', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(20, 2, NULL, 'bagacay_001', 'g', 'g', 'g', '', '1999-12-31', '', 26, 'Male', 'Single', '', '', '', '', NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_20_1773508313.jpg', 'inactive', '2026-03-14 17:10:53', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-15 05:01:19'),
+	(21, 2, NULL, 'bagacay_002', 'l', 'l', 'l', '', '1999-11-11', '', 26, 'Male', 'Single', '', '', '', '', NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_21_1773508535.jpg', 'inactive', '2026-03-14 17:15:34', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-15 04:51:05'),
+	(22, 9, NULL, 'bulacao_001', 'z', 'z', 'z', '', '2002-12-22', '', 23, 'Male', 'Single', '', '', '', '', NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_22_1773508623.jpg', 'inactive', '2026-03-14 17:16:24', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-15 04:45:26'),
+	(23, 1, NULL, 'ariman_003', 'IAN', NULL, 'ZYRONE', NULL, '1999-11-11', NULL, 26, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00019', 'RHU-A-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:29:47', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(24, 14, NULL, 'cogon_002', 'Zosima', 'Garcia', 'Ramos', NULL, '1964-03-10', NULL, 62, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00020', 'RHU-C-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:35:52', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(25, 2, NULL, 'bagacay_003', 'Samantha Cristel', 'Joven', 'Lelis', NULL, '2007-07-27', NULL, 18, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00021', 'RHU-B-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:37:35', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(26, 34, NULL, 'sangat_001', 'Estela', 'Funtanares', 'Escobedo', NULL, '1950-10-17', NULL, 75, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00022', 'RHU-S-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:39:58', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(27, 27, NULL, 'panganiban_(poblacion)_002', 'Caridad', 'Erlano', 'Galang', NULL, '1945-12-02', NULL, 80, 'Female', NULL, NULL, NULL, NULL, NULL, '2026-00023', 'RHU-P(-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:40:57', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(28, 27, NULL, 'panganiban_(poblacion)_003', 'Vilma', 'Esperida', 'Galang', NULL, '1970-11-04', NULL, 55, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00024', 'RHU-P(-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:42:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(29, 27, NULL, 'panganiban_(poblacion)_004', 'Felipe', 'Erlano', 'Galang', NULL, '1970-09-11', NULL, 55, 'Male', 'Married', NULL, NULL, NULL, NULL, '2026-00025', 'RHU-P(-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:43:35', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(30, 42, NULL, 'villareal_001', 'Edgar', 'Esperida', 'Erlano', NULL, '1963-11-09', NULL, 62, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00026', 'RHU-V-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 00:44:31', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(31, 37, NULL, 'tagaytay_001', 'Dolores', 'Ofalsa', 'Eresmas', NULL, '1945-08-03', NULL, 80, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00027', 'RHU-T-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 01:11:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(32, 37, NULL, 'tagaytay_002', 'Milagros', 'Esquierra', 'Espedido', NULL, '1946-06-11', NULL, 79, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00028', 'RHU-T-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 01:12:55', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(33, 26, NULL, 'paco_002', 'Esperanza', 'Ermino', 'SURIAGA', NULL, '1971-11-21', NULL, 54, 'Female', NULL, NULL, NULL, NULL, NULL, '2026-00029', 'RHU-P-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 01:14:08', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(34, 32, NULL, 'rizal_001', 'Danilo', 'Enolva', 'Escobedo', 'Jr', '2022-09-20', NULL, 3, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00030', 'RHU-R-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 01:16:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(35, 20, NULL, 'manapao_001', 'Salvacion', 'Paniergo', 'Estolas', NULL, '1963-02-15', NULL, 63, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00031', 'RHU-M-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 01:17:13', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(36, 30, NULL, 'payawin_001', 'Analita', 'EreÑo', 'Joven', NULL, '1973-05-03', NULL, 52, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00032', 'RHU-P-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 01:18:56', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(37, 21, NULL, 'manook_(poblacion)_005', 'Myrna', 'Escanan', 'Eugerio', NULL, '1968-08-14', NULL, 57, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00033', 'RHU-M(-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 01:30:38', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(38, 29, NULL, 'patag_001', 'Jed', 'Espinele', 'Divino', '', '2014-04-11', '', 11, 'Male', 'Single', '', '', '', '', '2026-00034', 'RHU-P-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_38_1773626139.jpg', 'active', '2026-03-16 01:31:35', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(39, 25, NULL, 'ogao_001', 'Sherly', 'Mellina', 'Argosino', '', '1991-08-29', '', 34, 'Female', 'Single', '', '', '', '', '2026-00035', 'RHU-O-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_39_1773626082.jpg', 'active', '2026-03-16 01:32:41', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(40, 19, NULL, 'luna-candol_(poblacion)_001', 'Deogenes', 'Florano', 'Buenaobra', '', '1954-06-14', '', 71, 'Male', 'Single', '', '', '', '', '2026-00036', 'RHU-L(-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_40_1773626036.jpg', 'active', '2026-03-16 01:36:15', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(41, 3, NULL, 'balud_del_norte_(poblacion)_002', 'Ma. Angela', 'Macalla', 'Espiritu', '', '1984-12-03', '', 41, 'Female', 'Single', '', '', '', '', '2026-00037', 'RHU-BD-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_41_1773625915.jpg', 'active', '2026-03-16 01:37:32', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(42, 15, 8, 'cota_na_daco_(poblacion)_002', 'Lorena', 'Encinas', 'Nelayan', NULL, '1978-01-02', NULL, 48, 'Female', NULL, NULL, NULL, NULL, NULL, '2026-00038', 'RHU-CN-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_42_1773626711.jpg', 'active', '2026-03-16 02:05:11', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(43, 39, NULL, 'tiris_001', 'Rowena', 'Miniano', 'Esquierra', NULL, '1988-04-14', NULL, 37, 'Female', NULL, NULL, NULL, NULL, NULL, '2026-00039', 'RHU-T-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_43_1773626810.jpg', 'active', '2026-03-16 02:06:50', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(44, 39, NULL, 'tiris_002', 'Lilibeth', 'Locrida', 'Espinocilla', NULL, '1981-05-28', NULL, 44, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00040', 'RHU-T-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_44_1773626927.jpg', 'active', '2026-03-16 02:08:47', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(45, 19, NULL, 'luna-candol_(poblacion)_002', 'Nelia', 'Lopez', 'David', NULL, '1956-10-25', NULL, 69, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00041', 'RHU-L(-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_45_1773627037.jpg', 'active', '2026-03-16 02:10:37', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(46, 31, NULL, 'pinontingan_(poblacion)_001', 'Carl Reuben', 'Pura', 'Ereno', NULL, '2014-05-13', NULL, 11, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00042', 'RHU-P(-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_46_1773627153.jpg', 'active', '2026-03-16 02:12:33', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(47, 19, 9, 'luna-candol_(poblacion)_003', 'Nelia', 'Erestain', 'Buenaobra', NULL, '1952-11-18', NULL, 73, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00043', 'RHU-L(-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_47_1773627234.jpg', 'active', '2026-03-16 02:13:54', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(48, 20, NULL, 'manapao_002', 'Criselda', 'Enorme', 'Padrique', NULL, '1982-04-11', NULL, 43, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00044', 'RHU-M-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_48_1773627410.jpg', 'active', '2026-03-16 02:16:50', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(49, 19, 10, 'luna-candol_(poblacion)_004', 'Salvacion', 'Chaves', 'Regino', NULL, '1993-06-15', NULL, 32, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00045', 'RHU-L(-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_49_1773627501.jpg', 'active', '2026-03-16 02:18:21', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(50, 14, NULL, 'cogon_003', 'Mary Grace', 'Caputol', 'Fortuno', NULL, '1994-07-02', NULL, 31, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00046', 'RHU-C-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_50_1773627576.jpg', 'active', '2026-03-16 02:19:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(51, 36, 11, 'tabi_001', 'Expectacion', 'Ferreras', 'Federeso', NULL, '1940-01-01', NULL, 86, 'Female', 'Widowed', NULL, NULL, NULL, NULL, '2026-00047', 'RHU-T-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_51_1773627702.jpg', 'active', '2026-03-16 02:21:42', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(52, 19, 9, 'luna-candol_(poblacion)_005', 'Jose', 'Halum', 'Hilis', NULL, '1961-01-05', NULL, 65, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00048', 'RHU-L(-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_52_1773627815.jpg', 'active', '2026-03-16 02:23:34', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(53, 26, NULL, 'paco_003', 'John Kiefer', 'Docot', 'Sawal', NULL, '2013-09-16', NULL, 12, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00049', 'RHU-P-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_53_1773628845.jpg', 'active', '2026-03-16 02:40:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(54, 32, NULL, 'rizal_002', 'Jayden Rose', 'Enolva', 'Buergo', NULL, '2025-01-15', NULL, 1, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00050', 'RHU-R-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_54_1773628920.jpg', 'active', '2026-03-16 02:42:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(55, 9, NULL, 'bulacao_002', 'Ricky', 'Erlano', 'Jerusalem', NULL, '1989-09-16', NULL, 36, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00051', 'RHU-B-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_55_1773628992.jpg', 'active', '2026-03-16 02:43:12', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(56, 15, 12, 'cota_na_daco_(poblacion)_003', 'Ernesto', 'Escauriaga', 'Esteves', NULL, '1970-04-25', NULL, 55, 'Male', 'Married', NULL, NULL, NULL, NULL, '2026-00052', 'RHU-CN-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_56_1773631485.jpg', 'active', '2026-03-16 03:24:45', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(57, 34, NULL, 'sangat_002', 'Joy Mae', 'Haloc', 'Rovera', NULL, '1995-10-03', NULL, 30, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00053', 'RHU-S-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_57_1773632915.jpg', 'active', '2026-03-16 03:48:35', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(58, 35, NULL, 'santa_ana_001', 'Elena', 'Hidea', 'Escobedo', NULL, '1950-09-23', NULL, 75, 'Female', 'Widowed', NULL, NULL, NULL, NULL, '2026-00054', 'RHU-SA-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 03:49:44', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(59, 36, 14, 'tabi_002', 'Josie', 'OsmeÑa', 'Estrada', NULL, '1992-11-09', NULL, 33, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00055', 'RHU-T-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_59_1773633065.jpg', 'active', '2026-03-16 03:51:05', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(60, 19, 9, 'luna-candol_(poblacion)_006', 'Lilia', 'EspaÑo', 'Falcoto', NULL, '1942-11-24', NULL, 83, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00056', 'RHU-L(-00006', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 03:52:58', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(61, 33, NULL, 'san_ignacio_003', 'Jaedan Matthew', 'Buenaobra', 'Odiame', NULL, '2023-02-16', NULL, 3, 'Male', 'Single', NULL, NULL, NULL, NULL, NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_61_1773633241.jpg', 'active', '2026-03-16 03:54:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(62, 14, 15, 'cogon_004', 'Jocelyn', 'Escala', 'Odiame', NULL, '1975-01-24', NULL, 51, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00057', 'RHU-C-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_62_1773633330.jpg', 'active', '2026-03-16 03:55:30', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(63, 14, NULL, 'cogon_005', 'Drei Rayden', 'Estrellado', 'Escartin', '', '2026-03-06', '', 0, 'Male', 'Single', '', '', '', '', '2026-00058', 'RHU-C-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, '', NULL, 'upload/patient_63_1773633543.jpg', 'active', '2026-03-16 03:56:29', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(64, 14, NULL, 'cogon_006', 'Annaly', 'Arrobang', 'Estonanto', NULL, '1970-09-23', NULL, 55, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00059', 'RHU-C-00006', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_64_1773633496.jpg', 'active', '2026-03-16 03:58:16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(65, 1, 17, 'ariman_004', 'Isabel', 'Escanilla', 'Ereno', NULL, '1949-07-08', NULL, 76, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00060', 'RHU-A-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 04:05:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(66, 13, NULL, 'casili_001', 'Joel', 'Escultura', 'Padrique', NULL, '1973-04-19', NULL, 52, 'Male', 'Co-habitation', NULL, NULL, NULL, NULL, '2026-00061', 'RHU-C-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_66_1773634054.jpg', 'active', '2026-03-16 04:07:34', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(67, 2, NULL, 'bagacay_004', 'Ma. Gracia', 'Engay', 'Em', NULL, '1956-04-22', NULL, 69, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00062', 'RHU-B-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_67_1773634212.jpg', 'active', '2026-03-16 04:10:12', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(68, 13, 18, 'casili_002', 'Elita', 'Liantos', 'Costambirenes', NULL, '1980-03-28', NULL, 45, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00063', 'RHU-C-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_68_1773634298.jpg', 'active', '2026-03-16 04:11:38', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(69, 7, NULL, 'beriran_002', 'Marivic', 'Frias', 'Entico', NULL, '1975-07-05', NULL, 50, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00064', 'RHU-B-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_69_1773634510.jpg', 'active', '2026-03-16 04:15:10', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(70, 1, NULL, 'ariman_005', 'Gina', 'Ofalsa', 'Eneria', NULL, '1974-04-07', NULL, 51, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00065', 'RHU-A-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_70_1773638196.jpg', 'active', '2026-03-16 05:16:36', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(71, 22, NULL, 'naagtan_001', 'Norvic', 'Escarda', 'Hamor', NULL, '1994-09-04', NULL, 31, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00066', 'RHU-N-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_71_1773638314.jpg', 'active', '2026-03-16 05:18:34', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(72, 3, 19, 'balud_del_norte_(poblacion)_003', 'Benjamin', 'Bolgasa', 'Embase', NULL, '2011-08-27', NULL, 14, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00067', 'RHU-BD-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 05:20:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(73, 27, NULL, 'panganiban_(poblacion)_005', 'Kian', 'Escobedo', 'Escolano', NULL, '2024-01-19', NULL, 2, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00068', 'RHU-P(-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_73_1773638475.jpg', 'active', '2026-03-16 05:21:15', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(74, 39, 21, 'tiris_003', 'Nathalie', 'Pura', 'Esquierra', NULL, '2014-09-09', NULL, 11, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00069', 'RHU-T-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_74_1773642932.jpg', 'active', '2026-03-16 06:35:32', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(75, 43, NULL, 'outside_gubat_004', 'Rico', 'Borja', 'Basco', NULL, '1985-09-20', NULL, 40, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00070', 'RHU-OG-00006', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_75_1773643894.jpg', 'active', '2026-03-16 06:51:34', NULL, 'V', 'Sorsogon', 'Casiguran', 'Casay', NULL, NULL),
+	(76, 25, NULL, 'ogao_002', 'Daisy', 'Federio', 'Villaroya', NULL, '1969-04-12', NULL, 56, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00071', 'RHU-O-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_76_1773643996.jpg', 'active', '2026-03-16 06:53:16', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(77, 41, 22, 'union_001', 'Napoleon', 'EreÑo', 'Escandor', NULL, '1967-08-08', NULL, 58, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00072', 'RHU-U-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_77_1773644783.jpg', 'active', '2026-03-16 07:06:22', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(78, 18, NULL, 'lapinig_001', 'Lida', 'Dig', 'Ducay', NULL, '1983-09-07', NULL, 42, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00073', 'RHU-L-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_78_1773644857.jpg', 'active', '2026-03-16 07:07:37', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(79, 32, NULL, 'rizal_003', 'Bonnie Mae', 'Medina', 'Esller', NULL, '1996-05-31', NULL, 29, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00074', 'RHU-R-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_79_1773646429.jpg', 'active', '2026-03-16 07:33:49', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(80, 43, NULL, 'outside_gubat_005', 'Mary Ann', 'Evasco', 'Espinar', NULL, '1988-07-29', NULL, 37, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00075', 'RHU-OG-00007', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_80_1773646539.jpg', 'active', '2026-03-16 07:35:39', NULL, 'V', 'Sorsogon', 'Barcelona', 'Luneta', NULL, NULL),
+	(81, 12, 24, 'carriedo_001', 'Lilia', 'Lotoc', 'Florendo', NULL, '1973-08-10', NULL, 52, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00076', 'RHU-C-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_81_1773648734.jpg', 'active', '2026-03-16 08:12:14', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(82, 22, 25, 'naagtan_002', 'Josephine', 'Licmoan', 'Espaldon', NULL, '1982-01-13', NULL, 44, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00077', 'RHU-N-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_82_1773649021.jpg', 'active', '2026-03-16 08:17:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(83, 38, NULL, 'tigkiw_001', 'John Angel', 'Salvoso', 'Estrelldo', NULL, '2007-07-30', NULL, 18, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00078', 'RHU-T-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_83_1773649297.jpg', 'active', '2026-03-16 08:21:37', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(84, 22, NULL, 'naagtan_003', 'Joebeth', 'San Juan', 'Fresnoza', NULL, '1991-11-24', NULL, 34, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00079', 'RHU-N-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 08:23:10', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(85, 26, NULL, 'paco_004', 'Angelina', 'Enaje', 'Ergina', NULL, '1969-04-12', NULL, 56, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00080', 'RHU-P-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 08:25:54', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(86, 21, NULL, 'manook_(poblacion)_006', 'Raymond', 'Felonia', 'Gubian', NULL, '1984-05-23', NULL, 41, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00081', 'RHU-M(-00006', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_86_1773649651.jpg', 'active', '2026-03-16 08:27:31', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(87, 26, 28, 'paco_005', 'Sherly', 'Ferreras', 'Bosa', NULL, '1991-06-07', NULL, 34, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00082', 'RHU-P-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-16 08:29:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(88, 39, 29, 'tiris_004', 'Rose Andrea', 'Escober', 'Simbajon', NULL, '2005-06-07', NULL, 20, 'Female', 'Single', NULL, NULL, NULL, NULL, NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_88_1773649843.jpg', 'active', '2026-03-16 08:30:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(89, 1, NULL, 'ariman_006', 'Milagros', 'Espineda', 'Caballero', NULL, '1980-03-02', NULL, 46, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00083', 'RHU-A-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_89_1773649933.jpg', 'active', '2026-03-16 08:32:13', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(90, 31, NULL, 'pinontingan_(poblacion)_002', 'Cyril', 'Ermino', 'Ercilla', NULL, '1989-09-13', NULL, 36, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00084', 'RHU-P(-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_90_1773650142.jpg', 'active', '2026-03-16 08:35:42', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(91, 9, NULL, 'bulacao_003', 'Leo', 'Escober', 'Galpo', NULL, '1966-10-06', NULL, 59, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00085', 'RHU-B-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_91_1773707530.jpg', 'active', '2026-03-17 00:32:10', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(92, 30, NULL, 'payawin_002', 'Cecile', 'Dulva', 'Robles', NULL, '1983-11-27', NULL, 42, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00086', 'RHU-P-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_92_1773708455.jpg', 'active', '2026-03-17 00:47:35', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(93, 28, NULL, 'paradijon_(poblacion)_001', 'Merly', 'Gabarda', 'Escandor', NULL, '1957-03-18', NULL, 68, 'Female', NULL, NULL, NULL, NULL, NULL, '2026-00087', 'RHU-P(-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_93_1773708528.jpg', 'active', '2026-03-17 00:48:48', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(94, 22, NULL, 'naagtan_004', 'Nicanor', 'Erepol', 'Funelas', NULL, '1969-08-08', NULL, 56, 'Male', 'Married', NULL, NULL, NULL, NULL, NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_94_1773709444.jpg', 'active', '2026-03-17 01:04:04', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(95, 38, NULL, 'tigkiw_002', 'Consorcia', 'Espenoi', 'Alopo-op', NULL, '1964-01-13', NULL, 62, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00088', 'RHU-T-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-17 01:04:56', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(96, 28, NULL, 'paradijon_(poblacion)_002', 'Lance', 'E', 'Gamba', NULL, '2003-07-20', NULL, 22, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00089', 'RHU-P(-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_96_1773872941.jpg', 'active', '2026-03-18 22:29:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(97, 15, 8, 'cota_na_daco_(poblacion)_004', 'Lea', 'Encinas', 'Escoto', NULL, '1966-10-23', NULL, 59, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00090', 'RHU-CN-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_97_1773879420.jpg', 'active', '2026-03-19 00:17:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(98, 8, 31, 'buenavista_002', 'Estelita', 'Escarcha', 'Gratela', NULL, '1954-06-06', NULL, 71, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00091', 'RHU-B-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_98_1773879744.jpg', 'active', '2026-03-19 00:22:24', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(99, 7, NULL, 'beriran_003', 'Agapito', 'Grajo', 'Escaros', NULL, '1974-12-21', NULL, 51, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00092', 'RHU-B-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_99_1773879847.jpg', 'active', '2026-03-19 00:24:07', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(100, 14, 32, 'cogon_007', 'Romeo', 'Estuye', 'Ferreras', NULL, '1964-01-01', NULL, 62, 'Male', 'Married', NULL, NULL, NULL, NULL, '2026-00093', 'RHU-C-00007', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_100_1773879933.jpg', 'active', '2026-03-19 00:25:33', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(101, 15, 33, 'cota_na_daco_(poblacion)_005', 'Estrella', 'Soria', 'Ferreras', NULL, '1948-05-11', NULL, 77, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00094', 'RHU-CN-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_101_1773880028.jpg', 'active', '2026-03-19 00:27:08', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(102, 42, 34, 'villareal_002', 'Anastacio', 'Payos', 'Esperida', NULL, '1944-08-23', NULL, 81, 'Male', 'Married', NULL, NULL, NULL, NULL, '2026-00095', 'RHU-V-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_102_1773880155.jpg', 'active', '2026-03-19 00:29:15', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(103, 42, 34, 'villareal_003', 'Elena', 'Ferreras', 'Esperida', NULL, '1948-08-13', NULL, 77, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00096', 'RHU-V-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, 'upload/patient_103_1773880445.jpg', 'active', '2026-03-19 00:34:05', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(104, 8, 31, 'buenavista_003', 'Geraldine', 'Linda', 'Bagacay', NULL, '1975-04-18', NULL, 50, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00097', 'RHU-B-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:38:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(105, 14, NULL, 'cogon_008', 'Kevin', 'Toledo', 'Corral', NULL, '1994-10-15', NULL, 31, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00098', 'RHU-C-00008', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:39:51', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(106, 8, NULL, 'buenavista_004', 'Mcrey', 'Linda', 'Bagacay', NULL, '1998-11-24', NULL, 27, 'Male', 'Single', NULL, NULL, NULL, NULL, NULL, NULL, 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:40:47', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(107, 3, 35, 'balud_del_norte_(poblacion)_004', 'Antonio', 'Joven', 'JareÑo', NULL, '1952-05-16', NULL, 73, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00099', 'RHU-BD-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:42:04', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(108, 27, NULL, 'panganiban_(poblacion)_006', 'Ruben', 'DoniÑa', 'Guevarra', NULL, '1947-03-20', NULL, 78, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00100', 'RHU-P(-00006', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:44:55', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(109, 31, NULL, 'pinontingan_(poblacion)_003', 'Dhylan Francis', 'Escote', 'Farenas', NULL, '2025-09-22', NULL, 0, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00101', 'RHU-P(-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:48:49', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(110, 14, NULL, 'cogon_009', 'Priscilla', 'Esteves', 'Sim', NULL, '1960-12-30', NULL, 65, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00102', 'RHU-C-00009', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:49:38', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(111, 15, 33, 'cota_na_daco_(poblacion)_006', 'Sean Uriel', 'Ferreras', 'Espaldon', NULL, '2010-04-29', NULL, 15, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00103', 'RHU-CN-00006', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:50:59', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(112, 25, NULL, 'ogao_003', 'Jumer', 'Felicidario', 'Jerusalem', NULL, '1976-03-16', NULL, 50, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00104', 'RHU-O-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:51:59', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(113, 36, 11, 'tabi_003', 'Gina', 'De-ala', 'Erlano', NULL, '1976-05-26', NULL, 49, 'Female', 'Married', NULL, NULL, NULL, NULL, '2026-00105', 'RHU-T-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:53:02', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(114, 3, NULL, 'balud_del_norte_(poblacion)_005', 'Ma. Teresa', 'Gerona', 'Flores', NULL, '1963-06-16', NULL, 62, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00106', 'RHU-BD-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:54:57', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(115, 15, 12, 'cota_na_daco_(poblacion)_007', 'Kielzavier', 'D', 'Maiso', NULL, '2025-09-19', NULL, 0, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00107', 'RHU-CN-00007', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 00:58:40', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(116, 15, 12, 'cota_na_daco_(poblacion)_008', 'Merly', 'Buenaobra', 'Panuga', NULL, '1982-08-28', NULL, 43, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00108', 'RHU-CN-00008', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:00:07', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(117, 1, NULL, 'ariman_007', 'Justin', 'Alveza', 'Hila', NULL, '2008-07-11', NULL, 17, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00109', 'RHU-A-00005', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:04:37', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(118, 12, 36, 'carriedo_002', 'Jamzel Anne', 'Ocampo', 'Mortel', NULL, '2022-06-24', NULL, 3, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00110', 'RHU-C-00002', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:05:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(119, 28, 37, 'paradijon_(poblacion)_003', 'Ronalyn', 'Bandojo', 'Deocampo', NULL, '2000-02-15', NULL, 26, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00111', 'RHU-P(-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:08:06', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(120, 12, 38, 'carriedo_003', 'Micaella', 'Ocampo', 'Mortel', NULL, '2020-05-17', NULL, 5, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00112', 'RHU-C-00003', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:09:26', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(121, 31, NULL, 'pinontingan_(poblacion)_004', 'Dhaveron', 'Escote', 'Farenas', NULL, '2018-07-20', NULL, 7, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00113', 'RHU-P(-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:10:40', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(122, 14, NULL, 'cogon_010', 'Junnel', 'Fercol', 'Felicia', NULL, '1991-12-07', NULL, 34, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00114', 'RHU-C-00010', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:12:03', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(123, 3, 39, 'balud_del_norte_(poblacion)_006', 'Domingo', 'Petallo', 'Estrella', NULL, '1982-05-09', NULL, 43, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00115', 'RHU-BD-00006', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:23:10', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(124, 12, 38, 'carriedo_004', 'Merwina', 'Epino', 'Ervas', NULL, '2023-06-23', NULL, 2, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00116', 'RHU-C-00004', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 01:35:02', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(125, 19, 10, 'luna-candol_(poblacion)_007', 'Delia', 'Escobedo', 'Galarosa', NULL, '1952-07-26', NULL, 73, 'Female', 'Single', NULL, NULL, NULL, NULL, '2026-00117', 'RHU-L(-00007', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 02:06:10', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(126, 14, 40, 'cogon_011', 'Roland', NULL, 'Escurel', NULL, '1969-05-21', NULL, 56, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00118', 'RHU-C-00011', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 02:08:53', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+	(127, 40, NULL, 'togawe_001', 'John Rey', 'Gading', 'EspeÑo', NULL, '1997-10-25', NULL, 28, 'Male', 'Single', NULL, NULL, NULL, NULL, '2026-00119', 'RHU-T-00001', 'Unknown', NULL, NULL, 'No', 'No', 'No', 'No', NULL, NULL, NULL, NULL, 'active', '2026-03-19 02:10:15', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- Dumping structure for table react1.0.patient_household_history
 CREATE TABLE IF NOT EXISTS `patient_household_history` (
@@ -305,10 +574,15 @@ CREATE TABLE IF NOT EXISTS `patient_household_history` (
   PRIMARY KEY (`id`),
   KEY `fk_phh_patient` (`patient_id`),
   CONSTRAINT `fk_phh_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table react1.0.patient_household_history: ~0 rows (approximately)
+-- Dumping data for table react1.0.patient_household_history: ~4 rows (approximately)
 DELETE FROM `patient_household_history`;
+INSERT INTO `patient_household_history` (`id`, `patient_id`, `old_barangay_id`, `old_household_no`, `old_facility_household_no`, `new_barangay_id`, `new_household_no`, `new_facility_household_no`, `move_reason`, `moved_at`, `moved_by`) VALUES
+	(1, 1, 21, NULL, NULL, 21, '2026-00001', 'RHU-M(-00001', 'Patient transfer', '2026-03-09 03:45:08', 1),
+	(2, 14, 43, '2026-00014', 'RHU-OG-00001', 43, '2026-00014', 'RHU-OG-00001', 'Patient transfer', '2026-03-12 08:16:27', 1),
+	(3, 12, 21, '2026-00012', 'RHU-M(-00003', 21, '2026-00001', 'RHU-M(-00001', 'Patient transfer', '2026-03-16 06:18:41', 1),
+	(4, 13, 21, '2026-00013', 'RHU-M(-00004', 21, '2026-00001', 'RHU-M(-00001', 'Patient transfer', '2026-03-16 06:19:26', 1);
 
 -- Dumping structure for table react1.0.patient_queue
 CREATE TABLE IF NOT EXISTS `patient_queue` (
@@ -329,15 +603,39 @@ CREATE TABLE IF NOT EXISTS `patient_queue` (
   `weight` decimal(5,2) DEFAULT NULL,
   `height` decimal(5,2) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `administered_by` bigint unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_daily_queue` (`queue_date`,`queue_type`,`queue_number`),
   KEY `idx_queue_lookup` (`queue_date`,`queue_type`,`status`),
   KEY `fk_patient_queue` (`patient_id`),
+  KEY `fk_administered_by` (`administered_by`),
+  CONSTRAINT `fk_administered_by` FOREIGN KEY (`administered_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_queue_patient` FOREIGN KEY (`patient_id`) REFERENCES `patients_db` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table react1.0.patient_queue: ~0 rows (approximately)
+-- Dumping data for table react1.0.patient_queue: ~20 rows (approximately)
 DELETE FROM `patient_queue`;
+INSERT INTO `patient_queue` (`id`, `patient_id`, `queue_date`, `queue_type`, `queue_number`, `queue_code`, `status`, `cancelled_by`, `systolic_bp`, `diastolic_bp`, `heart_rate`, `respiratory_rate`, `temperature`, `oxygen_saturation`, `weight`, `height`, `created_at`, `administered_by`) VALUES
+	(1, 1, '2026-03-10', 'REGULAR', 1, 'R-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 10:46:01', NULL),
+	(2, 13, '2026-03-10', 'REGULAR', 2, 'R-002', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 10:46:08', NULL),
+	(3, 14, '2026-03-10', 'REGULAR', 3, 'R-003', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-10 10:48:24', NULL),
+	(4, 1, '2026-03-12', 'REGULAR', 1, 'R-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-12 02:26:47', NULL),
+	(5, 13, '2026-03-12', 'PRIORITY', 1, 'P-001', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-12 02:39:17', NULL),
+	(6, 14, '2026-03-12', 'PRIORITY', 2, 'P-002', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-12 03:22:51', NULL),
+	(7, 16, '2026-03-13', 'REGULAR', 1, 'R-001', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-13 15:18:12', NULL),
+	(8, 1, '2026-03-17', 'REGULAR', 1, 'R-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-17 06:47:36', NULL),
+	(9, 14, '2026-03-17', 'PRIORITY', 1, 'P-001', 'done', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-17 06:55:06', 13),
+	(10, 1, '2026-03-18', 'REGULAR', 1, 'R-001', 'done', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-18 02:19:22', 13),
+	(11, 14, '2026-03-18', 'REGULAR', 2, 'R-002', 'done', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-18 02:59:49', 19),
+	(12, 12, '2026-03-18', 'REGULAR', 3, 'R-003', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-18 03:01:12', NULL),
+	(13, 1, '2026-03-22', 'REGULAR', 1, 'R-001', 'done', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-22 10:19:54', 13),
+	(14, 13, '2026-03-22', 'REGULAR', 2, 'R-002', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-22 10:20:00', 13),
+	(15, 12, '2026-03-22', 'PRIORITY', 1, 'P-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-22 10:20:08', 13),
+	(16, 14, '2026-03-22', 'PRIORITY', 2, 'P-002', 'done', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-22 10:54:35', 13),
+	(17, 96, '2026-03-22', 'PRIORITY', 3, 'P-003', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-22 10:58:03', 13),
+	(18, 16, '2026-03-22', 'PRIORITY', 4, 'P-004', 'waiting', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-22 11:01:58', 13),
+	(19, 1, '2026-03-25', 'REGULAR', 1, 'R-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-25 05:17:19', 13),
+	(20, 14, '2026-03-25', 'PRIORITY', 1, 'P-001', 'serving', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-25 05:18:55', 13);
 
 -- Dumping structure for table react1.0.puroks
 CREATE TABLE IF NOT EXISTS `puroks` (
@@ -347,10 +645,51 @@ CREATE TABLE IF NOT EXISTS `puroks` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_purok` (`barangay_id`,`purok_name`),
   CONSTRAINT `fk_purok_barangay` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumping data for table react1.0.puroks: ~15 rows (approximately)
+-- Dumping data for table react1.0.puroks: ~35 rows (approximately)
 DELETE FROM `puroks`;
+INSERT INTO `puroks` (`id`, `barangay_id`, `purok_name`) VALUES
+	(17, 1, 'P4'),
+	(35, 3, 'Purok 2'),
+	(39, 3, 'Purok 3'),
+	(19, 3, 'Purok 4'),
+	(31, 8, 'Purok 1a'),
+	(3, 8, 'Purok 1b'),
+	(24, 12, '4'),
+	(36, 12, 'Purok 3'),
+	(38, 12, 'Purok 4'),
+	(18, 13, 'Purok 2'),
+	(4, 14, 'Avocado'),
+	(16, 14, 'Hfs'),
+	(32, 14, 'Langka'),
+	(15, 14, 'Relocation'),
+	(40, 14, 'Sas'),
+	(12, 15, 'Purok 1 B'),
+	(33, 15, 'Purok 1-a'),
+	(2, 15, 'Purok 1-d Gumang'),
+	(8, 15, 'Purok 4'),
+	(23, 18, 'Purok 2'),
+	(9, 19, 'Purok 3'),
+	(10, 19, 'Purok 4'),
+	(27, 21, 'Purok 1a'),
+	(7, 21, 'Purok 2'),
+	(1, 21, 'Purok 4'),
+	(26, 22, 'Purok 5'),
+	(25, 22, 'Purok 7'),
+	(28, 26, 'Purok 1'),
+	(20, 27, 'Purok 3a'),
+	(37, 28, 'Purok 2'),
+	(30, 28, 'Purok 6'),
+	(6, 32, 'Bagong Silang'),
+	(13, 34, 'P2'),
+	(5, 34, 'P5a'),
+	(14, 36, 'Purok 3'),
+	(11, 36, 'Purok 6'),
+	(29, 39, 'Purok 1-d'),
+	(21, 39, 'Purok 5-a'),
+	(22, 41, 'Purok 2'),
+	(34, 42, 'Purok 6');
 
 -- Dumping structure for table react1.0.roles
 CREATE TABLE IF NOT EXISTS `roles` (
@@ -361,7 +700,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table react1.0.roles: ~11 rows (approximately)
 DELETE FROM `roles`;
@@ -376,7 +715,8 @@ INSERT INTO `roles` (`id`, `code`, `name`, `description`, `created_at`) VALUES
 	(12, 'cashier', 'Cashier', NULL, '2026-01-24 09:07:18'),
 	(13, 'pet', 'Pet', NULL, '2026-01-25 06:50:35'),
 	(14, 'seller', 'Seller', NULL, '2026-01-25 07:34:46'),
-	(17, 'encoder', 'Encoder', NULL, '2026-03-05 01:03:02');
+	(17, 'encoder', 'Encoder', NULL, '2026-03-05 01:03:02'),
+	(18, 'tv', 'TV', NULL, '2026-03-09 02:25:02');
 
 -- Dumping structure for table react1.0.users
 CREATE TABLE IF NOT EXISTS `users` (
@@ -394,13 +734,13 @@ CREATE TABLE IF NOT EXISTS `users` (
   UNIQUE KEY `email` (`email`),
   KEY `fk_user_role` (`role`),
   CONSTRAINT `fk_user_role` FOREIGN KEY (`role`) REFERENCES `roles` (`code`) ON DELETE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.users: ~13 rows (approximately)
+-- Dumping data for table react1.0.users: ~11 rows (approximately)
 DELETE FROM `users`;
 INSERT INTO `users` (`id`, `uuid`, `name`, `email`, `password_hash`, `role`, `status`, `created_at`, `updated_at`) VALUES
 	(5, '550e8400-e29b-41d4-a716-446655440000', 'John Doe', 'john@example.com', '$2y$10$mkFxgzkE8AYnTVgtOQPnMuctPun99qHtq6WGMAmbZx0q3sOm0UV2i', 'user', 'active', '2026-01-08 13:29:09', '2026-01-08 14:53:48'),
-	(12, '9109a251-f911-11f0-a427-34e6d71ed611', 'Ronald Fererras', 'ronald@gmail.com', '$2y$10$hfT.hDCVr0BiFpqbZRPArOoNsmKWburBKASZ8byv0YoJoTCo88riG', 'doctor', 'active', '2026-01-24 10:43:49', '2026-01-24 10:43:49'),
+	(12, '9109a251-f911-11f0-a427-34e6d71ed611', 'Ronald E. Fererras', 'ronald@gmail.com', '$2y$10$hfT.hDCVr0BiFpqbZRPArOoNsmKWburBKASZ8byv0YoJoTCo88riG', 'doctor', 'active', '2026-01-24 10:43:49', '2026-03-09 03:25:23'),
 	(13, '3806a1ac-f912-11f0-a427-34e6d71ed611', 'Rona', 'rona@gmail.com', '$2y$10$BvSZoQYUzjVCz2pGi6A/TeFzIH6a9y3dfH0.lVCnRm8r2E/HsOoXa', 'triage', 'active', '2026-01-24 10:48:29', '2026-01-24 10:48:29'),
 	(14, 'bc13750e-f912-11f0-a427-34e6d71ed611', 'Nurses', 'nurse@gmail.com', '$2y$10$AmAbXIO1htpyPfSNNUY7Yu/YhdivaTXGnL1fi/i03uO.XQe069/ka', 'nurse', 'active', '2026-01-24 10:52:10', '2026-01-24 10:52:10'),
 	(15, '3e4b337c-f913-11f0-a427-34e6d71ed611', 'cashier', 'cashier@gmail.com', '$2y$10$miMxELICWHAH/S7ysZTzFe9do4C4BEqhGxmTWY32HB8b.U2SPu9.a', 'cashier', 'active', '2026-01-24 10:55:49', '2026-01-24 10:55:49'),
@@ -408,10 +748,11 @@ INSERT INTO `users` (`id`, `uuid`, `name`, `email`, `password_hash`, `role`, `st
 	(17, '5d75e27d-f9c0-11f0-a612-34e6d71ed611', 'Seller', 'seller@gmail.com', '$2y$10$7UxBawEgcPd.SKj2xRPwlOxr65OkU7ThuzGIVRiQzRsn9B..dl0xu', 'seller', 'active', '2026-01-25 07:35:04', '2026-01-25 07:35:04'),
 	(18, 'be4d2b2b-f9c0-11f0-a612-34e6d71ed611', 'Rafael', 'rafael@gmail.com', '$2y$10$Yb.9G0N1REL27ANen9lWc.FzFjCtnrf6aFTaGSX96NGJJ7CYHQpxG', 'user', 'active', '2026-01-25 07:37:47', '2026-01-25 07:37:47'),
 	(19, '0a67ad70-fb3f-11f0-92de-34e6d71ed611', 'Ian', 'ian@gmail.com', '$2y$10$rBx8JoTHUwUjZCaWfYKJz.Txgm9Z5jXA6ochFP6tD48qXRXE/aiU.', 'admin', 'active', '2026-01-27 05:14:22', '2026-01-27 05:14:22'),
-	(20, '07266b90-022f-11f1-89a5-34e6d71ed611', 'Mari-Ann Kristine', 'Mari-Ann@gmail.com', '$2y$10$osxlehTAqNnrY8zhB0wjzuXwVWexZSo9gyUSkWHH.1tjr6lO5hVFO', 'doctor', 'active', '2026-02-05 01:07:23', '2026-02-05 01:07:23'),
+	(20, '07266b90-022f-11f1-89a5-34e6d71ed611', 'Mari-Ann Kristine P. Ecleo', 'Mari-Ann@gmail.com', '$2y$10$osxlehTAqNnrY8zhB0wjzuXwVWexZSo9gyUSkWHH.1tjr6lO5hVFO', 'doctor', 'active', '2026-02-05 01:07:23', '2026-03-09 03:26:30'),
 	(23, '19a8551f-182f-11f1-b669-34e6d71ed611', 'encoder', 'encoder@gmail.com', '$2y$10$vTuIy6ilsmDqszx0AZnou.DEpZ8c24V0TgsKQu6JdHzqqoGkQU.uG', 'encoder', 'active', '2026-03-05 01:03:19', '2026-03-05 01:03:19'),
 	(24, 'bb6b7f26-1af6-11f1-b875-34e6d71ed611', 'Johan Joseph E. Gamil', 'gamil@gmail.com', '$2y$10$6LAN6Lqtm6p82JBiBXiaoOPmUFSw8pw6XtEbFDiQIC8CFW4svvWI2', 'doctor', 'active', '2026-03-08 13:57:23', '2026-03-08 13:57:23'),
-	(25, '501a65a4-1af7-11f1-b875-34e6d71ed611', 'Gian Carlo E. Escobedo', 'escobedo@gmail.com', '$2y$10$A9aWwBzyOxc9ZN20eUM63ObjL/dUz8arlTNk6fTTVeawhemrpxZXe', 'doctor', 'active', '2026-03-08 14:01:32', '2026-03-08 14:01:32');
+	(25, '501a65a4-1af7-11f1-b875-34e6d71ed611', 'Gian Carlo E. Escobedo', 'escobedo@gmail.com', '$2y$10$A9aWwBzyOxc9ZN20eUM63ObjL/dUz8arlTNk6fTTVeawhemrpxZXe', 'doctor', 'active', '2026-03-08 14:01:32', '2026-03-08 14:01:32'),
+	(26, '3b2ca3f5-1b5f-11f1-bb49-34e6d71ed611', 'TV', 'TV@gmail.com', '$2y$10$Q5GsW4ddGH8ftEcZEwOnreRouTejiYZOhLoP3xdJZeJRyDHQSW.4y', 'tv', 'active', '2026-03-09 02:25:25', '2026-03-09 02:25:25');
 
 -- Dumping structure for table react1.0.user_panel_access
 CREATE TABLE IF NOT EXISTS `user_panel_access` (
@@ -423,7 +764,7 @@ CREATE TABLE IF NOT EXISTS `user_panel_access` (
   CONSTRAINT `user_panel_access_ibfk_2` FOREIGN KEY (`panel_id`) REFERENCES `panels` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.user_panel_access: ~15 rows (approximately)
+-- Dumping data for table react1.0.user_panel_access: ~18 rows (approximately)
 DELETE FROM `user_panel_access`;
 INSERT INTO `user_panel_access` (`user_id`, `panel_id`) VALUES
 	(13, 1),
@@ -434,13 +775,16 @@ INSERT INTO `user_panel_access` (`user_id`, `panel_id`) VALUES
 	(15, 2),
 	(19, 2),
 	(12, 3),
+	(13, 3),
 	(20, 3),
 	(24, 3),
 	(25, 3),
 	(12, 4),
+	(13, 4),
 	(20, 4),
 	(24, 4),
-	(25, 4);
+	(25, 4),
+	(13, 5);
 
 -- Dumping structure for table react1.0.user_profiles
 CREATE TABLE IF NOT EXISTS `user_profiles` (
@@ -454,7 +798,7 @@ CREATE TABLE IF NOT EXISTS `user_profiles` (
   CONSTRAINT `user_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.user_profiles: ~3 rows (approximately)
+-- Dumping data for table react1.0.user_profiles: ~2 rows (approximately)
 DELETE FROM `user_profiles`;
 INSERT INTO `user_profiles` (`user_id`, `avatar`, `phone`, `address`, `license_no`, `title`) VALUES
 	(12, NULL, '', '', '0120227', 'RM, RN, MD, MPM-HSD, CPC-FP '),
@@ -472,9 +816,9 @@ CREATE TABLE IF NOT EXISTS `user_sessions` (
   UNIQUE KEY `token` (`token`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=364 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=469 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table react1.0.user_sessions: ~138 rows (approximately)
+-- Dumping data for table react1.0.user_sessions: ~198 rows (approximately)
 DELETE FROM `user_sessions`;
 INSERT INTO `user_sessions` (`id`, `user_id`, `token`, `expires_at`, `created_at`) VALUES
 	(8, 5, 'e9abfddabad8a781cd4481951247055f298a8b5a9dbab05b08c8c2108a9ab6b9', '2026-01-12 04:20:55', '2026-01-11 03:20:55'),
@@ -658,7 +1002,57 @@ INSERT INTO `user_sessions` (`id`, `user_id`, `token`, `expires_at`, `created_at
 	(346, 13, '3c3a04c96175a2cc7655599ae91205573e14c1a523ce17edde0a70ab16c27497', '2026-03-09 12:09:42', '2026-03-08 12:09:42'),
 	(349, 13, '2630e26b30d9826c66c7bd8d71375a615d29dd3b2ab8fe4282c2a9cddaf30f3b', '2026-03-09 13:38:27', '2026-03-08 13:38:27'),
 	(362, 12, 'c6405ab6feb2255121e05da787e0c359f374cc1ef173313a2820b085b516556c', '2026-03-09 22:17:19', '2026-03-08 22:17:19'),
-	(363, 12, '4e978bed98519c23f7bac87fabdff60b819f95d74ebcb2fab83352c654aac183', '2026-03-09 22:20:33', '2026-03-08 22:20:33');
+	(364, 13, 'b863cf6cb28a489976d2a744ff444dd389598fa8d5463099b6367982fb875faf', '2026-03-09 22:37:40', '2026-03-08 22:37:40'),
+	(366, 13, '8e9be0e02245c60142c531cfd8e0eaba8c426891d713b0bc5801409a93ab487c', '2026-03-10 00:58:11', '2026-03-09 00:58:11'),
+	(378, 12, '0ca407513b3e230180922a3542211ecdcfb6ac44abe3ef21b6c1eb3fca801e4c', '2026-03-10 02:41:50', '2026-03-09 02:41:50'),
+	(384, 12, '11a5331aaf38a57f24a0f06235357950b27b685439cab89296a195ed17f0daba', '2026-03-10 03:20:06', '2026-03-09 03:20:06'),
+	(386, 20, '240d41c7577f77e7319e3249709f7b64946bf826c91485647792d8afd4809a4b', '2026-03-10 03:20:54', '2026-03-09 03:20:54'),
+	(388, 12, '62416bada5f4d7f2388fe8400beb551dbe7d4fa2075a2354ac3c0df6e6f038e4', '2026-03-10 05:11:28', '2026-03-09 05:11:28'),
+	(389, 13, 'a2246460c614be34e7e249d3ee25ef19e6059b550c774700e33bd363c57a2442', '2026-03-10 05:27:34', '2026-03-09 05:27:34'),
+	(392, 13, 'dd9e5f2344a9f3d019840deec2cfc53d696d8c5adbb2c428fd029e10fd3b9687', '2026-03-11 06:18:06', '2026-03-10 06:18:06'),
+	(395, 26, 'd6b5fb774db0d0ca6756bd1b5c4d3645f6538e2f11602c744a901451189c6213', '2026-03-11 10:54:08', '2026-03-10 10:54:08'),
+	(398, 20, '6bcf1a0fa7132bb227b1b7b0b3962476c98c436ad5a5d8f724f314c914b0f73d', '2026-03-11 10:58:45', '2026-03-10 10:58:45'),
+	(400, 13, '307568a566e96c69eddb11d420592bae63738693bbc480ababf919c8a7368fb0', '2026-03-11 11:00:27', '2026-03-10 11:00:27'),
+	(401, 13, 'dcae0faed00632d95661b64d8053dd5802ea0a73176a1c18b444dd3deb5e31e6', '2026-03-11 11:01:01', '2026-03-10 11:01:01'),
+	(406, 13, '04e539882b7c6d9b334bbd9b0548a40118956d873d5315198ea189fb9141ef06', '2026-03-11 15:50:38', '2026-03-10 15:50:38'),
+	(407, 13, '8ea2cdd2ad7aebec2c9b2bf7004412bbf951958e79cbb187c5ea5a55b5463567', '2026-03-12 00:26:26', '2026-03-11 00:26:26'),
+	(408, 13, 'b6dbe992f1408ec7cd96b55259bb5e386798f698c9a806e85201c23aa14fec90', '2026-03-12 00:26:26', '2026-03-11 00:26:26'),
+	(409, 13, '5ede808263257d5096b138dd7a63290ee55c592cd2e7ee79171011d79f98e59f', '2026-03-12 11:54:11', '2026-03-11 11:54:11'),
+	(412, 13, '0517a898c2fd9b718e1bc33d2456eb7dd1d22991fd32bb8fdfe40947eca8a841', '2026-03-13 00:57:21', '2026-03-12 00:57:21'),
+	(413, 13, '2b2834665724ebc3e0c1c8c77193e2cee3d65a9af25d846c45733bcf02a986e7', '2026-03-13 02:36:37', '2026-03-12 02:36:37'),
+	(417, 13, '52f1ed34d5d1926c22adc2ace800fd978051e8ca5c16c50605ad028c649f4a45', '2026-03-13 03:08:46', '2026-03-12 03:08:46'),
+	(419, 23, '5a11f7a46963743beac350d6d5bb89a11412333e7545e10089840a3e9ed93f17', '2026-03-13 05:20:26', '2026-03-12 05:20:26'),
+	(420, 13, '7a2c57b0ea0df03f6a2e237d241f74840261b73ed9a558b6e80707b9d352111c', '2026-03-14 00:53:50', '2026-03-13 00:53:50'),
+	(421, 13, '7375f9c44ceb5a11fe70f94e97d6c27886052e3c09299179f3513f06baa3cc79', '2026-03-14 00:55:09', '2026-03-13 00:55:09'),
+	(422, 13, 'db93537ea08669dd978506a5b6c50b0e0c9b05eb4fb3fe8a65462c23c529c155', '2026-03-14 13:57:17', '2026-03-13 13:57:17'),
+	(423, 13, 'cbe62b2315d4030fd5a4137ef20a1c80150f3239dafa7594645f6db24bf2fe83', '2026-03-14 15:26:36', '2026-03-13 15:26:36'),
+	(424, 13, '103d831f9bdcfe1f78fc6e2261357bfcad364db02b451277b57cc6b8120dcc51', '2026-03-15 14:21:28', '2026-03-14 14:21:28'),
+	(425, 24, '69a1e73093ed9648717cde4a513d73068f8d6b02f0f15fbf007ed278a703513f', '2026-03-17 00:19:28', '2026-03-16 00:19:28'),
+	(427, 13, '44b1b13a62a58423dcdec0767de53bceddd155360bf64617c3495b74652f7842', '2026-03-17 00:28:45', '2026-03-16 00:28:45'),
+	(429, 13, '3b1e6489651f339d74476371cc75fce0d8e13082e54033a48db6a679e8003486', '2026-03-17 08:52:18', '2026-03-16 08:52:18'),
+	(431, 20, '5eb91958e52f8545de6cf9b3175137be9d7e87a8c7b89977e5a62934f9e0b277', '2026-03-18 00:22:25', '2026-03-17 00:22:25'),
+	(434, 12, '5d6d30a931bbd09cf8da7990cd6cfc4732235ba21cee70ee1509176354898fe8', '2026-03-18 08:15:31', '2026-03-17 08:15:31'),
+	(440, 12, 'accfc66e6f81c9b19bb7a826e0280143e74633af2a92aa6857de745cc57b6cc5', '2026-03-19 02:38:07', '2026-03-18 02:38:07'),
+	(442, 13, '5ff8a874db39d921de21777297a8f89a64e888f754fec14757609658fa4842fe', '2026-03-19 03:00:32', '2026-03-18 03:00:32'),
+	(443, 12, '563690c83fccb63c4dcb060ef2128f10d98bffd2ca2688b5993d5bea4372b317', '2026-03-19 06:38:53', '2026-03-18 06:38:53'),
+	(444, 13, 'b6b1944f90739e8e00fd9e513246dceb66deb0673ac675b6cbe6b399da5c2fc1', '2026-03-19 22:27:22', '2026-03-18 22:27:22'),
+	(445, 12, '1acf7450aff00c78babd6013ecdfb1e13779760a81354ca52ce07d96efe6877d', '2026-03-19 22:27:43', '2026-03-18 22:27:43'),
+	(446, 12, '790ef19bd809781157e4487762c8e40889e2273b85bc4eebe45d6653c0c5ad82', '2026-03-19 22:37:08', '2026-03-18 22:37:08'),
+	(447, 13, '3897452678ab45ca8d47d9193e94e110edc6f05c651835112d9ca9ad26e9ec42', '2026-03-20 00:06:41', '2026-03-19 00:06:41'),
+	(448, 24, '29dab1bd7a91c3f1612a787e7d3da91725be648d3c0f8040f3e0b3d0aaf6fb5e', '2026-03-20 00:14:53', '2026-03-19 00:14:53'),
+	(450, 12, '4ba795ae60858d4b5ef29ea254a00dec170a846e525fb2a5972e1a45432a2f94', '2026-03-20 01:58:17', '2026-03-19 01:58:17'),
+	(451, 13, '500f3b9d41faf6f46f3c362dad255da2ea139d39218deeb633c01c1f7d8715f3', '2026-03-20 02:13:27', '2026-03-19 02:13:27'),
+	(454, 26, 'fa0a793adc9d46b5d71b25f1c4a2e62f243a68748da2feb7941a9d21f886b1fc', '2026-03-23 10:19:07', '2026-03-22 10:19:07'),
+	(456, 24, 'dffad69b0a0a92a44ed7ce0991aba4ded72917cfd04003bd8b2f61100701cee9', '2026-03-23 10:21:51', '2026-03-22 10:21:51'),
+	(457, 20, '2205b6cea0cb4c1d4f7a6846bd104d0a096d6dfb92758b3ebd1226ef35f27a1e', '2026-03-23 10:22:11', '2026-03-22 10:22:11'),
+	(461, 12, 'c4b2f0499293737f33b64249e4f4ca7613ebd2c8f7e5f54832cf615447a9bdc3', '2026-03-23 10:50:22', '2026-03-22 10:50:22'),
+	(462, 26, '9f4079f9b6c29fbef5ae64cd48780c4cf18ab928774143a1fd71d5430cf55d99', '2026-03-23 10:52:04', '2026-03-22 10:52:04'),
+	(463, 20, '0b1f06403aec364619a7bc6cf272a86ad7874e70371b53e7c63c9a9ba75cad1e', '2026-03-23 10:52:51', '2026-03-22 10:52:51'),
+	(464, 13, '8b09ae4b5050df30d7173d178972452d297af26b872269b086a36bcf5fb70520', '2026-03-23 10:53:46', '2026-03-22 10:53:46'),
+	(465, 26, '276a031bac780a7d45779ce4010973d04b4ef233fdf4ebc572e3933e4f531da8', '2026-03-26 05:15:37', '2026-03-25 05:15:37'),
+	(466, 13, '733e360e8c90ff9936b3089909fd7fdc41ca96dfa2d4079eb98ccc7ebdbd57c1', '2026-03-26 05:16:44', '2026-03-25 05:16:44'),
+	(467, 12, 'e61864db9a3528a98f5f6525480d8f01bcf3166d106a15d4304335e256fa5d47', '2026-03-26 05:17:42', '2026-03-25 05:17:42'),
+	(468, 24, '6391816ab1c1ab5ef8b9bda4cc5c8287ec730ba56e5243d12cacc56509e35891', '2026-03-26 05:21:50', '2026-03-25 05:21:50');
 
 -- Dumping structure for table react1.0.user_widget_access
 CREATE TABLE IF NOT EXISTS `user_widget_access` (
@@ -670,19 +1064,20 @@ CREATE TABLE IF NOT EXISTS `user_widget_access` (
   KEY `fk_uw_widget` (`widget_id`),
   CONSTRAINT `fk_uw_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk_uw_widget` FOREIGN KEY (`widget_id`) REFERENCES `widgets` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table react1.0.user_widget_access: ~8 rows (approximately)
+-- Dumping data for table react1.0.user_widget_access: ~9 rows (approximately)
 DELETE FROM `user_widget_access`;
 INSERT INTO `user_widget_access` (`id`, `user_id`, `widget_id`) VALUES
 	(88, 12, 1),
-	(80, 13, 2),
+	(96, 13, 2),
 	(81, 15, 2),
 	(76, 19, 2),
 	(70, 20, 1),
 	(85, 23, 5),
 	(90, 24, 1),
-	(89, 25, 1);
+	(89, 25, 1),
+	(91, 26, 4);
 
 -- Dumping structure for table react1.0.widgets
 CREATE TABLE IF NOT EXISTS `widgets` (

@@ -30,12 +30,33 @@ export const generateQueueNumber = async (payload) => {
    ACCEPT / SERVE PATIENT
 ========================= */
 // src/api/queue.js
-export const acceptQueuePatient = async (queueId) => {
+export const acceptQueuePatient = async (queueId, userId) => {
   return apiFetch(`${API}/Queue/accept-queue.php`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ queue_id: queueId }),
+    body: JSON.stringify({ 
+      queue_id: queueId,
+      administered_by: userId
+    }),
   });
+};
+
+/* =========================
+   FETCH QUEUE STATISTICS
+========================= */
+export const fetchQueueStats = async (userId) => {
+  return apiFetch(
+    `${API}/Queue/queue-stats.php?user_id=${userId}`
+  );
+};
+
+/* =========================
+   FETCH DOCTOR STATISTICS
+========================= */
+export const fetchDoctorStats = async (doctorId) => {
+  return apiFetch(
+    `${API}/Queue/doctor-stats.php?doctor_id=${doctorId}`
+  );
 };

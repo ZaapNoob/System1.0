@@ -3,6 +3,9 @@ import Sidebar from '../components/Sidebar';
 import './medical.css';
 import useMedicalCertificate from '../hooks/useMedicalCertificate';
 import { useMedicalHistory } from "../hooks/useMedicalHistory";
+import { usePatientImage } from "../hooks/image display/usePatientImage";
+import { DEFAULT_AVATAR } from "../utils/image";
+
 export default function Medical({ user, onNavigateToProfile, allowedPages, onNavigate, handleLogout }) {
   const {
     step,
@@ -19,6 +22,10 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
     handleSubmit,
     handleReset,
     handleGenerateCertificate,
+    editingCertificateId,
+    handleEditCertificate,
+    handleUpdateCertificate,
+    handleCancelEdit,
   } = useMedicalCertificate();
 
   const [formData, setFormData] = useState({
@@ -30,8 +37,13 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
     remarks: '',
   });
 
-const { medicalHistory, loadingHistory } =
-  useMedicalHistory(selectedPatient?.id);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Get patient image using custom hook
+  const { imageUrl, isLoading: imageLoading, fullPatient } = usePatientImage(selectedPatient);
+
+  const { medicalHistory, loadingHistory } =
+    useMedicalHistory(selectedPatient?.id, refreshTrigger);
 
 
 
@@ -75,18 +87,17 @@ const { medicalHistory, loadingHistory } =
                   <p>Enter a patient name or ID to begin generating a medical certificate.</p>
                 </div>
 
-                <form onSubmit={handleSearch}>
+                <form onSubmit={(e) => e.preventDefault()}>
                   <div className="search-input-group">
                     <input
                       type="text"
                       className="search-input-new"
-                      placeholder="Search by name or ID..."
+                      placeholder="Search by name or ID... (type to search)"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
+                      autoComplete="off"
                     />
-                    <button type="submit" className="search-submit-btn" disabled={loading}>
-                      {loading ? 'Searching...' : 'Search'}
-                    </button>
+                    {loading && <span style={{ marginLeft: '10px', color: '#666' }}>🔄 Searching...</span>}
                   </div>
                   {error && <div style={{ color: 'red', marginTop: '6px' }}>{error}</div>}
                 </form>
@@ -153,6 +164,36 @@ const { medicalHistory, loadingHistory } =
             <div className="stat-content">
               <h3>Patient</h3>
               <div className="stat-number">{selectedPatient.name}</div>
+              <div className="patient-image-container">
+                <img
+                  src={imageUrl}
+                  alt="Patient"
+                  className="patient-image-display"
+                  onLoad={() => console.log("✅ Patient image loaded")}
+                  onError={(e) => {
+                    e.target.src = DEFAULT_AVATAR;
+                  }}
+                />
+                <div className="patient-info-section">
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Patient Code</span>
+                    <span className="patient-info-value">{fullPatient?.patient_code || 'N/A'}</span>
+                  </div>
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Gender</span>
+                    <span className="patient-info-value">{fullPatient?.gender || 'N/A'}</span>
+                  </div>
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Age</span>
+                    <span className="patient-info-value">{fullPatient?.age || 'N/A'}</span>
+                  </div>
+                  <div className="patient-info-item">
+                    <span className="patient-info-label">Date of Birth</span>
+                    <span className="patient-info-value">{fullPatient?.date_of_birth || 'N/A'}</span>
+                  </div>
+                </div>
+                {imageLoading && <p style={{ fontSize: '12px', color: '#666', position: 'absolute', top: '10px' }}>Loading image...</p>}
+              </div>
             </div>
           </div>
 
@@ -196,19 +237,50 @@ const { medicalHistory, loadingHistory } =
             </div>
           </div>
 
-          <button
-            className="btn-primary-lg"
-            onClick={() =>
-              handleGenerateCertificate(
-                formData,
-                selectedPatient,
-                user,
-                setStep
-              )
-            }
-          >
-            Generate Certificate →
-          </button>
+          {editingCertificateId ? (
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                className="btn-primary-lg"
+                onClick={() =>
+                  handleUpdateCertificate(
+                    formData,
+                    refreshTrigger,
+                    setRefreshTrigger
+                  )
+                }
+              >
+                Update Certificate ✓
+              </button>
+              <button
+                className="btn-outline"
+                onClick={() => {
+                  handleCancelEdit();
+                  setFormData({
+                    certificate_no: `MC-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000) + 1000}`,
+                    patient_id: '',
+                    impression: '',
+                    remarks: '',
+                  });
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              className="btn-primary-lg"
+              onClick={() =>
+                handleGenerateCertificate(
+                  formData,
+                  selectedPatient,
+                  user,
+                  setStep
+                )
+              }
+            >
+              Generate Certificate →
+            </button>
+          )}
         </div>
 
         {/* RIGHT SIDE - Preview Panel */}
@@ -270,6 +342,25 @@ const { medicalHistory, loadingHistory } =
             title="Print certificate"
           >
             🖨️
+          </button>
+
+          {/* ✏️ EDIT BUTTON */}
+          <button
+            type="button"
+            className="history-print-btn"
+            onClick={() => {
+              const editData = handleEditCertificate(item);
+              setFormData(prev => ({
+                ...prev,
+                certificate_no: editData.certificate_no,
+                impression: editData.impression,
+                remarks: editData.remarks,
+              }));
+            }}
+            title="Edit certificate"
+            style={{ marginLeft: '8px' }}
+          >
+            ✏️
           </button>
 
         </div>

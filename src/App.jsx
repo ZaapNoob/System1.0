@@ -22,6 +22,9 @@ import Laboratory from "./pages/Laboratory";
 // Import QueueGen page component
 import QueueGen from "./pages/QueueGen";
 
+// Import Reports page component
+import Reports from "./pages/Reports";
+
 // Import Profile page component
 import Profile from "./pages/Profile";
 
@@ -33,6 +36,9 @@ import PintMEDICAL from "./pages/Printing/PintMEDICAL";
 
 // Import PrintLaboratory page component
 import PrintLaboratory from "./pages/Printing/PrintLaboratory";
+
+// Import TVDisplayFullscreen page component
+import TVDisplayFullscreen from "./pages/TVDisplayFullscreen";
 
 // Import ModalProvider
 import { ModalProvider } from "./components/modal/ModalProvider";
@@ -62,6 +68,7 @@ export default function App() {
   const [allowedPages, setAllowedPages] = useState([]);
 
   const path = window.location.pathname;
+  const search = window.location.search;
 
   // -----------------------------
   // RUN ON APP LOAD (AUTH CHECK)
@@ -165,6 +172,15 @@ if (path.includes("print-laboratory")) {
   return <PrintLaboratory />;
 }
 
+  // If URL is ?view=tv-display → render TVDisplayFullscreen page in fullscreen
+if (search.includes("view=tv-display")) {
+  return (
+    <WebSocketProvider>
+      <TVDisplayFullscreen />
+    </WebSocketProvider>
+  );
+}
+
   // If user IS logged in, conditionally show Dashboard, Patient, QueueGen, or Profile
 
   if (currentPage === "profile") {
@@ -230,6 +246,20 @@ if (path.includes("print-laboratory")) {
             onNavigateToProfile={() => setCurrentPage("profile")}
             allowedPages={allowedPages}
             onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
+      </WebSocketProvider>
+    );
+  }
+
+  if (currentPage === "reports") {
+    return (
+      <WebSocketProvider>
+        <ModalProvider>
+          <Reports
+            user={user}
+            selectedPages={allowedPages}
+            onNavigateToDashboard={() => setCurrentPage("dashboard")}
           />
         </ModalProvider>
       </WebSocketProvider>

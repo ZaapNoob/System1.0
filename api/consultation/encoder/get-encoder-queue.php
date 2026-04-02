@@ -31,6 +31,11 @@ try {
     // --------------------------------------------------
     // BUILD QUERY
     // --------------------------------------------------
+    $where_clause = "WHERE dpq.queue_date = :queue_date AND dpq.status = 'done'";
+    if ($doctor_id) {
+        $where_clause .= " AND dpq.doctor_id = :doctor_id";
+    }
+
     $sql = "SELECT *
 FROM (
     SELECT 
@@ -53,7 +58,7 @@ FROM (
              OR c.treatment IS NOT NULL
            )
         ) AS has_consultation,
-        pq.created_at AS visit_date,
+        COALESCE(c.visit_date, pq.created_at) AS visit_date,
 
         ROW_NUMBER() OVER (
             PARTITION BY dpq.patient_id
@@ -64,19 +69,12 @@ FROM (
     JOIN patients_db p ON p.id = dpq.patient_id
     JOIN users u ON u.id = dpq.doctor_id
     LEFT JOIN patient_queue pq ON pq.id = dpq.patient_queue_id
+    LEFT JOIN consultations c ON c.patient_id = dpq.patient_id AND c.queue_id = pq.id
 
-    WHERE dpq.queue_date = :queue_date
-      AND dpq.status = 'done'
+    $where_clause
 ) t
 WHERE rn = 1
-ORDER BY queue_number ASC;
-    ";
-
-    if ($doctor_id) {
-        $sql .= " AND dpq.doctor_id = :doctor_id";
-    }
-
-    $sql .= " ORDER BY dpq.queue_number ASC";
+ORDER BY queue_number ASC";
 
     // --------------------------------------------------
     // EXECUTE QUERY

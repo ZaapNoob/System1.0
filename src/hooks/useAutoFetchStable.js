@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { useWebSocketContext } from "../context/WebSocketContext";
 
 /**
@@ -17,19 +17,22 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
   const [data, setData] = useState([]);
   const [isUsingWebSocket, setIsUsingWebSocket] = useState(false);
   const timerRef = useRef(null);
+  const lastDataKeysRef = useRef(null); // Track last data to prevent unnecessary updates
 
-  // Get the appropriate data source based on dataType
-  let sourceData;
-  if (dataType === 'waiting-queue') {
-    sourceData = waitingQueue;
-  } else if (dataType === 'doctor-assignments') {
-    sourceData = doctorAssignments;
-  } else if (dataType === 'encoder-queue') {
-    sourceData = encoderQueue;
-  }
+  // ✅ Memoize sourceData selection to prevent infinite loops
+  const sourceData = useMemo(() => {
+    if (dataType === 'waiting-queue') {
+      return waitingQueue;
+    } else if (dataType === 'doctor-assignments') {
+      return doctorAssignments;
+    } else if (dataType === 'encoder-queue') {
+      return encoderQueue;
+    }
+    return [];
+  }, [dataType, waitingQueue, doctorAssignments, encoderQueue]);
 
-  // Normalize data to ensure consistent field names
-  const normalizeData = (items) => {
+  // ✅ Memoize normalizeData function
+  const normalizeData = useMemo(() => (items) => {
     if (!Array.isArray(items)) return [];
     return items.map(item => {
       // If WebSocket sends first_name/last_name separately, combine them
@@ -41,30 +44,43 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
       }
       return item;
     });
-  };
-  
+  }, []);
 
+  // ✅ Helper to get data signature for comparison (avoids object reference comparison)
+  const getDataSignature = useCallback((items) => {
+    if (!Array.isArray(items) || items.length === 0) return null;
+    // Create a simple signature from item IDs and lengths
+    return items.map(item => item.id || item.queue_id || JSON.stringify(item)).join('|');
+  }, []);
+
+  // ✅ Effect 1: Handle WebSocket data when connected
   useEffect(() => {
-    // Convert statusFilter to array if it's a string
+    if (!connected || !Array.isArray(sourceData)) return;
+
     const statusArray = statusFilter ? (Array.isArray(statusFilter) ? statusFilter : [statusFilter]) : null;
 
-    // Apply filtering inside useEffect to avoid infinite loop
     let wsData = sourceData;
     if ((dataType === 'doctor-assignments' || dataType === 'encoder-queue') && Array.isArray(wsData)) {
-      // Filter by doctor_id
       if (doctorId) {
         wsData = wsData.filter(item => item.doctor_id === doctorId);
       }
-      // Filter by status (e.g., ['waiting', 'serving'])
       if (statusArray && statusArray.length > 0) {
         wsData = wsData.filter(item => statusArray.includes(item.status));
       }
     }
 
-    if (connected && Array.isArray(wsData) && wsData.length > 0) {
-      // ✅ WebSocket is connected and has actual data
-      const normalizedData = normalizeData(wsData);
-      setData(normalizedData);
+    // ✅ Only update if data actually changed
+    const newSignature = getDataSignature(wsData);
+    if (newSignature !== lastDataKeysRef.current) {
+      lastDataKeysRef.current = newSignature;
+      
+      if (wsData.length > 0) {
+        const normalizedData = normalizeData(wsData);
+        setData(normalizedData);
+      } else {
+        setData([]);
+      }
+      
       setIsUsingWebSocket(true);
       
       // Clear any pending fallback polls
@@ -72,39 +88,45 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
-    } else if (!connected && url) {
-      // ⛔ WebSocket disconnected, use polling fallback
-      setIsUsingWebSocket(false);
-      
-      const fetchData = async () => {
-        try {
-          const res = await fetch(url);
-          const json = await res.json();
-          
-          if (json?.success) {
-            const newData = normalizeData(json.data || []);
-            setData(newData);
-          }
-        } catch (err) {
-          console.error(`Fallback polling error for ${dataType}:`, err);
-        }
-      };
-      
-      // Immediate first fetch
-      fetchData();
-      
-      // Set up polling interval
-      timerRef.current = setInterval(fetchData, fallbackInterval);
     }
-    
+  }, [connected, sourceData, dataType, doctorId, statusFilter, normalizeData, getDataSignature]);
+
+  // ✅ Effect 2: Handle fallback polling when WebSocket disconnected
+  useEffect(() => {
+    if (connected || !url) return;
+
+    // Prevent duplicate polling intervals
+    if (timerRef.current) return;
+
+    setIsUsingWebSocket(false);
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        
+        if (json?.success) {
+          const newData = normalizeData(json.data || []);
+          setData(newData);
+        }
+      } catch (err) {
+        console.error(`Fallback polling error for ${dataType}:`, err);
+      }
+    };
+
+    // Immediate first fetch
+    fetchData();
+
+    // Set up polling interval
+    timerRef.current = setInterval(fetchData, fallbackInterval);
+
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
+        timerRef.current = null;
       }
     };
-    // ⚠️ FIXED: Only depend on data length and connected status to prevent infinite loops
-    // Do NOT depend on sourceData array reference - it changes on every WebSocket update
-  }, [connected, sourceData?.length, url, fallbackInterval, dataType, doctorId, statusFilter]);
+  }, [connected, url, fallbackInterval, dataType, normalizeData]);
 
   return data;
 }

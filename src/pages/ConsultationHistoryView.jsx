@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Consultation from "./modal/consultation";
+import EditConsultationModal from "../components/patients-display/EditConsultationModal";
 import { useConsultationHistory } from "../hooks/useConsultationHistory";
 import { useRefresh } from "../hooks/useRefresh";
 import { useModal } from "../components/modal/ModalProvider";
@@ -7,7 +8,6 @@ import "./ConsultationHistoryView.css";
 
 export default function ConsultationHistoryView({ patient }) {
 
-  const [editingConsultation, setEditingConsultation] = useState(null);
   const [loading, setLoading] = useState(false);
   
   // Modal context
@@ -23,114 +23,70 @@ export default function ConsultationHistoryView({ patient }) {
   );
 
   const handleEdit = (consultation) => {
-    setEditingConsultation(consultation);
-  };
-
-  const handleCloseEdit = () => {
-    setEditingConsultation(null);
-    // Auto-refresh after closing edit
-    triggerRefresh();
+    console.log("🎯 Opening EditConsultationModal for consultation:", consultation.id);
+    openModal(
+      <EditConsultationModal
+        consultation={consultation}
+        patient={patient}
+        onUpdate={() => {
+          console.log("✅ Consultation updated, refreshing history...");
+          closeModal();
+          triggerRefresh();
+        }}
+        onClose={() => {
+          closeModal();
+        }}
+      />
+    );
   };
 
   // If editing, show the Consultation form instead of the table
-  if (editingConsultation) {
-    return (
-      <div className="consultation-history">
-        <button
-          className="back-btn"
-          onClick={() => setEditingConsultation(null)}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#f0f0f0",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: "14px",
-            marginBottom: "10px"
-          }}
-        >
-          ← Back to History
-        </button>
-        <Consultation 
-          patient={patient} 
-          consultation={editingConsultation}
-          isEditing={true}
-          onClose={handleCloseEdit}
-          onSaved={triggerRefresh}
-        />
-      </div>
-    );
+  if (false) {
+    return null; // This section is no longer used - we use modal instead
   }
+return (
+  <div className="consultation-history-new">
 
-  return (
-    <div className="consultation-history">
-      {loadingHistory ? (
-        <div>Loading consultation history...</div>
-      ) : consultHistory && consultHistory.length > 0 ? (
-        <>
-          <table className="consultation-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Doctor</th>
-                <th>CC</th>
-                <th>Treatment</th>
-                <th>Diagnosis</th>
-                <th>History Illness</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+    {loadingHistory ? (
+      <div className="loading-state">Loading consultation history...</div>
 
-            <tbody>
-              {consultHistory.map((c) => (
-                <tr key={c.id}>
-                  <td>{c.visit_date}</td>
-                  <td>{c.doctor_name}</td>
-                  <td>{c.chief_complaint || "-"}</td>
-                  <td>{c.treatment || "-"}</td>
-                  <td>{c.diagnosis || "-"}</td>
-                  <td>{c.patient_illness || "-"}</td>
+    ) : consultHistory && consultHistory.length > 0 ? (
+      <>
+        <div className="history-list">
 
-                  <td>
-                    <button
-                      className="edit-btn"
-                      onClick={() => handleEdit(c)}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {consultHistory.map((c) => (
+            <div key={c.id} className="history-card">
 
-          {/* ADD NEW CONSULTATION BUTTON */}
-          <div style={{ marginTop: "10px" }}>
-            <button
-              className="add-consultation-btn"
-              onClick={() => {
-                openModal(
-                  <Consultation 
-                    patient={patient}
-                    isEditing={false}
-                    onClose={() => {
-                      closeModal();
-                      triggerRefresh();
-                    }}
-                    onConsultationSaved={triggerRefresh}
-                  />
-                );
-              }}
-            >
-              ➕ Add New Consultation
-            </button>
-          </div>
-        </>
-      ) : (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-          <p>No consultation history found</p>
+              <div className="history-top">
+                <div className="history-date">{c.visit_date}</div>
+                <div className="history-doctor">{c.doctor_name}</div>
+              </div>
+
+              <div className="history-body">
+                <div><strong>CC:</strong> {c.chief_complaint || "-"}</div>
+                <div><strong>Diagnosis:</strong> {c.diagnosis || "-"}</div>
+                <div><strong>Treatment:</strong> {c.treatment || "-"}</div>
+                <div><strong>History:</strong> {c.patient_illness || "-"}</div>
+              </div>
+
+              <div className="history-actions">
+                <button
+                  className="edit-btn-new"
+                  onClick={() => handleEdit(c)}
+                >
+                  ✏️ Edit
+                </button>
+              </div>
+
+            </div>
+          ))}
+
+        </div>
+
+        {/* ADD BUTTON */}
+        <div className="add-section">
           <button
-            className="add-consultation-btn"
+            className="add-consultation-btn-new"
             onClick={() => {
               openModal(
                 <Consultation 
@@ -145,10 +101,34 @@ export default function ConsultationHistoryView({ patient }) {
               );
             }}
           >
-            ➕ Add New Consultation
+            ➕ Add Consultation
           </button>
         </div>
-      )}
-    </div>
-  );
+      </>
+    ) : (
+      <div className="empty-state-new">
+        <p>No consultation history found</p>
+
+        <button
+          className="add-consultation-btn-new"
+          onClick={() => {
+            openModal(
+              <Consultation 
+                patient={patient}
+                isEditing={false}
+                onClose={() => {
+                  closeModal();
+                  triggerRefresh();
+                }}
+                onConsultationSaved={triggerRefresh}
+              />
+            );
+          }}
+        >
+          ➕ Add First Consultation
+        </button>
+      </div>
+    )}
+  </div>
+);
 }

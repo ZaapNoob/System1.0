@@ -75,6 +75,22 @@ const handleAssign = async () => {
   }
 };
 
+const handleAddConsultation = () => {
+  openModal(
+    <Consultation 
+      patient={patient} 
+      onClose={() => {
+        closeModal();
+        // Delay refresh to allow database to sync
+        setTimeout(() => {
+          triggerRefresh();
+        }, 1200);
+      }}
+      isQuickEntry={true}
+    />
+  );
+};
+
   return (
     <div className="modal-overlay">
       <div className="triage-modal-container">
@@ -252,94 +268,57 @@ const handleAssign = async () => {
     </div>
   </div>
 
+<div className="consult-history-section patient-info-card">
+  <h4>Consultation History</h4>
 
-  <div className="consult-history-section patient-info-card">
-    <h4>Consultation History</h4>
+  {loadingHistory && (
+    <p className="loading-text">Loading history...</p>
+  )}
 
-    {loadingHistory && <p className="loading-text">Loading history...</p>}
+  {!loadingHistory && consultHistory.length === 0 && (
+    <p className="no-history">No previous consultations.</p>
+  )}
 
-    {!loadingHistory && consultHistory.length === 0 && (
-      <p className="no-history">No previous consultations.</p>
-    )}
-
-    {!loadingHistory && consultHistory.length > 0 && (
-      <div className="history-columns">
-
-      {/* PROBLEM CONSULTATION */}
-      <div className="history-column">
-        <h5>Problem Consultation</h5>
-        {consultHistory
-          .filter(
-            (c) =>
-              c.nature_visit === "Problem Consultation (New Symptoms)"
-          )
-          .map((consult) => (
-            <div key={consult.id} className="mini-history-card">
-              <div className="mini-date">{consult.visit_date}</div>
-              <div className="mini-purpose">
-                {consult.purpose_visit || "—"}
-              </div>
-              <button
-                type="button"
-                className="mini-print-btn"
-                onClick={() => handlePrintConsultation(consult)}
-              >
-                🖨 Print
-              </button>
-            </div>
+  {!loadingHistory && consultHistory.length > 0 && (
+    <div className="consult-history-table-wrapper">
+      <table className="consult-history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Consultation Type</th>
+            <th>Purpose</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {enrichedConsultHistory.map((consult) => (
+            <tr key={consult.id}>
+              <td>{consult.visit_date}</td>
+              <td>
+                <span
+                  className={`consult-badge ${
+                    consult.nature_visit === "Follow-up Consultation"
+                      ? "badge-followup"
+                      : "badge-new"
+                  }`}
+                >
+                  {consult.nature_visit}
+                </span>
+              </td>
+              <td>{consult.purpose_visit || "—"}</td>
+              <td>
+                <button
+                  type="button"
+                  className="mini-print-btn"
+                  onClick={() => handlePrintConsultation(consult)}
+                >
+                  🖨 Print
+                </button>
+              </td>
+            </tr>
           ))}
-      </div>
-
-      {/* FOLLOW-UP */}
-      <div className="history-column">
-        <h5>Follow-up Consultation</h5>
-        {enrichedConsultHistory
-          .filter(
-            (c) =>
-              c.nature_visit === "Follow-up Consultation"
-          )
-          .map((consult) => (
-            <div key={consult.id} className="mini-history-card">
-              <div className="mini-date">{consult.visit_date}</div>
-              <div className="mini-purpose">
-                {consult.purpose_visit || "—"}
-              </div>
-              <button
-                type="button"
-                className="mini-print-btn"
-                onClick={() => handlePrintConsultation(consult)}
-              >
-                🖨 Print
-              </button>
-            </div>
-          ))}
-      </div>
-
-      {/* NEW CONSULTATION */}
-      <div className="history-column">
-        <h5>New Consultation</h5>
-        {enrichedConsultHistory
-          .filter(
-            (c) =>
-              c.nature_visit === "New Consultation"
-          )
-          .map((consult) => (
-            <div key={consult.id} className="mini-history-card">
-              <div className="mini-date">{consult.visit_date}</div>
-              <div className="mini-purpose">
-                {consult.purpose_visit || "—"}
-              </div>
-              <button
-                type="button"
-                className="mini-print-btn"
-                onClick={() => handlePrintConsultation(consult)}
-              >
-                🖨 Print
-              </button>
-            </div>
-          ))}
-      </div>
-
+        </tbody>
+      </table>
     </div>
   )}
 </div>
@@ -377,15 +356,7 @@ const handleAssign = async () => {
             {/* ✅ NEW BUTTON */}
   <button
     className="btn btn-consultation"
-    onClick={() => {
-      openModal(
-        <Consultation 
-          patient={patient} 
-          onClose={closeModal}
-          onConsultationSaved={triggerRefresh}
-        />
-      );
-    }}
+    onClick={handleAddConsultation}
   >
     Add Consultation
   </button>

@@ -140,6 +140,150 @@
 
 
 
+/* ═══════════════════════════════
+   PATIENT IMAGE DISPLAY
+═══════════════════════════════ */
+.patient-image-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.patient-image-display {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 2px solid #e8edf2;
+  flex-shrink: 0;
+}
+
+.patient-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.patient-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.patient-info-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.patient-info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+  background: #f0f4f8;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.patient-image-display:hover {
+  border-color: #cbd5e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+
+
+
+
+
+
+/* ═══════════════════════════════
+   HISTORY COLUMNS
+═══════════════════════════════ */
+
+.history-columns {
+  display: grid !important;
+  grid-template-columns: 420px 350px !important; /* left wider, right smaller */
+  gap: 19px !important;
+  margin-top: 12px;
+  align-items: start;
+}
+
+
+
+.history-column {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  min-height: 220px;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+
+
+.history-column-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e8f0;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.today-column {
+  background: #f8fbff;
+  border: 1px solid #bfdbfe;
+}
+
+.today-header {
+  color: #1d4ed8;
+}
+
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.history-edit-btn {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  background: #788795;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.history-edit-btn:hover {
+  background: #5f6b77;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .history-columns {
+  grid-template-columns: 500px 260px !important; 
+ }
+}
+
+
+
+
 
 
 /* ═══════════════════════════════
@@ -177,8 +321,10 @@
 }
 /* WIDTH CONTROLLER */
 .lab-width-controller1 {
-  width: 300px;
-  margin: 0 auto;   /* ✅ centers horizontally */}
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
 
 /* ═══════════════════════════════
    HISTORY BOX
