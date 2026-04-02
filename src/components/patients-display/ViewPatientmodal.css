@@ -271,19 +271,22 @@
   margin-top: 10px;
 }
 
+
 .expand-btn {
   padding: 8px 12px;
   font-size: 13px;
   border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #f9fafb;
+  border: 1px solid #ACBAC4 !important;
+  background: #F0F0DB !important;   /* force background color */
+  color: #30364F !important;        /* force text color */
   cursor: pointer;
+  font-weight: 600;
 }
 
 .expand-btn:hover {
-  background: #f3f4f6;
+  background: #E1D9BC !important;   /* hover color */
+  border-color: #30364F !important;
 }
-
 .extended-info {
   margin-top: 16px;
   border-top: 1px solid #e5e7eb;

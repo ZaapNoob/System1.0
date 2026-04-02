@@ -270,11 +270,11 @@ try {
         $params = [];
 
         if ($startDate) {
-            $conditions[] = "mc.created_at >= :startDate";
+            $conditions[] = "mc.issued_at >= :startDate";
             $params[':startDate'] = $startDate . " 00:00:00";
         }
         if ($endDate) {
-            $conditions[] = "mc.created_at <= :endDate";
+            $conditions[] = "mc.issued_at <= :endDate";
             $params[':endDate'] = $endDate . " 23:59:59";
         }
         if ($barangay && $barangay !== "all") {
@@ -590,11 +590,11 @@ try {
         $params = [];
 
         if ($startDate) {
-            $conditions[] = "mc.created_at >= :startDate";
+            $conditions[] = "mc.issued_at >= :startDate";
             $params[':startDate'] = $startDate . " 00:00:00";
         }
         if ($endDate) {
-            $conditions[] = "mc.created_at <= :endDate";
+            $conditions[] = "mc.issued_at <= :endDate";
             $params[':endDate'] = $endDate . " 23:59:59";
         }
         if ($barangay && $barangay !== "all") {

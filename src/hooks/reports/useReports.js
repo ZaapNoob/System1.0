@@ -17,10 +17,15 @@ import {
  * Handles filters, API calls, loading states, and data formatting
  */
 export const useReports = () => {
+  // Get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  };
 
   const [filters, setFilters] = useState({
-    startDate: "",
-    endDate: "",
+    startDate: getTodayDate(),
+    endDate: getTodayDate(),
     barangay: "all",
     doctor: "all",
     consultationType: "all",
@@ -84,9 +89,10 @@ export const useReports = () => {
    * Clear all filters to default values
    */
   const handleClearFilters = () => {
+    const todayDate = new Date().toISOString().split('T')[0];
     setFilters({
-      startDate: "",
-      endDate: "",
+      startDate: todayDate,
+      endDate: todayDate,
       barangay: "all",
       doctor: "all",
       consultationType: "all",

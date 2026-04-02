@@ -1,5 +1,5 @@
-import { useState } from "react";
-import "./Reports.css";
+import { useState, useEffect } from "react";
+import "./reports.css";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import BarGraph from "../components/patients-display/Bargraph";
@@ -24,6 +24,7 @@ export default function Reports({ user, selectedPages, onNavigateToDashboard }) 
 
   const [viewMode, setViewMode] = useState("chart");
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showAllData, setShowAllData] = useState(false);
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -31,6 +32,21 @@ export default function Reports({ user, selectedPages, onNavigateToDashboard }) 
       key: 'selection'
     }
   ]);
+
+  // Sync filters dates to dateRange on mount
+  useEffect(() => {
+    if (filters.startDate && filters.endDate) {
+      const startDate = new Date(filters.startDate);
+      const endDate = new Date(filters.endDate);
+      setDateRange([
+        {
+          startDate,
+          endDate,
+          key: 'selection'
+        }
+      ]);
+    }
+  }, []);
 
   const showChart = () => setViewMode("chart");
   const showTable = () => setViewMode("table");
@@ -41,9 +57,33 @@ export default function Reports({ user, selectedPages, onNavigateToDashboard }) 
 
   const isConsultationReport = filters.reportType === "consultations";
 
+  // Handle "All Data" selection
+  const handleAllData = () => {
+    setShowAllData(true);
+    setShowDatePicker(false);
+    // Clear date filters to show all data
+    handleChange("startDate", "");
+    handleChange("endDate", "");
+  };
+
+  // Handle custom date range selection
+  const handleCustomDateRange = () => {
+    setShowAllData(false);
+    setShowDatePicker(!showDatePicker);
+  };
+
+  const handleClearAllFilters = () => {
+    handleClearFilters();
+    setShowAllData(false);
+    setShowDatePicker(false);
+    const today = new Date();
+    setDateRange([{ startDate: today, endDate: today, key: 'selection' }]);
+  };
+
   // Handle date range change and update filters
   const handleDateRangeChange = (item) => {
     setDateRange([item.selection]);
+    setShowAllData(false);
     
     // Convert dates to YYYY-MM-DD format for API
     const startDate = item.selection.startDate
@@ -94,14 +134,42 @@ export default function Reports({ user, selectedPages, onNavigateToDashboard }) 
                 />
               </div>
             )}
-  <div className="filter-group">
-                    <label>Start and End Date</label>
-                    <button 
-                      className="btn-toggle-date" 
-                      onClick={() => setShowDatePicker(!showDatePicker)}
-                    >
-                      {showDatePicker ? "📅 Hide Date Range" : "📅 Show Date Range"}
-                    </button>
+            <div className="filter-group">
+              <label>Date Range</label>
+              <div className="date-buttons-group" style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                <button 
+                  className={`btn-date-option ${showAllData ? "active" : ""}`}
+                  onClick={handleAllData}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                    backgroundColor: showAllData ? "#4CAF50" : "#fff",
+                    color: showAllData ? "#fff" : "#333",
+                    cursor: "pointer",
+                    fontWeight: showAllData ? "600" : "400",
+                    transition: "all 0.3s ease"
+                  }}
+                >
+                  📊 All Data
+                </button>
+                <button 
+                  className={`btn-date-option ${!showAllData && showDatePicker ? "active" : ""}`}
+                  onClick={handleCustomDateRange}
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                    backgroundColor: !showAllData && showDatePicker ? "#2196F3" : "#fff",
+                    color: !showAllData && showDatePicker ? "#fff" : "#333",
+                    cursor: "pointer",
+                    fontWeight: !showAllData && showDatePicker ? "600" : "400",
+                    transition: "all 0.3s ease"
+                  }}
+                >
+                  {showDatePicker ? "📅 Hide Date Range" : "📅 Custom Date Range"}
+                </button>
+              </div>
             </div>
 
             {/* BARANGAY */}
@@ -283,16 +351,16 @@ export default function Reports({ user, selectedPages, onNavigateToDashboard }) 
           </div>
 
       <div className="filter-actions-card">
-  <div className="filter-actions">
-    <button className="btn-clear" onClick={handleClearFilters}>
-      🗑️ Clear All Filters
-    </button>
+        <div className="filter-actions">
+          <button className="btn-clear" onClick={handleClearAllFilters}>
+            🗑️ Clear All Filters
+          </button>
 
-    <button className="btn-generate" onClick={handleGenerate}>
-      Generate Report
-    </button>
-  </div>
-</div>
+          <button className="btn-generate" onClick={handleGenerate}>
+            Generate Report
+          </button>
+        </div>
+      </div>
 
           {/* VIEW MODE BUTTONS */}
           <div className="report-view-buttons">

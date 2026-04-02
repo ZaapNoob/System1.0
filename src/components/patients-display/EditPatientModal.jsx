@@ -377,331 +377,363 @@ export default function EditPatientModal({ patient, onClose, onSave }) {
 
                                   {showBasicInfo && (
                       <>
-                      <div className="form-grid">
+   <div className="patient-form-layout">
 
-                      {/* ===== PERSONAL INFORMATION ===== */}
+  {/* ================= LEFT: PERSONAL INFORMATION ================= */}
+  <div className="form-panel">
+    <h4>Personal Information</h4>
 
-                      <div className="form-group">
-                      <label>First Name *</label>
-                      <input
-                      name="first_name"
-                      value={formData.first_name}
-                      onChange={handleInputChange}
-                      required
-                      />
-                      </div>
+    <div className="form-panel-grid">
 
-                      <div className="form-group">
-                      <label>Middle Name</label>
-                      <input
-                      name="middle_name"
-                      value={formData.middle_name}
-                      onChange={handleInputChange}
-                      />
-                      </div>
+      <div className="form-group">
+        <label>First Name *</label>
+        <input
+          name="first_name"
+          value={formData.first_name}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
 
-                      <div className="form-group">
-                      <label>Last Name *</label>
-                      <input
-                      name="last_name"
-                      value={formData.last_name}
-                      onChange={handleInputChange}
-                      required
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Middle Name</label>
+        <input
+          name="middle_name"
+          value={formData.middle_name}
+          onChange={handleInputChange}
+        />
+      </div>
 
-                      <div className="form-group">
-                      <label>Suffix</label>
-                      <input
-                      name="suffix"
-                      value={formData.suffix}
-                      onChange={handleInputChange}
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Last Name *</label>
+        <input
+          name="last_name"
+          value={formData.last_name}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
 
-                      <div className="form-group">
-                      <label>Date of Birth *</label>
-                      <input
-                      type="date"
-                      name="date_of_birth"
-                      value={formData.date_of_birth}
-                      onChange={handleInputChange}
-                      required
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Suffix</label>
+        <div className="custom-combobox">
+          <select
+            name="suffix"
+            value={formData.suffix}
+            onChange={handleInputChange}
+          >
+            <option value="">None</option>
+            <option value="Jr">Jr</option>
+            <option value="Sr">Sr</option>
+            <option value="I">I</option>
+            <option value="II">II</option>
+            <option value="III">III</option>
+            <option value="IV">IV</option>
+            <option value="MD">MD</option>
+            <option value="DDS">DDS</option>
+            <option value="RN">RN</option>
+          </select>
+          <span className="arrow">▼</span>
+        </div>
+      </div>
 
-                      <div className="form-group">
-                      <label>Birthplace</label>
-                      <input
-                      name="birthplace"
-                      value={formData.birthplace}
-                      onChange={handleInputChange}
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Date of Birth *</label>
+        <input
+          type="date"
+          name="date_of_birth"
+          value={formData.date_of_birth}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
 
-                      <div className="form-group">
-                      <label>Gender *</label>
-                      <select
-                      name="gender"
-                      value={formData.gender}
-                      onChange={handleInputChange}
-                      required
-                      >
-                      <option value="">Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      </select>
-                      </div>
+      <div className="form-group">
+        <label>Birthplace</label>
+        <input
+          name="birthplace"
+          value={formData.birthplace}
+          onChange={handleInputChange}
+        />
+      </div>
 
-                      <div className="form-group">
-                      <label>Marital Status</label>
-                      <select
-                      name="marital_status"
-                      value={formData.marital_status}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select Status</option>
-                      <option value="Single">Single</option>
-                      <option value="Married">Married</option>
-                      <option value="Widowed">Widowed</option>
-                      <option value="Separated">Separated</option>
-                      </select>
-                      </div>
+      <div className="form-group">
+        <label>Gender *</label>
+        <select
+          name="gender"
+          value={formData.gender}
+          onChange={handleInputChange}
+          required
+        >
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
 
-                      <div className="form-group">
-                      <label>Blood Type</label>
-                      <select
-                      name="blood_type"
-                      value={formData.blood_type}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select Blood Type</option>
-                      <option value="A+">A+</option>
-                      <option value="A-">A-</option>
-                      <option value="B+">B+</option>
-                      <option value="B-">B-</option>
-                      <option value="AB+">AB+</option>
-                      <option value="AB-">AB-</option>
-                      <option value="O+">O+</option>
-                      <option value="O-">O-</option>
-                      </select>
-                      </div>
+      <div className="form-group">
+        <label>Marital Status</label>
+        <select
+          name="marital_status"
+          value={formData.marital_status}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Status</option>
+          <option value="Single">Single</option>
+          <option value="Married">Married</option>
+          <option value="Widowed">Widowed</option>
+          <option value="Separated">Separated</option>
+        </select>
+      </div>
 
-                      <div className="form-group">
-                      <label>Mother's Name</label>
-                      <input
-                      name="mother_name"
-                      value={formData.mother_name}
-                      onChange={handleInputChange}
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Blood Type</label>
+        <select
+          name="blood_type"
+          value={formData.blood_type}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Blood Type</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+      </div>
 
-                      <div className="form-group">
-                      <label>Spouse Name</label>
-                      <input
-                      name="spouse_name"
-                      value={formData.spouse_name}
-                      onChange={handleInputChange}
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Mother's Name</label>
+        <input
+          name="mother_name"
+          value={formData.mother_name}
+          onChange={handleInputChange}
+        />
+      </div>
 
-                      <div className="form-group">
-                      <label>Contact Number</label>
-                      <input
-                      name="contact_number"
-                      value={formData.contact_number}
-                      onChange={handleInputChange}
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Spouse Name</label>
+        <input
+          name="spouse_name"
+          value={formData.spouse_name}
+          onChange={handleInputChange}
+        />
+      </div>
 
+      <div className="form-group full">
+        <label>Contact Number</label>
+        <input
+          name="contact_number"
+          value={formData.contact_number}
+          onChange={handleInputChange}
+        />
+      </div>
 
-                      {/* ===== SOCIAL INFORMATION ===== */}
-
-                      <div className="form-group">
-                      <label>Education Level</label>
-                      <select
-                      name="education_level"
-                      value={formData.education_level}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select Education</option>
-                      <option>No Formal Education</option>
-                      <option>Elementary</option>
-                      <option>High School</option>
-                      <option>Vocational</option>
-                      <option>College</option>
-                      <option>Post Graduate</option>
-                      <option>Unknown</option>
-                      </select>
-                      </div>
-
-                      <div className="form-group">
-                      <label>Employment Status</label>
-                      <select
-                      name="employment_status"
-                      value={formData.employment_status}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select Status</option>
-                      <option>Employed</option>
-                      <option>Unemployed</option>
-                      <option>Retired</option>
-                      <option>Others</option>
-                      </select>
-                      </div>
-
-                      <div className="form-group">
-                      <label>Patient Status</label>
-                      <select
-                      name="status"
-                      value={formData.status}
-                      onChange={handleInputChange}
-                      >
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                      <option value="deceased">Deceased</option>
-                      </select>
-                      </div>
-
-                      <div className="form-group">
-                      <label>Family Member Type</label>
-                      <select
-                      name="family_member_type"
-                      value={formData.family_member_type}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select Member</option>
-                      <option>Father</option>
-                      <option>Mother</option>
-                      <option>Daughter</option>
-                      <option>Son</option>
-                      <option>Others</option>
-                      </select>
-                      </div>
-
-                      <div className="form-group">
-                      <label>DSWD NHTS</label>
-                      <select
-                      name="dswd_nhts"
-                      value={formData.dswd_nhts}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select</option>
-                      <option>Yes</option>
-                      <option>No</option>
-                      </select>
-                      </div>
-
-                      <div className="form-group">
-                      <label>4Ps Member</label>
-                      <select
-                      name="member_4ps"
-                      value={formData.member_4ps}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select</option>
-                      <option>Yes</option>
-                      <option>No</option>
-                      </select>
-                      </div>
-
-                      <div className="form-group">
-                      <label>PCB Member</label>
-                      <select
-                      name="pcb_member"
-                      value={formData.pcb_member}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select</option>
-                      <option>Yes</option>
-                      <option>No</option>
-                      </select>
-                      </div>
+    </div>
+  </div>
 
 
-                      {/* ===== PHILHEALTH ===== */}
+  {/* ================= RIGHT: SOCIAL + PHILHEALTH ================= */}
+  <div className="form-panel">
+    <h4>Social & PhilHealth Information</h4>
 
-                      <div className="form-group">
-                      <label>PhilHealth Member</label>
-                      <select
-                      name="philhealth_member"
-                      value={formData.philhealth_member}
-                      onChange={handleInputChange}
-                      >
-                      <option value="">Select</option>
-                      <option value="Yes">Yes</option>
-                      <option value="No">No</option>
-                      </select>
-                      </div>
+    <div className="form-panel-grid">
 
-                      {formData.philhealth_member === "Yes" && (
-                      <>
+      <div className="form-group">
+        <label>Education Level</label>
+        <select
+          name="education_level"
+          value={formData.education_level}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Education</option>
+          <option>No Formal Education</option>
+          <option>Elementary</option>
+          <option>High School</option>
+          <option>Vocational</option>
+          <option>College</option>
+          <option>Post Graduate</option>
+          <option>Unknown</option>
+        </select>
+      </div>
 
-                      <div className="form-group">
-                      <label>PhilHealth Status Type</label>
-                      <select
-                      name="philhealth_status_type"
-                      value={formData.philhealth_status_type}
-                      onChange={handleInputChange}
-                      required
-                      >
-                      <option value="">Select</option>
-                      <option value="Member">Member</option>
-                      <option value="Dependent">Dependent</option>
-                      </select>
-                      </div>
+      <div className="form-group">
+        <label>Employment Status</label>
+        <select
+          name="employment_status"
+          value={formData.employment_status}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Status</option>
+          <option>Employed</option>
+          <option>Unemployed</option>
+          <option>Retired</option>
+          <option>Others</option>
+        </select>
+      </div>
 
-                      <div className="form-group">
-                      <label>PhilHealth Number</label>
-                      <input
-                      name="philhealth_no"
-                      value={formData.philhealth_no}
-                      onChange={handleInputChange}
-                      />
-                      </div>
+      <div className="form-group">
+        <label>Patient Status</label>
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleInputChange}
+        >
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="deceased">Deceased</option>
+        </select>
+      </div>
 
-                      <div className="form-group full">
-                      <label>PhilHealth Category</label>
-                      <select
-                      name="philhealth_category"
-                      value={formData.philhealth_category}
-                      onChange={handleInputChange}
-                      >
+      <div className="form-group">
+        <label>Family Member Type</label>
+        <select
+          name="family_member_type"
+          value={formData.family_member_type}
+          onChange={handleInputChange}
+        >
+          <option value="">Select Member</option>
+          <option>Father</option>
+          <option>Mother</option>
+          <option>Daughter</option>
+          <option>Son</option>
+          <option>Others</option>
+        </select>
+      </div>
 
-                      <option value="None">None</option>
-                      <option value="FE - Private">FE - Private</option>
-                      <option value="FE - Government">FE - Government</option>
-                      <option value="FE - FAMILY DRIVER">FE - Family Driver</option>
-                      <option value="FE - GOVT - CASUAL">FE - Govt - Casual</option>
-                      <option value="FE - GOVT - CONTRACT/PROJECT BASED">FE - Govt - Contract/Project Based</option>
-                      <option value="FE - GOVT - PERMANENT REGULAR">FE - Govt - Permanent Regular</option>
-                      <option value="FE - HOUSEHOLD HELP/KASAMBAHAY">FE - Household Help/Kasambahay</option>
-                      <option value="FE - PRIVATE - CASUAL">FE - Private - Casual</option>
-                      <option value="FE - PRIVATE - CONTRACT/PROJECT BASED">FE - Private - Contract/Project Based</option>
-                      <option value="FE - PRIVATE - PERMANENT REGULAR">FE - Private - Permanent Regular</option>
-                      <option value="DIRECT CONTRIBUTOR - PROFESSIONAL PRACTITIONER">Direct Contributor - Professional Practitioner</option>
-                      <option value="DIRECT CONTRIBUTOR - SELF-EARNING INDIVIDUAL - SOLE PROPRIETOR">Direct Contributor - Self-Earning Individual - Sole Proprietor</option>
-                      <option value="FE - ENTERPRISE OWNER">FE - Enterprise Owner</option>
-                      <option value="IE - INFORMAL SECTOR">IE - Informal Sector</option>
-                      <option value="IE - SELF EARNING INDIVIDUAL">IE - Self Earning Individual</option>
-                      <option value="INDIGENT - NHTS-PR">Indigent - NHTS-PR</option>
-                      <option value="INDIRECT CONTRIBUTOR - 4PS/MCCT">Indirect Contributor - 4PS/MCCT</option>
-                      <option value="INDIRECT CONTRIBUTOR - FINANCIALLY INCAPABLE">Indirect Contributor - Financially Incapable</option>
-                      <option value="INDIRECT CONTRIBUTOR - PERSON WITH DISABILITY">Indirect Contributor - Person with Disability</option>
-                      <option value="INDIRECT CONTRIBUTOR - SOLO PARENT">Indirect Contributor - Solo Parent</option>
-                      <option value="LIFETIME MEMBER - RETIREE/PENSIONER">Lifetime Member - Retiree/Pensioner</option>
-                      <option value="SENIOR CITIZEN">Senior Citizen</option>
-                      <option value="SPONSORED - LGU">Sponsored - LGU</option>
-                      <option value="SPONSORED - NGA">Sponsored - NGA</option>
-                      <option value="SPONSORED - OTHERS">Sponsored - Others</option>
+      <div className="form-group">
+        <label>DSWD NHTS</label>
+        <select
+          name="dswd_nhts"
+          value={formData.dswd_nhts}
+          onChange={handleInputChange}
+        >
+          <option value="">Select</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
 
-                      </select>
-                      </div>
+      <div className="form-group">
+        <label>4Ps Member</label>
+        <select
+          name="member_4ps"
+          value={formData.member_4ps}
+          onChange={handleInputChange}
+        >
+          <option value="">Select</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
 
-                      </>
-                      )}
+      <div className="form-group">
+        <label>PCB Member</label>
+        <select
+          name="pcb_member"
+          value={formData.pcb_member}
+          onChange={handleInputChange}
+        >
+          <option value="">Select</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
 
-                      </div>
+      <div className="form-group">
+        <label>PhilHealth Member</label>
+        <select
+          name="philhealth_member"
+          value={formData.philhealth_member}
+          onChange={handleInputChange}
+        >
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+
+      {formData.philhealth_member === "Yes" && (
+        <>
+
+          <div className="form-group">
+            <label>PhilHealth Status Type</label>
+            <select
+              name="philhealth_status_type"
+              value={formData.philhealth_status_type}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select</option>
+              <option value="Member">Member</option>
+              <option value="Dependent">Dependent</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>PhilHealth Number</label>
+            <input
+              name="philhealth_no"
+              value={formData.philhealth_no}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="form-group full">
+            <label>PhilHealth Category</label>
+            <select
+              name="philhealth_category"
+              value={formData.philhealth_category}
+              onChange={handleInputChange}
+            >
+              <option value="None">None</option>
+              <option value="FE - Private">FE - Private</option>
+              <option value="FE - Government">FE - Government</option>
+              <option value="FE - FAMILY DRIVER">FE - Family Driver</option>
+              <option value="FE - GOVT - CASUAL">FE - Govt - Casual</option>
+              <option value="FE - GOVT - CONTRACT/PROJECT BASED">FE - Govt - Contract/Project Based</option>
+              <option value="FE - GOVT - PERMANENT REGULAR">FE - Govt - Permanent Regular</option>
+              <option value="FE - HOUSEHOLD HELP/KASAMBAHAY">FE - Household Help/Kasambahay</option>
+              <option value="FE - PRIVATE - CASUAL">FE - Private - Casual</option>
+              <option value="FE - PRIVATE - CONTRACT/PROJECT BASED">FE - Private - Contract/Project Based</option>
+              <option value="FE - PRIVATE - PERMANENT REGULAR">FE - Private - Permanent Regular</option>
+              <option value="DIRECT CONTRIBUTOR - PROFESSIONAL PRACTITIONER">Direct Contributor - Professional Practitioner</option>
+              <option value="DIRECT CONTRIBUTOR - SELF-EARNING INDIVIDUAL - SOLE PROPRIETOR">Direct Contributor - Self-Earning Individual - Sole Proprietor</option>
+              <option value="FE - ENTERPRISE OWNER">FE - Enterprise Owner</option>
+              <option value="IE - INFORMAL SECTOR">IE - Informal Sector</option>
+              <option value="IE - SELF EARNING INDIVIDUAL">IE - Self Earning Individual</option>
+              <option value="INDIGENT - NHTS-PR">Indigent - NHTS-PR</option>
+              <option value="INDIRECT CONTRIBUTOR - 4PS/MCCT">Indirect Contributor - 4PS/MCCT</option>
+              <option value="INDIRECT CONTRIBUTOR - FINANCIALLY INCAPABLE">Indirect Contributor - Financially Incapable</option>
+              <option value="INDIRECT CONTRIBUTOR - PERSON WITH DISABILITY">Indirect Contributor - Person with Disability</option>
+              <option value="INDIRECT CONTRIBUTOR - SOLO PARENT">Indirect Contributor - Solo Parent</option>
+              <option value="LIFETIME MEMBER - RETIREE/PENSIONER">Lifetime Member - Retiree/Pensioner</option>
+              <option value="SENIOR CITIZEN">Senior Citizen</option>
+              <option value="SPONSORED - LGU">Sponsored - LGU</option>
+              <option value="SPONSORED - NGA">Sponsored - NGA</option>
+              <option value="SPONSORED - OTHERS">Sponsored - Others</option>
+            </select>
+          </div>
+
+        </>
+      )}
+
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
                       </>
                       )}
 

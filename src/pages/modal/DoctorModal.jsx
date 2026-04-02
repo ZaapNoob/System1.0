@@ -1,5 +1,7 @@
 import { useModal } from "../../components/modal/ModalProvider";
 import { useState, useEffect } from "react";
+import HistoryCard from "../../hooks/DoctorModal/useHistoryCard.jsx";
+import { getImageUrl } from "../../utils/image.js";
 import "./DoctorModal.css";
 
 export default function DoctorModal({ patient, onDone }) {
@@ -113,6 +115,12 @@ export default function DoctorModal({ patient, onDone }) {
 
   const displayVitals = vitals;
 
+  // Debug: Log patient profile image
+  useEffect(() => {
+    console.log("Patient Profile Image:", patient?.profile_image);
+    console.log("Image URL:", getImageUrl(patient?.profile_image));
+  }, [patient?.profile_image]);
+
   return (
     <div className="doctor-modal-container">
       {/* Header */}
@@ -133,8 +141,18 @@ export default function DoctorModal({ patient, onDone }) {
         <div className="doctor-card doctor-patient-container">
           <div className="doctor-patient-image">
             <img
-              src={patient?.profile_image || "/default-profile.png"}
+              src={getImageUrl(patient?.profile_image)}
               alt="Patient Profile"
+              onError={(e) => {
+                console.error("Image load failed:", {
+                  src: e.target.src,
+                  profile_image: patient?.profile_image,
+                  patient_id: patient?.patient_id
+                });
+              }}
+              onLoad={() => {
+                console.log("Image loaded successfully:", patient?.profile_image);
+              }}
             />
           </div>
 
@@ -251,77 +269,35 @@ export default function DoctorModal({ patient, onDone }) {
 
         {/* Bottom Full Width */}
         <div className="doctor-details-grid">
-          <div className="doctor-card detail-card complaint-card" style={{ backgroundColor: "#e7f3ff", borderLeft: "4px solid #0066cc" }}>
-            <h3>⭐ Chief Complaint (Latest)</h3>
-            <div style={{ maxHeight: "150px", overflowY: "auto" }}>
-              {chiefComplaintHistory.length > 0 ? (
-                <ul style={{ margin: "0", paddingLeft: "20px" }}>
-                  {chiefComplaintHistory.map((cc, idx) => (
-                    <li key={idx} style={{ marginBottom: "8px", fontSize: "13px", color: idx === 0 ? "#0066cc" : "#333" }}>
-                      {idx === 0 && <span style={{ fontWeight: "bold" }}>🔴 Latest: </span>}
-                      {cc}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                "—"
-              )}
-            </div>
-          </div>
+          <HistoryCard
+            title="⭐ Chief Complaint (Latest)"
+            history={chiefComplaintHistory}
+            accent="#0066cc"
+          />
 
-          <div className="doctor-card detail-card">
-            <h3>Diagnosis History</h3>
-            <div style={{ maxHeight: "150px", overflowY: "auto" }}>
-              {diagnosisHistory.length > 0 ? (
-                <ul style={{ margin: "0", paddingLeft: "20px" }}>
-                  {diagnosisHistory.map((d, idx) => (
-                    <li key={idx} style={{ marginBottom: "8px", fontSize: "13px", color: idx === 0 ? "#0066cc" : "#333" }}>
-                      {idx === 0 && <span style={{ fontWeight: "bold" }}>🔴 Latest: </span>}
-                      {d}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                "—"
-              )}
-            </div>
-          </div>
+          {diagnosisHistory && diagnosisHistory.length > 0 && (
+            <HistoryCard
+              title="Diagnosis History"
+              history={diagnosisHistory}
+              accent="#9c27b0"
+            />
+          )}
 
-          <div className="doctor-card detail-card">
-            <h3>Treatment History</h3>
-            <div style={{ maxHeight: "150px", overflowY: "auto" }}>
-              {treatmentHistory.length > 0 ? (
-                <ul style={{ margin: "0", paddingLeft: "20px" }}>
-                  {treatmentHistory.map((t, idx) => (
-                    <li key={idx} style={{ marginBottom: "8px", fontSize: "13px", color: idx === 0 ? "#0066cc" : "#333" }}>
-                      {idx === 0 && <span style={{ fontWeight: "bold" }}>🟢 Latest: </span>}
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                "—"
-              )}
-            </div>
-          </div>
+          {treatmentHistory && treatmentHistory.length > 0 && (
+            <HistoryCard
+              title="Treatment History"
+              history={treatmentHistory}
+              accent="#2e7d32"
+            />
+          )}
 
-          <div className="doctor-card detail-card">
-            <h3>Patient Illness History</h3>
-            <div style={{ maxHeight: "150px", overflowY: "auto" }}>
-              {patientIllnessHistory.length > 0 ? (
-                <ul style={{ margin: "0", paddingLeft: "20px" }}>
-                  {patientIllnessHistory.map((i, idx) => (
-                    <li key={idx} style={{ marginBottom: "8px", fontSize: "13px", color: idx === 0 ? "#0066cc" : "#333" }}>
-                      {idx === 0 && <span style={{ fontWeight: "bold" }}>🟡 Latest: </span>}
-                      {i}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                "—"
-              )}
-            </div>
-          </div>
+          {patientIllnessHistory && patientIllnessHistory.length > 0 && (
+            <HistoryCard
+              title="Patient Illness History"
+              history={patientIllnessHistory}
+              accent="#ff9800"
+            />
+          )}
         </div>
       </div>
 

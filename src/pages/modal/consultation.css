@@ -108,6 +108,31 @@
   border: 1px solid #d6d8db;
 }
 
+.info-message {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border: 1px solid #bee5eb;
+}
+
+.warning-message {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  border: 1px solid #ffeaa7;
+}
+
+.follow-up-badge {
+  font-size: 0.85em;
+  color: #28a745;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
 .btn-save:disabled,
 .btn-cancel:disabled {
   opacity: 0.6;

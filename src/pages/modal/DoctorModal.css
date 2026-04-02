@@ -84,15 +84,23 @@
 
 .doctor-patient-image {
   margin-bottom: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 145px;
+  height: 145px;
+  background: #f0f4f9;
+  border-radius: 50%;
 }
 
 .doctor-patient-image img {
-  width: 145px;
-  height: 145px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 50%;
   border: 4px solid #007bff;
   box-shadow: 0 8px 20px rgba(0, 123, 255, 0.22);
+  display: block;
 }
 
 .doctor-patient-info {
@@ -232,6 +240,46 @@
   font-size: 1rem;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* =========================
+   MODULAR HISTORY CARDS
+========================= */
+.history-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.history-content {
+  max-height: 160px;
+  overflow-y: auto;
+  padding-top: 8px;
+}
+
+.history-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.history-item {
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.latest-item {
+  color: #0066cc;
+  font-weight: 600;
+}
+
+.latest-badge {
+  font-weight: 700;
+}
+
+.empty-history {
+  font-size: 13px;
+  color: #888;
 }
 
 /* Chief Complaint Highlight */

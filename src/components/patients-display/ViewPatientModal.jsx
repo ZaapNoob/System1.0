@@ -3,6 +3,7 @@ import { useModal } from "../modal/ModalProvider";
 import API from "../../config/api";
 import { apiFetch } from "../../utils/api";
 import { usePrintOPD } from "../../hooks/ViewPatient/usePrintOPD";
+import { useDeleteConsultationRequest } from "../../hooks/useDeleteConsultationRequest";
 import { DEFAULT_AVATAR } from "../../utils/image";
 import { usePatientImage } from "../../hooks/image display/usePatientImage";
 import { getFullPatientDetails } from "../../api/patients";
@@ -12,6 +13,7 @@ import "./ViewPatientmodal.css";
 export default function ViewPatientModal({ patient, showFamily = true }) {
   const { closeModal, openModal } = useModal();
   const { handlePrintOPD } = usePrintOPD();
+  const { handleDeleteConsultationRequest, deleting: deletingConsultation } = useDeleteConsultationRequest();
 
   // Get patient image using custom hook
   const { imageUrl, isLoading: imageLoading } = usePatientImage(patient);
@@ -111,6 +113,14 @@ export default function ViewPatientModal({ patient, showFamily = true }) {
         onUpdate={() => setRefreshTrigger(prev => prev + 1)}
       />
     );
+  };
+
+  // ================= DELETE CONSULTATION =================
+  const handleDeleteConsult = (consultation_id) => {
+    // Pass callback to refresh consultation history after successful deletion
+    handleDeleteConsultationRequest(consultation_id, () => {
+      setRefreshTrigger(prev => prev + 1);
+    });
   };
 
   if (!patient) return null;
@@ -377,6 +387,27 @@ export default function ViewPatientModal({ patient, showFamily = true }) {
                     }}
                   >
                     Update
+                  </button>
+
+                  <button
+                    onClick={() => handleDeleteConsult(consult.consultation_id)}
+                    className="delete-btn"
+                    disabled={deletingConsultation}
+                    style={{
+                      marginTop: "10px",
+                      marginLeft: "8px",
+                      padding: "6px 12px",
+                      backgroundColor: "#e74c3c",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: deletingConsultation ? "not-allowed" : "pointer",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      opacity: deletingConsultation ? 0.6 : 1
+                    }}
+                  >
+                    {deletingConsultation ? "Deleting..." : "Delete"}
                   </button>
                 </div>
               </div>

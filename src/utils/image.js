@@ -10,7 +10,11 @@ export const getImageUrl = (filename) => {
   // Build full URL dynamically using current protocol to handle HTTPS redirects
   const protocol = window.location.protocol; // 'https:' or 'http:'
   const hostname = window.location.hostname;
-  return `${protocol}//${hostname}/upload/${filename}`;
+  
+  // Remove 'upload/' prefix if already included in filename (to avoid double prefix)
+  const cleanFilename = filename.startsWith('upload/') ? filename : `upload/${filename}`;
+  
+  return `${protocol}//${hostname}/${cleanFilename}`;
 };
 
 // Export default avatar for direct use

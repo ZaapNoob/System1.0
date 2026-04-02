@@ -61,8 +61,7 @@ try {
         dpq.status AS queue_status
     FROM consultations c
     LEFT JOIN users u ON u.id = c.doctor_id
-    LEFT JOIN doctor_patient_queue dpq ON dpq.patient_id = c.patient_id 
-        AND DATE(dpq.queue_date) = DATE(c.visit_date)
+    LEFT JOIN doctor_patient_queue dpq ON dpq.id = c.queue_id
     WHERE c.patient_id = :patient_id
     ORDER BY c.visit_date DESC, c.created_at DESC";
 

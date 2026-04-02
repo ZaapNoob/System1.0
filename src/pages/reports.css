@@ -16,7 +16,13 @@
 
 .header-content h1 {
   font-size: 28px;
-  color: #222;
+  color: #550000;
+  background: linear-gradient(90deg, #7a0b0b, #c41f1f, #9b0f4a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .subtitle {
@@ -195,6 +201,37 @@
 }
 
 /* VIEW MODE BUTTONS */
+.date-buttons-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.btn-date-option {
+  border: 1px solid #d3dce6;
+  background: #fff;
+  color: #1f2937;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.btn-date-option:hover {
+  background: #eff6ff;
+  border-color: #a3c4ff;
+}
+
+.btn-date-option.active {
+  background: #0f52ff;
+  color: #fff;
+  border-color: #0a44db;
+  box-shadow: 0 6px 14px rgba(15, 82, 255, 0.25);
+}
+
 .report-view-buttons {
   margin-top: 15px;
   display: flex;
@@ -329,53 +366,64 @@
   appearance: none;
 }
 
-/* BLUE GROUP (Primary filters) */
-.custom-combobox.barangay select { 
-  background: #b9efff; 
-  color: #1e3a5f; 
+/* MONOCHROME / MAROON THEME */
+.custom-combobox.barangay select,
+.custom-combobox.reportType select,
+.custom-combobox.visitType select,
+.custom-combobox.doctor select,
+.custom-combobox.consultationType select,
+.custom-combobox.gender select,
+.custom-combobox.ageGroup select,
+.custom-combobox.referral select,
+.custom-combobox.patientStatus select {
+  background: #dbd4d4;
+  color: #180f0c;
+  border: 1px solid #3a3a3a;
 }
 
-.custom-combobox.reportType select { 
-  background: #b9efff; 
-  color: #1e3a5f; 
+/* Active selected value accent */
+.custom-combobox select option[selected],
+.custom-combobox select option:checked {
+  background: #5a1f1f;
+  color: #f5ede9;
 }
 
-.custom-combobox.visitType select { 
-  background: #b9efff; 
-  color: #1e3a5f; 
+/* Hover for the dropdown (if made visible) */
+.custom-combobox select:hover {
+  border-color: #5a1f1f;
 }
 
-/* PINK GROUP (Secondary filters) */
-.custom-combobox.doctor select { 
-  background: #febdc5; 
-  color: #5a1e2a; 
+.btn-generate {
+  background-color: #7f1d1d;
+  color: #fff;
+  border: 1px solid #4f0f0f;
 }
 
-.custom-combobox.referral select { 
-  background: #febdc5; 
-  color: #5a1e2a; 
+.btn-generate:hover {
+  background-color: #a72525;
 }
 
-.custom-combobox.patientStatus select { 
-  background: #febdc5; 
-  color: #5a1e2a; 
+.btn-clear {
+  background-color: #881b1b;
+  border-color: #581010;
 }
 
-/* LIGHT BLUE (neutral variant) */
-.custom-combobox.consultationType select { 
-  background: #e6f9ff; 
-  color: #1e3a5f; 
+.btn-clear:hover {
+  background-color: #a11f1f;
 }
 
-/* LIGHT PINK (demographics) */
-.custom-combobox.gender select { 
-  background: #ffe6ea; 
-  color: #5a1e2a; 
+.report-view-buttons button,
+.btn-date-option {
+  background: #3a3a3a;
+  color: #f0f0f0;
+  border-color: #525252;
 }
 
-.custom-combobox.ageGroup select { 
-  background: #ffe6ea; 
-  color: #5a1e2a; 
+.report-view-buttons button.active,
+.btn-date-option.active {
+  background: #7f1d1d;
+  border-color: #5a1111;
+  color: #fff;
 }
 
 /* KEEP EXISTING SPACING FIX */

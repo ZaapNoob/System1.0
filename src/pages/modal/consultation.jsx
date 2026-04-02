@@ -4,10 +4,11 @@ import { useFetchVitals } from "../../hooks/useFetchVitals";
 import { useSaveConsultation } from "../../hooks/useSaveConsultation";
 import { useSaveConsultationOnly } from "../../hooks/useSaveConsultationOnly";
 import { useDoctors } from "../../hooks/useDoctors";
+import { useFollowUpConsultation } from "../../hooks/useFollowUpConsultation";
 import { updateConsultation } from "../../api/consultation";
 import "./consultation.css";
 
-export default function Consultation({ patient, consultation, isEditing = false, onClose, onConsultationSaved, onSaved }) {
+export default function Consultation({ patient, consultation, isEditing = false, isQuickEntry = false, onClose, onConsultationSaved, onSaved }) {
   const today = new Date().toISOString().split("T")[0];
   const { doctors, loading: loadingDoctors } = useDoctors();
   
@@ -67,6 +68,11 @@ export default function Consultation({ patient, consultation, isEditing = false,
     patient,
     setFormData
   );
+
+  // Hook for auto-filling follow-up consultation data
+  const { latestConsultation, loading: loadingFollowUp, error: errorFollowUp } = !isEditing 
+    ? useFollowUpConsultation(patient, setFormData, formData.nature)
+    : { latestConsultation: null, loading: false, error: null };
 
   // Hook for saving consultation data (only used for new consultations)
   const { loading: loadingSave, error: errorSave, success: hookSuccess, handleSaveConsultation } = isEditing 
@@ -272,9 +278,7 @@ export default function Consultation({ patient, consultation, isEditing = false,
         <option value="">-- Select Nature of Visit --</option>
         <option value="New Consultation">New Consultation</option>
         <option value="Follow-up Consultation">Follow-up Consultation</option>
-        <option value="Problem Consultation (New Symptoms)">
-          Problem Consultation (New Symptoms)
-        </option>
+        
       </select>
     </div>
 
@@ -319,6 +323,26 @@ export default function Consultation({ patient, consultation, isEditing = false,
         <section>
           <h3>🩺 Vital Signs</h3>
 
+          {!isEditing && formData.nature === "Follow-up Consultation" && (
+            <>
+              {loadingFollowUp && (
+                <div className="info-message">
+                  ⏳ Loading vital signs from previous consultation...
+                </div>
+              )}
+              {errorFollowUp && (
+                <div className="warning-message">
+                  ⚠️ {errorFollowUp}
+                </div>
+              )}
+              {latestConsultation && !loadingFollowUp && (
+                <div className="success-message">
+                  ✅ Auto-filled from consultation on {latestConsultation.visit_date}
+                </div>
+              )}
+            </>
+          )}
+
           <div className="grid-2">
             <input type="number" placeholder="BP Systolic" name="systolic" value={formData.systolic} onChange={handleChange} />
             <input type="number" placeholder="BP Diastolic" name="diastolic" value={formData.diastolic} onChange={handleChange} />
@@ -337,7 +361,11 @@ export default function Consultation({ patient, consultation, isEditing = false,
         <section>
           <h3>🏥 Clinical Assessment</h3>
 
-          <label>Chief Complaint</label>
+          <label>Chief Complaint
+            {!isEditing && formData.nature === "Follow-up Consultation" && latestConsultation && (
+              <span className="follow-up-badge"> (from previous visit)</span>
+            )}
+          </label>
           <textarea
             name="chiefComplaint"
             rows="4"
@@ -345,32 +373,36 @@ export default function Consultation({ patient, consultation, isEditing = false,
             onChange={handleChange}
           />
 
-          <label>Diagnosis</label>
-          <textarea
-            name="diagnosis"
-            rows="3"
-            value={formData.diagnosis}
-            onChange={handleChange}
-            placeholder="Enter diagnosis"
-          />
+          {!isQuickEntry && (
+            <>
+              <label>Diagnosis</label>
+              <textarea
+                name="diagnosis"
+                rows="3"
+                value={formData.diagnosis}
+                onChange={handleChange}
+                placeholder="Enter diagnosis"
+              />
 
-          <label>Treatment</label>
-          <textarea
-            name="treatment"
-            rows="3"
-            value={formData.treatment}
-            onChange={handleChange}
-            placeholder="Enter treatment plan"
-          />
+              <label>Treatment</label>
+              <textarea
+                name="treatment"
+                rows="3"
+                value={formData.treatment}
+                onChange={handleChange}
+                placeholder="Enter treatment plan"
+              />
 
-          <label>Patient Illness History</label>
-          <textarea
-            name="patientIllness"
-            rows="3"
-            value={formData.patientIllness}
-            onChange={handleChange}
-            placeholder="Enter patient illness history"
-          />
+              <label>Patient Illness History</label>
+              <textarea
+                name="patientIllness"
+                rows="3"
+                value={formData.patientIllness}
+                onChange={handleChange}
+                placeholder="Enter patient illness history"
+              />
+            </>
+          )}
         </section>
 
         <div className="consultation-actions">

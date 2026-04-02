@@ -15,7 +15,9 @@ export const usePatientImage = (patient) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!patient?.id) return;
+    // Handle both 'id' and 'patient_id' field names
+    const patientId = patient?.id || patient?.patient_id;
+    if (!patientId) return;
 
     // If profile_image already exists, no need to fetch
     if (patient.profile_image !== undefined) {
@@ -27,7 +29,7 @@ export const usePatientImage = (patient) => {
     const fetchFullPatient = async () => {
       try {
         setIsLoading(true);
-        const res = await getFullPatientDetails(patient.id);
+        const res = await getFullPatientDetails(patientId);
         if (res.success && res.data) {
           setFullPatient(res.data);
           console.log("✅ [usePatientImage] Full patient details fetched:", res.data.profile_image);
@@ -42,7 +44,7 @@ export const usePatientImage = (patient) => {
     };
 
     fetchFullPatient();
-  }, [patient?.id, patient?.profile_image]);
+  }, [patient?.id, patient?.patient_id, patient?.profile_image]);
 
   // Generate image URL
   const imageUrl = fullPatient?.profile_image

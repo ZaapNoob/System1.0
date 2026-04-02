@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import "./report-table.css";
 import { useModal } from "../modal/ModalProvider";
 import PatientDetailsModal from "./PatientDetailsModal";
@@ -6,6 +6,17 @@ import PatientDetailsModal from "./PatientDetailsModal";
 export default function ReportTable({ data = [], reportType = "consultations" }) {
   const { openModal } = useModal();
   const [selectedBarangay, setSelectedBarangay] = useState(null);
+
+  // Helper function to get consistent count value from item
+  const getItemCount = (item) => {
+    const count = item.value || item.total || 0;
+    return Number(count) || 0;
+  };
+
+  // Memoized total count calculation
+  const totalCount = useMemo(() => {
+    return data.reduce((sum, item) => sum + getItemCount(item), 0);
+  }, [data]);
 
   const getTitleFromReportType = () => {
     switch (reportType) {
@@ -35,12 +46,6 @@ export default function ReportTable({ data = [], reportType = "consultations" })
     );
   };
 
-  // Check if this is summary data (barangay counts)
-  // All report types display summary data in table format
-  
-  // Totals
-  const totalCount = data.reduce((sum, item) => sum + (item.value || item.total || 0), 0);
-
   return (
     <>
       <header>
@@ -69,7 +74,7 @@ export default function ReportTable({ data = [], reportType = "consultations" })
                 <tr key={index}>
                   <td>{index + 1}</td>
                   <td>{item.label || item.barangay}</td>
-                  <td>{item.value || item.total}</td>
+                  <td>{getItemCount(item)}</td>
                   <td>
                     <button 
                       className="report-btn"
