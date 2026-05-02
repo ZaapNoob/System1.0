@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import './medical.css';
+import useLogout from '../hooks/useLogout';
+
 import useMedicalCertificate from '../hooks/useMedicalCertificate';
 import { useMedicalHistory } from "../hooks/useMedicalHistory";
 import { usePatientImage } from "../hooks/image display/usePatientImage";
 import { DEFAULT_AVATAR } from "../utils/image";
+import QueueAddPatientModal from "./modal/QueueAddPatientModal";
 
-export default function Medical({ user, onNavigateToProfile, allowedPages, onNavigate, handleLogout }) {
+export default function Medical({ user, onNavigateToProfile, allowedPages, onNavigate, handleLogout: propHandleLogout }) {
+  const { handleLogout } = useLogout();
   const {
     step,
     setStep,
@@ -26,6 +30,7 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
     handleEditCertificate,
     handleUpdateCertificate,
     handleCancelEdit,
+    handleDeleteCertificate,
   } = useMedicalCertificate();
 
   const [formData, setFormData] = useState({
@@ -39,13 +44,22 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
 
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+  const [showAddPatientModal, setShowAddPatientModal] = useState(false);
+
   // Get patient image using custom hook
   const { imageUrl, isLoading: imageLoading, fullPatient } = usePatientImage(selectedPatient);
 
   const { medicalHistory, loadingHistory } =
     useMedicalHistory(selectedPatient?.id, refreshTrigger);
 
-
+  const handlePatientAdded = (newPatient) => {
+    // Close the modal
+    setShowAddPatientModal(false);
+    // Auto-select the newly created patient
+    handleSelectPatientForm(newPatient, setFormData);
+    // Clear search query
+    setSearchQuery("");
+  };
 
   const handleResetForm = () => {
     handleReset();
@@ -118,6 +132,26 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
     ))}
   </ul>
 </div>
+                )}
+
+                {searchQuery && searchResults.length === 0 && !loading && (
+                  <div className="search-results">
+                    <p style={{ textAlign: "center", color: "#666", marginBottom: "16px" }}>
+                      No patient found matching "{searchQuery}"
+                    </p>
+                  </div>
+                )}
+
+                {searchQuery && !loading && (
+                  <div style={{ marginTop: "16px" }}>
+                    <button
+                      className="btn-outline"
+                      onClick={() => setShowAddPatientModal(true)}
+                      style={{ width: "100%" }}
+                    >
+                      + Add New Patient
+                    </button>
+                  </div>
                 )}
               </div>
             )}
@@ -363,6 +397,21 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
             ✏️
           </button>
 
+          {/* 🗑️ DELETE BUTTON */}
+          <button
+            type="button"
+            className="history-print-btn"
+            onClick={() =>
+              handleDeleteCertificate(item.id, () => {
+                setRefreshTrigger(refreshTrigger + 1);
+              })
+            }
+            title="Delete certificate"
+            style={{ marginLeft: '4px' }}
+          >
+            🗑️
+          </button>
+
         </div>
       </li>
     ))}
@@ -380,6 +429,18 @@ export default function Medical({ user, onNavigateToProfile, allowedPages, onNav
        
         </main>
       </div>
+
+      {/* Add Patient Modal */}
+      {showAddPatientModal && (
+        <div className="modal-overlay" onClick={() => setShowAddPatientModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <QueueAddPatientModal 
+              onPatientAdded={handlePatientAdded}
+              onClose={() => setShowAddPatientModal(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

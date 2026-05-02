@@ -1,12 +1,21 @@
 /* ================================
    PROFILE PAGE STYLES
    ================================ */
-
+   :root {
+  --primary-blue: #a00000;
+  --neon-blue: #ff6b6b;
+  --cool-teal: #800000;
+  --dark-bg: #f4f7f6;
+  --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
 .profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--dark-bg);
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  flex-direction: column;
 }
 
 /* Header Section */
@@ -40,8 +49,8 @@
 /* Back Button */
 .back-btn {
   background: transparent;
-  border: 2px solid #667eea;
-  color: #667eea;
+  border: 2px solid #a00000;
+  color: #a00000;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
   cursor: pointer;
@@ -52,7 +61,7 @@
 }
 
 .back-btn:hover {
-  background: #667eea;
+  background: #a00000;
   color: white;
   transform: translateX(-4px);
 }
@@ -65,7 +74,7 @@
 
 .edit-btn,
 .save-btn {
-  background: #667eea;
+  background: #a00000;
   color: white;
   border: none;
   padding: 0.6rem 1.5rem;
@@ -78,13 +87,13 @@
 
 .edit-btn:hover,
 .save-btn:hover {
-  background: #5568d3;
+  background: #800000;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(160, 0, 0, 0.4);
 }
 
 .settings-btn {
-  background: #10b981;
+  background: #a00000;
   color: white;
   border: none;
   padding: 0.6rem 1.5rem;
@@ -97,9 +106,9 @@
 }
 
 .settings-btn:hover {
-  background: #059669;
+  background: #800000;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 20px rgba(160, 0, 0, 0.4);
 }
 
 /* Account Settings Dropdown */
@@ -276,9 +285,9 @@
 
 .form-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #a00000;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(160, 0, 0, 0.1);
 }
 
 .form-input::placeholder {
@@ -311,7 +320,7 @@
 }
 
 .btn-submit {
-  background: #667eea;
+  background: #a00000;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -323,9 +332,9 @@
 }
 
 .btn-submit:hover {
-  background: #5568d3;
+  background: #800000;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 20px rgba(160, 0, 0, 0.4);
 }
 
 /* Modal responsive design */
@@ -388,8 +397,11 @@
   gap: 2rem;
 }
 
-/* Profile Sections */
-.profile-section {
+/* ================================
+   UPDATED PROFILE SECTION STYLES
+   ================================ */
+
+.profile-card {
   background: white;
   border-radius: 16px;
   padding: 2rem;
@@ -397,11 +409,11 @@
   transition: all 0.3s ease;
 }
 
-.profile-section:hover {
+.profile-card:hover {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
-.profile-section h2 {
+.section-heading {
   margin: 0 0 1.5rem 0;
   color: #333;
   font-size: 1.4rem;
@@ -410,14 +422,14 @@
   gap: 0.5rem;
 }
 
-.section-content {
+.card-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-/* Avatar Section */
-.avatar-container {
+/* Avatar */
+.identity-avatar-wrapper {
   grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
@@ -427,25 +439,25 @@
   border-bottom: 2px solid #f0f0f0;
 }
 
-.avatar {
+.identity-avatar-circle {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #a00000 0%, #800000 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(160, 0, 0, 0.3);
   border: 4px solid white;
 }
 
-.avatar-initials {
+.identity-avatar-text {
   font-size: 2.5rem;
   color: white;
   font-weight: bold;
 }
 
-.change-avatar-btn {
+.btn-change-avatar {
   background: #f0f0f0;
   border: 2px solid #ddd;
   padding: 0.6rem 1.2rem;
@@ -456,20 +468,21 @@
   transition: all 0.3s ease;
 }
 
-.change-avatar-btn:hover {
+.btn-change-avatar:hover {
   background: #e0e0e0;
-  border-color: #667eea;
-  color: #667eea;
+  border-color: #a00000;
+  color: #a00000;
+  transform: translateY(-2px);
 }
 
-/* Profile Fields */
-.profile-field {
+/* Fields */
+.info-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.profile-field label {
+.info-label {
   font-weight: 700;
   color: #555;
   font-size: 0.95rem;
@@ -478,7 +491,7 @@
   gap: 0.5rem;
 }
 
-.dev-badge {
+.badge-dev {
   background: #ffe0b6;
   color: #d97706;
   padding: 0.2rem 0.6rem;
@@ -487,30 +500,30 @@
   font-weight: 600;
 }
 
-.field-value {
+.info-value {
   margin: 0;
   color: #333;
   font-size: 1rem;
   padding: 0.75rem;
   background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #a00000;
 }
 
-.field-value.readonly {
+.value-readonly {
   background: #f0f0f0;
   border-left-color: #ccc;
   color: #666;
 }
 
-/* UUID Container */
-.uuid-container {
+/* UUID */
+.uuid-box {
   display: flex;
   gap: 0.75rem;
   align-items: center;
 }
 
-.uuid-value {
+.uuid-text {
   flex: 1;
   font-family: 'Courier New', monospace;
   font-size: 0.85rem;
@@ -518,12 +531,12 @@
   padding: 0.75rem;
   background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid #a00000;
   color: #333;
 }
 
-.copy-btn {
-  background: #667eea;
+.btn-copy-uuid {
+  background: linear-gradient(135deg, #a00000 0%, #800000 100%);
   color: white;
   border: none;
   padding: 0.6rem 1rem;
@@ -535,13 +548,13 @@
   transition: all 0.3s ease;
 }
 
-.copy-btn:hover {
-  background: #5568d3;
-  transform: scale(1.05);
+.btn-copy-uuid:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(160, 0, 0, 0.3);
 }
 
-/* Form Inputs */
-.field-input {
+/* Inputs */
+.input-control {
   padding: 0.75rem;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
@@ -551,14 +564,14 @@
   background: #fafafa;
 }
 
-.field-input:focus {
+.input-control:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #a00000;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(160, 0, 0, 0.1);
 }
 
-.address-input {
+.textarea-control {
   resize: vertical;
   min-height: 80px;
   font-family: inherit;
@@ -591,39 +604,69 @@
   color: #166534;
 }
 
-/* Status Badge */
 .status-badge {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  display: inline-block !important;
+  padding: 0.6rem 1.2rem !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.status-value-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-badge-item {
+  display: inline-block !important;
+  padding: 0.6rem 1.2rem !important;
+  border-radius: 20px !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.status-badge-item.status-active {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+}
+
+.status-badge-item.status-disabled {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+}
+
+.status-badge-item.status-banned {
+  background: #fecaca !important;
+  color: #7f1d1d !important;
 }
 
 .status-active {
-  background: #dcfce7;
-  color: #166534;
+  background: #fef3c7 !important;
+  color: #92400e !important;
 }
 
 .status-disabled {
-  background: #fee2e2;
-  color: #991b1b;
+  background: #fee2e2 !important;
+  color: #991b1b !important;
 }
 
 .status-banned {
-  background: #fecaca;
-  color: #7f1d1d;
+  background: #fecaca !important;
+  color: #7f1d1d !important;
 }
 
-/* Contact Info Section Styling */
-.contact-section .section-content {
+/* Contact section layout */
+.contact-card .card-content {
   grid-template-columns: 1fr;
 }
 
-/* Account Section Styling */
-.account-section .section-content {
+/* Account section layout */
+.account-card .card-content {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
@@ -659,28 +702,28 @@
     gap: 1.5rem;
   }
 
-  .profile-section {
+  .profile-card {
     padding: 1.5rem;
   }
 
-  .section-content {
+  .card-content {
     grid-template-columns: 1fr;
   }
 
-  .uuid-container {
+  .uuid-box {
     flex-direction: column;
   }
 
-  .copy-btn {
+  .btn-copy-uuid {
     width: 100%;
   }
 
-  .avatar {
+  .identity-avatar-circle {
     width: 100px;
     height: 100px;
   }
 
-  .avatar-initials {
+  .identity-avatar-text {
     font-size: 2rem;
   }
 }
@@ -702,15 +745,15 @@
     font-size: 0.85rem;
   }
 
-  .profile-section h2 {
+  .profile-card .section-heading {
     font-size: 1.2rem;
   }
 
-  .profile-field label {
+  .info-label {
     font-size: 0.9rem;
   }
 
-  .field-value {
+  .info-value {
     font-size: 0.95rem;
   }
 }
@@ -754,7 +797,7 @@
   cursor: pointer;
   width: 18px;
   height: 18px;
-  accent-color: #667eea;
+  accent-color: #a00000;
 }
 
 .role-option label {
@@ -782,8 +825,8 @@
 
 .custom-role-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+  border-color: #a00000;
+  box-shadow: 0 0 0 2px rgba(160, 0, 0, 0.1);
 }
 
 .custom-role-input::placeholder {
@@ -792,8 +835,8 @@
 
 .custom-role-input:disabled {
   background: #f0fdf4;
-  border-color: #10b981;
-  color: #10b981;
+  border-color: #a00000;
+  color: #a00000;
   font-weight: 600;
   cursor: default;
 }
@@ -809,7 +852,7 @@
 /* Done Button */
 .done-btn {
   padding: 0.5rem 0.75rem;
-  background: #10b981;
+  background: #a00000;
   color: white;
   border: none;
   border-radius: 6px;
@@ -821,9 +864,9 @@
 }
 
 .done-btn:hover {
-  background: #059669;
+  background: #800000;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(160, 0, 0, 0.3);
 }
 
 .done-btn:active {
@@ -861,8 +904,8 @@
 
 .add-role-form .form-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+  border-color: #a00000;
+  box-shadow: 0 0 0 2px rgba(160, 0, 0, 0.1);
 }
 
 .add-role-actions {
@@ -882,12 +925,12 @@
 }
 
 .add-role-actions .done-btn {
-  background: #10b981;
+  background: #a00000;
   color: white;
 }
 
 .add-role-actions .done-btn:hover {
-  background: #059669;
+  background: #800000;
 }
 
 .add-role-actions .cancel-btn {
@@ -921,6 +964,8 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .profile-card:hover {
@@ -967,14 +1012,14 @@
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #a00000;
 }
 
 .option-group input[type="checkbox"] {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #a00000;
 }
 
 .option-group label {
@@ -986,21 +1031,26 @@
 }
 
 .option-group label:hover {
-  color: #667eea;
+  color: #a00000;
 }
 
 .card-select-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #a00000 0%, #800000 100%);
   color: white;
   border: none;
-  padding: 0.7rem 1.5rem;
+  padding: 0.5rem 1.2rem;
   border-radius: 8px;
   font-weight: 600;
+  font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 0.5rem;
+  margin-top: auto;
   width: 100%;
+  line-height: 1.2;
+  height: 36px;
 }
+
+
 
 .card-select-btn:hover {
   transform: translateY(-2px);

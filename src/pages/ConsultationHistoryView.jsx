@@ -16,6 +16,13 @@ export default function ConsultationHistoryView({ patient }) {
   // Use refresh hook to trigger data reload
   const { refreshTrigger, triggerRefresh } = useRefresh();
   
+  // 🔍 DIAGNOSTIC LOG
+  useEffect(() => {
+    console.log("🔍 ConsultationHistoryView received patient:", patient);
+    console.log("🔍 Patient ID being used:", patient?.patient_id);
+    console.log("🔍 All patient fields:", patient ? Object.keys(patient) : "NO PATIENT");
+  }, [patient]);
+  
   // Fetch consultations using the hook - will refetch when refreshTrigger changes
   const { consultHistory, loadingHistory } = useConsultationHistory(
     patient?.patient_id,
@@ -24,10 +31,25 @@ export default function ConsultationHistoryView({ patient }) {
 
   const handleEdit = (consultation) => {
     console.log("🎯 Opening EditConsultationModal for consultation:", consultation.id);
+    // Get user from localStorage or pass as prop if ConsultationHistoryView receives it
+    const token = localStorage.getItem("token");
+    let currentUser = null;
+    if (token) {
+      const userStr = localStorage.getItem("user");
+      if (userStr) {
+        try {
+          currentUser = JSON.parse(userStr);
+        } catch (e) {
+          console.error("Failed to parse user from localStorage");
+        }
+      }
+    }
+    
     openModal(
       <EditConsultationModal
         consultation={consultation}
         patient={patient}
+        user={currentUser}
         onUpdate={() => {
           console.log("✅ Consultation updated, refreshing history...");
           closeModal();
@@ -38,6 +60,63 @@ export default function ConsultationHistoryView({ patient }) {
         }}
       />
     );
+  };
+
+  const handlePrintConsultation = (consultation) => {
+    const printData = {
+      ...patient,
+      ...consultation,
+      autoprint: false
+    };
+    sessionStorage.setItem("printPatient", JSON.stringify(printData));
+    window.open(`/print-opd`, "PrintOPD", "width=1200,height=800");
+  };
+
+  // Check if consultation has referral data
+  const hasReferral = (consultation) => {
+    const hasCategory = consultation?.referral_category && 
+      consultation?.referral_category !== "NULL" && 
+      consultation?.referral_category !== null;
+    
+    const hasPersonnel = consultation?.receiving_personnel && 
+      consultation?.receiving_personnel !== "NULL" && 
+      consultation?.receiving_personnel !== null;
+    
+    const hasReason = consultation?.reason_for_referral_2 && 
+      consultation?.reason_for_referral_2 !== "NULL" && 
+      consultation?.reason_for_referral_2 !== null;
+
+    const result = hasCategory || hasPersonnel || hasReason;
+    
+    if (!result) {
+      console.log("❌ NO REFERRAL - category:", consultation?.referral_category, "personnel:", consultation?.receiving_personnel, "reason:", consultation?.reason_for_referral_2);
+    } else {
+      console.log("✅ HAS REFERRAL - category:", hasCategory, "personnel:", hasPersonnel, "reason:", hasReason);
+    }
+    
+    return result;
+  };
+
+  const handlePrintReferral = (consultation) => {
+    console.log("📋 Print Referral clicked for consultation:", consultation);
+    console.log("📋 Checking referral data - category:", consultation?.referral_category, "personnel:", consultation?.receiving_personnel, "facility:", consultation?.receiving_facility, "reason:", consultation?.reason_for_referral_2);
+    console.log("📋 Patient illness field value:", consultation?.patient_illness);
+    console.log("👥 Patient object keys:", Object.keys(patient || {}));
+    console.log("👥 Patient address fields:", {street: patient?.street, barangay: patient?.barangay_name, city: patient?.city_municipality, province: patient?.province});
+    console.log("📋 ALL consultation keys:", Object.keys(consultation || {}));
+    
+    const referralData = {
+      patient: patient,
+      referral: consultation,
+      autoprint: false
+    };
+    
+    console.log("✅ Storing referral data to localStorage:", referralData);
+    console.log("✅ Referral object keys being stored:", Object.keys(referralData.referral || {}));
+    console.log("✅ Referral.patient_illness = ", referralData.referral?.patient_illness);
+    console.log("✅ Referral.receiving_facility = ", referralData.referral?.receiving_facility);
+    localStorage.setItem("printReferralData", JSON.stringify(referralData));
+    window.open(`/print-referral`, "PrintReferral", "width=1200,height=800");
   };
 
   // If editing, show the Consultation form instead of the table
@@ -76,6 +155,22 @@ return (
                 >
                   ✏️ Edit
                 </button>
+                <button
+                  className="print-btn-new"
+                  onClick={() => handlePrintConsultation(c)}
+                  title="Print this consultation record"
+                >
+                  🖨️ Print
+                </button>
+                {hasReferral(c) && (
+                  <button
+                    className="print-referral-btn-new"
+                    onClick={() => handlePrintReferral(c)}
+                    title="Print referral form"
+                  >
+                    📋 Print Referral
+                  </button>
+                )}
               </div>
 
             </div>

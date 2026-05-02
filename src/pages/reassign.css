@@ -1,0 +1,214 @@
+:root {
+  /* Maroon Theme Palette */
+  --maroon-base: #800000;
+  --maroon-light: #a52a2a;
+  --maroon-dark: #4d0000;
+  --maroon-faint: #fcf5f5;
+  
+  /* Neutral Colors */
+  --bg-color: #f4f7f6;
+  --card-bg: #ffffff;
+  --text-main: #2c3e50;
+  --text-muted: #7f8c8d;
+  --border-color: #ecf0f1;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Styling */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.dashboard-header h1 {
+  color: var(--maroon-base);
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.logout-btn {
+  background-color: transparent;
+  color: var(--maroon-base);
+  border: 1px solid var(--maroon-base);
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: var(--maroon-base);
+  color: white;
+}
+
+/* Patient Grid */
+.patient-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.8rem;
+}
+
+/* Patient Card */
+.patient-card {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-top: 5px solid var(--maroon-base);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.patient-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(128, 0, 0, 0.08);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: var(--maroon-faint);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.patient-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--maroon-light);
+  margin-right: 1.2rem;
+  background-color: #fff;
+}
+
+.patient-info h3 {
+  margin: 0 0 0.3rem 0;
+  color: var(--text-main);
+  font-size: 1.2rem;
+}
+
+.patient-id {
+  background-color: #eee;
+  color: var(--text-muted);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Card Body */
+.card-body {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.label {
+  color: var(--text-muted);
+}
+
+.value {
+  color: var(--text-main);
+}
+
+.font-bold {
+  font-weight: 600;
+  color: var(--maroon-base);
+}
+
+.status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background-color: #f1f2f6;
+}
+
+.status-badge.admitted {
+  background-color: #e8f8f5;
+  color: #1abc9c;
+}
+
+.status-badge.observation {
+  background-color: #fef9e7;
+  color: #f1c40f;
+}
+
+.status-badge.discharging {
+  background-color: #ebdef0;
+  color: #9b59b6;
+}
+
+/* Card Actions / Buttons */
+.card-actions {
+  padding: 1.2rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 0.8rem;
+  background-color: #fafcfb;
+}
+
+.btn-primary, .btn-secondary {
+  flex: 1;
+  padding: 0.7rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--maroon-base);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--maroon-dark);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--maroon-base);
+  border: 1px solid var(--maroon-base);
+}
+
+.btn-secondary:hover {
+  background-color: var(--maroon-faint);
+}

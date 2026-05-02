@@ -292,7 +292,7 @@ ORDER BY queue_number ASC";
                     dpq.queue_number,
                     dpq.queue_date,
                     dpq.status,
-                    dpq.is_active,
+                    CAST(dpq.is_active AS UNSIGNED) AS is_active,
                     dpq.created_at,
                     p.first_name,
                     p.last_name,
@@ -304,7 +304,7 @@ ORDER BY queue_number ASC";
                 JOIN users u ON u.id = dpq.doctor_id
                 LEFT JOIN patient_queue pq ON pq.id = dpq.patient_queue_id
                 WHERE dpq.queue_date = CURDATE()
-                  AND dpq.status IN ('waiting', 'serving')
+                  AND (dpq.status IN ('waiting', 'serving') OR dpq.is_active = 1)
             ";
 
             // Add doctor filter if specific doctor requested

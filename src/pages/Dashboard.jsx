@@ -49,6 +49,19 @@ import { useEncoderQueue } from "../hooks/useEncoderQueue";
 // Queue stats hook
 import { useQueueStats } from "../hooks/useQueueStats";
 
+// Doctor stats hook
+import { useDoctorStats } from "../hooks/useDoctorStats";
+
+// Encoder stats hook
+import { useEncoderStats } from "../hooks/useEncoderStats";
+
+// Completed patients card
+import CompletedPatientsCard from "../components/CompletedPatientsCard";
+import "../components/CompletedPatientsCard.css";
+
+// Today completed patients card
+import TodayCompletedPatientsCard from "../components/TodayCompletedPatientsCard";
+import "../components/TodayCompletedPatientsCard.css";
 
 export default function Dashboard({
   user,
@@ -64,10 +77,13 @@ export default function Dashboard({
   const [editingConsultation, setEditingConsultation] = useState(null);
 
   const handleEncode = (patient) => {
+    console.log("📋 [ENCODE] View/Encode clicked for patient:", patient);
+    console.log("📋 [ENCODE] Patient ID:", patient?.patient_id);
+    console.log("📋 [ENCODE] Patient name:", patient?.patient_name);
+    console.log("📋 [ENCODE] Has consultation:", patient?.has_consultation);
+    console.log("📋 [ENCODE] All fields:", patient ? Object.keys(patient) : "NO DATA");
     setSelectedPatient(patient);
   };
-
-
 
   const handleNavigate = (page) => {
     setCurrentPage(page);
@@ -77,7 +93,24 @@ export default function Dashboard({
   // ===============================
   // QUEUE STATISTICS (Real data from database)
   // ===============================
-  const { stats, loading: statsLoading, error: statsError, refreshStats } = useQueueStats(user);
+  // Use doctor stats if user is a doctor, encoder stats if encoder, otherwise use queue stats
+  const isDoctor = user?.role === "doctor";
+  const isEncoder = user?.role === "encoder";
+  const isTriage = user?.role === "triage";
+  const { stats: doctorStats } = useDoctorStats(isDoctor ? user?.id : null);
+  const { stats: encoderStats } = useEncoderStats(isEncoder ? user?.id : null);
+  const { stats: queueStats, loading: statsLoading, error: statsError, refreshStats } = useQueueStats(user);
+  
+  // Select appropriate stats based on role
+  let stats = queueStats;
+  if (isDoctor) {
+    stats = doctorStats;
+  } else if (isEncoder) {
+    stats = {
+      overallCompleted: encoderStats.overallEncoded,
+      todayCompleted: encoderStats.todayEncoded
+    };
+  }
 
   // ===============================
   // POLLING RESET TRIGGER & WEBSOCKET HANDLERS
@@ -179,7 +212,9 @@ export default function Dashboard({
     setWidgetsLoading(true);
 
     try {
-      const response = await fetch(`${API}/widgets/get.php?user_id=${user.id}`);
+      const response = await fetch(`${API}/widgets/get.php?user_id=${user.id}`, {
+        credentials: 'include'
+      });
 
       if (!response.ok) {
         setSelectedWidgets([]);
@@ -207,12 +242,14 @@ export default function Dashboard({
     try {
       await fetch(`${API}/auth/logout.php`, {
         method: "POST",
-        headers: { Authorization: token }
+        headers: { Authorization: token },
+        credentials: 'include'
       });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       window.location.reload();
     }
   };
@@ -311,30 +348,29 @@ export default function Dashboard({
             {/* Statistics overview */}
             <section className="stats-section">
 
-              <div className="stat-card">
-                <div className="stat-icon">📋</div>
-                <div className="stat-content">
-                  <h3>Over All completed</h3>
-                  <p className="stat-number">{statsLoading ? "..." : stats.overallCompleted}</p>
-                </div>
-              </div>
+              {/* Clickable Completed Patients Card */}
+              {(isDoctor || isEncoder || isTriage) && (
+                <CompletedPatientsCard
+                  userId={isTriage ? user?.id : (isEncoder ? user?.id : null)}
+                  doctorId={isDoctor ? user?.id : null}
+                  encoderId={isEncoder ? user?.id : null}
+                  completedCount={stats.overallCompleted}
+                  role={user?.role}
+                />
+              )}
 
-              <div className="stat-card">
-                <div className="stat-icon">✅</div>
-                <div className="stat-content">
-                  <h3>Today Completed</h3>
-                  <p className="stat-number">{statsLoading ? "..." : stats.todayCompleted}</p>
-                </div>
-              </div>
+              {/* Clickable Today Completed Patients Card */}
+              {(isDoctor || isEncoder || isTriage) && (
+                <TodayCompletedPatientsCard
+                  userId={isTriage ? user?.id : (isEncoder ? user?.id : null)}
+                  doctorId={isDoctor ? user?.id : null}
+                  encoderId={isEncoder ? user?.id : null}
+                  completedCount={stats.todayCompleted}
+                  role={user?.role}
+                />
+              )}
 
-              <div className="stat-card">
-                <div className="stat-icon">⚡</div>
-                <div className="stat-content">
-                  <h3>Waiting</h3>
-                  <p className="stat-number">{statsLoading ? "..." : stats.waiting}</p>
-                </div>
-              </div>
-
+           
              
             </section>
           </div>
@@ -361,6 +397,26 @@ export default function Dashboard({
         <h3>Doctor Panel</h3>
         <span>Patient Consultations</span>
       </div>
+      <button
+        className="refresh-btn"
+        onClick={() => {
+          console.log('🔄 Manual refresh triggered for doctor assignments');
+          wsSend({ type: 'refresh-doctor-queue-now', doctor_id: user?.id });
+        }}
+        title="Refresh patient list"
+        style={{
+          padding: '8px 12px',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '12px',
+          fontWeight: 'bold'
+        }}
+      >
+        🔄 Refresh
+      </button>
     </div>
 
     <div className="widget-content-new">
@@ -374,15 +430,16 @@ export default function Dashboard({
         </thead>
 
         <tbody>
-          {doctorAssignmentsLoading && (
-            <tr>
-              <td colSpan="3">Loading assignments...</td>
-            </tr>
-          )}
-
           {!doctorAssignmentsLoading && doctorAssignments.length === 0 && (
             <tr>
-              <td colSpan="3">No assigned patients</td>
+              <td colSpan="3">
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <div>No assigned patients</div>
+                  <div style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
+                    Waiting for triage to assign patients...
+                  </div>
+                </div>
+              </td>
             </tr>
           )}
 
@@ -450,6 +507,27 @@ export default function Dashboard({
         <span className="triage-subtitle">Live waiting queue monitor</span>
       </div>
 
+      <button
+        className="refresh-btn"
+        onClick={() => {
+          console.log('🔄 Manual refresh triggered for waiting queue');
+          wsSend({ type: 'refresh-queue-now' });
+        }}
+        title="Refresh patient list"
+        style={{
+          padding: '8px 12px',
+          backgroundColor: '#4CAF50',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '12px',
+          fontWeight: 'bold'
+        }}
+      >
+        🔄 Refresh
+      </button>
+
       <div className="triage-header-stats">
         <div className="header-stat priority">
           <span>Priority</span>
@@ -479,15 +557,13 @@ export default function Dashboard({
             PATIENT QUEUE
         ========================== */}
         <div className="widget-section">
-          <h4>⏱️ Patient Queue</h4>
+  
 
           <div className="queue-list">
-            {waitingQueue.length === 0 && (
-              <div className="empty-queue">No patients waiting</div>
-            )}
+           
 
             <div className="queue-group priority-group">
-              <div className="queue-group-title priority">🔥 Priority Patients</div>
+              <div className="queue-group-title priority">Priority Patients</div>
               {displayPriority.length === 0 && (
                 <div className="empty-queue">No priority patients</div>
               )}
@@ -498,18 +574,12 @@ export default function Dashboard({
 
                 return (
                   <div key={q.id} className="queue-item priority-high">
-                    <span className="queue-number">{q.queue_code}</span>
-
-                    <span className="patient-info">
-                      {q.first_name} {q.last_name}
-                    </span>
-
-                    <span className="wait-time">Wait: {waitMinutes} min</span>
-
-                    <button
-                      className="accept-btn"
-                      disabled={accepting}
-                      onClick={() => {
+                    <div className="queue-row-1">
+                      <span className="queue-number">{q.queue_code}</span>
+                      <button
+                        className="accept-btn"
+                        disabled={accepting}
+                        onClick={() => {
                         handleAcceptQueue(q, (patient) => {
                           const patientQueueId = patient.id;
 
@@ -553,8 +623,13 @@ export default function Dashboard({
                         {accepting ? "Accepting..." : "Accept"}
                       </button>
                     </div>
-                  );
-                })}
+                    <div className="queue-row-2">
+                      <span className="patient-name">{q.first_name} {q.last_name}</span>
+                      <span className="wait-time">Wait: {waitMinutes} min</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             {priorityQueue.length > 3 && (
               <button
@@ -566,7 +641,7 @@ export default function Dashboard({
             )}
 
             <div className="queue-group regular-group">
-              <div className="queue-group-title regular">🧍 Regular Patients</div>
+              <div className="queue-group-title regular">Regular Patients</div>
               {displayRegular.length === 0 && (
                 <div className="empty-queue">No regular patients</div>
               )}
@@ -577,18 +652,12 @@ export default function Dashboard({
 
                   return (
                     <div key={q.id} className="queue-item priority-low">
-                      <span className="queue-number">{q.queue_code}</span>
-
-                      <span className="patient-info">
-                        {q.first_name} {q.last_name}
-                      </span>
-
-                      <span className="wait-time">Wait: {waitMinutes} min</span>
-
-                      <button
-                        className="accept-btn"
-                        disabled={accepting}
-                        onClick={() => {
+                      <div className="queue-row-1">
+                        <span className="queue-number">{q.queue_code}</span>
+                        <button
+                          className="accept-btn"
+                          disabled={accepting}
+                          onClick={() => {
                           handleAcceptQueue(q, (patient) => {
                             const patientQueueId = patient.id;
 
@@ -632,8 +701,13 @@ export default function Dashboard({
                         {accepting ? "Accepting..." : "Accept"}
                       </button>
                     </div>
-                  );
-                })}
+                    <div className="queue-row-2">
+                      <span className="patient-name">{q.first_name} {q.last_name}</span>
+                      <span className="wait-time">Wait: {waitMinutes} min</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             {regularQueue.length > 3 && (
               <button
@@ -651,13 +725,13 @@ export default function Dashboard({
             ACTION SECTION
         ========================== */}
         <div className="widget-section triage-action-section">
-          <h4>📊 Queue Actions</h4>
+          <h4> Queue Actions</h4>
 
           <button
             className="cancel-waiting-action-btn"
             onClick={handleCancelWaitingQueues}
           >
-            ⚠️ Cancel All Waiting Patients
+             Cancel All Waiting Patients
           </button>
         </div>
 
@@ -751,12 +825,21 @@ export default function Dashboard({
                 </div>
 
                 <div className="encoder-action">
-                  <button
-                    className="encode-btn"
-                    onClick={() => handleEncode(patient)}
-                  >
-                    ✏️ Encode
-                  </button>
+                  {parseInt(patient.has_consultation) === 0 ? (
+                    <button
+                      className="encode-btn"
+                      onClick={() => handleEncode(patient)}
+                    >
+                      ✏️ Encode
+                    </button>
+                  ) : (
+                    <button
+                      className="view-btn"
+                      onClick={() => handleEncode(patient)}
+                    >
+                      👁️ View
+                    </button>
+                  )}
                 </div>
 
               </div>
@@ -811,27 +894,7 @@ export default function Dashboard({
 
 
 
-          {/* User profile section */}
-          <section className="user-section">
-            <h2>User Profile</h2>
-
-            <div className="profile-card" onClick={onNavigateToProfile} style={{ cursor: 'pointer' }}>
-              <div className="profile-item">
-                <label>Name</label>
-                <p>{user?.name}</p>
-              </div>
-
-              <div className="profile-item">
-                <label>Role</label>
-                <p>{user?.role}</p>
-              </div>
-
-              <div className="profile-item">
-                <label>User ID</label>
-                <p className="user-id">{user?.uuid}</p>
-              </div>
-            </div>
-          </section>
+          
 
         </main>
       </div>
@@ -841,39 +904,58 @@ export default function Dashboard({
 
 /**
  * TV Display Widget Component
- * Shows all active queues in real-time via WebSocket
- * Displays all doctors' current patients (up to doctor capacity)
+ * Shows active queues and waiting list for each doctor
+ * Displays in real-time via WebSocket
  */
 function TVDisplayWidget() {
   const { doctorAssignments } = useWebSocketContext();
+  const [doctorQueues, setDoctorQueues] = useState([]);
 
-  console.log('📺 [TV-RENDER] All doctorAssignments from WebSocket:', doctorAssignments);
+  // Organize queues by doctor with active and waiting separation
+  useEffect(() => {
+    if (!doctorAssignments || doctorAssignments.length === 0) {
+      setDoctorQueues([]);
+      return;
+    }
 
-  // Get all active queues (is_active = 1 OR status = 'serving')
-  const activeQueues = doctorAssignments
-    .filter(q => q.is_active === 1 || q.status === 'serving')
-    .sort((a, b) => {
-      // Sort by doctor_id first, then by patient_queue_id
-      if (a.doctor_id !== b.doctor_id) {
-        return a.doctor_id - b.doctor_id;
+    // Group by doctor_id
+    const doctors = {};
+    
+    doctorAssignments.forEach(queue => {
+      const docId = queue.doctor_id;
+      if (!doctors[docId]) {
+        doctors[docId] = {
+          doctor_id: docId,
+          doctor_name: queue.doctor_name,
+          active: null,
+          waiting: []
+        };
       }
-      const aId = a.patient_queue_id || a.id;
-      const bId = b.patient_queue_id || b.id;
-      return aId - bId;
+
+      // Active patient (is_active = 1 or status = 'serving')
+      if (parseInt(queue.is_active) === 1 || queue.status === 'serving') {
+        doctors[docId].active = queue;
+      }
+      // Waiting patient (is_active = 0 or status = 'waiting')
+      else if (parseInt(queue.is_active) === 0 || queue.status === 'waiting') {
+        doctors[docId].waiting.push(queue);
+      }
     });
 
-  // Debug: Log active queues with ALL fields
-  console.log('📺 [TV-ACTIVE] Filtered active queues:', activeQueues.map(q => ({
-    id: q.id,
-    patient_queue_id: q.patient_queue_id,
-    queue_number: q.queue_number,
-    doctor_id: q.doctor_id,
-    doctor_name: q.doctor_name,
-    patient_name: `${q.first_name} ${q.last_name}`,
-    status: q.status,
-    is_active: q.is_active,
-    all_keys: Object.keys(q)  // Show ALL available fields
-  })));
+    // Convert to array and sort by doctor_id
+    const sorted = Object.values(doctors)
+      .filter(doc => doc.active || doc.waiting.length > 0)
+      .sort((a, b) => a.doctor_id - b.doctor_id);
+
+    setDoctorQueues(sorted);
+
+    console.log('📺 [TV-WIDGET] Doctor queues organized:', sorted);
+  }, [doctorAssignments]);
+
+  // Get queue code from queue object
+  const getQueueNumber = (queue) => {
+    return queue.queue_code || queue.patient_queue_id || queue.queue_number || queue.id || '---';
+  };
 
   // Handle expand button click
   const handleExpandTV = () => {
@@ -893,25 +975,52 @@ function TVDisplayWidget() {
 
       <div className="widget-content">
         <div className="tv-widget-grid">
-          {activeQueues.length === 0 ? (
+          {doctorQueues.length === 0 ? (
             <div className="tv-no-queue">
               <p>No Active Queues</p>
             </div>
           ) : (
-            activeQueues.map((queue, index) => (
-              <div key={`${queue.doctor_id}-${index}`} className="tv-queue-slot">
-                <div className="tv-doctor-label">Dr. {queue.doctor_name || `Doctor ${queue.doctor_id}`}</div>
-                <div className="tv-queue-display">
-                  <div className="tv-queue-id">
-                    {queue.queue_code || queue.queue_number || queue.patient_queue_id || queue.id || '---'}
-                  </div>
-                  <div className="tv-queue-type-badge">
-                    {queue.queue_type?.toUpperCase() === 'PRIORITY' ? '⚡ PRIORITY' : '📋 REGULAR'}
-                  </div>
-                  <div className="tv-status-badge">
-                    {queue.status.toUpperCase()}
-                  </div>
+            doctorQueues.map((doctor) => (
+              <div key={doctor.doctor_id} className="tv-widget-doctor-slot">
+                {/* Doctor Name */}
+                <div className="tv-widget-doctor-name">
+                  Dr. {doctor.doctor_name || `Doctor ${doctor.doctor_id}`}
                 </div>
+
+                {/* Active Patient */}
+                <div className="tv-widget-active">
+                  {doctor.active ? (
+                    <>
+                      <div className="tv-widget-status-label">NOW SERVING</div>
+                      <div className="tv-widget-queue-id">
+                        {getQueueNumber(doctor.active)}
+                      </div>
+                      <div className="tv-widget-type-badge">
+                        {doctor.active.queue_type?.toUpperCase() === 'PRIORITY' ? '⚡ PRIORITY' : '📋 REGULAR'}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="tv-widget-no-current">No Patient</div>
+                  )}
+                </div>
+
+                {/* Waiting List */}
+                {doctor.waiting && doctor.waiting.length > 0 && (
+                  <div className="tv-widget-waiting">
+                    <div className="tv-widget-waiting-label">📋 WAITING ({doctor.waiting.length})</div>
+                    <div className="tv-widget-waiting-list">
+                      {doctor.waiting.slice(0, 2).map((queue, idx) => (
+                        <div key={`${doctor.doctor_id}-waiting-${idx}`} className="tv-widget-waiting-item">
+                          <span className="tv-widget-waiting-rank">#{idx + 1}</span>
+                          <span className="tv-widget-waiting-queue">{getQueueNumber(queue)}</span>
+                        </div>
+                      ))}
+                      {doctor.waiting.length > 2 && (
+                        <div className="tv-widget-waiting-more">+{doctor.waiting.length - 2} more</div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             ))
           )}

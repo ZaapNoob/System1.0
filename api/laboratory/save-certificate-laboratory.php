@@ -44,6 +44,8 @@ try {
     $diagnosis = trim($data['diagnosis']);
     $xray_findings = isset($data['xray_findings']) ? trim($data['xray_findings']) : null;
     $utz_findings = isset($data['utz_findings']) ? trim($data['utz_findings']) : null;
+    $ct_scan_findings = isset($data['ct_scan_findings']) ? trim($data['ct_scan_findings']) : null;
+    $other_findings = isset($data['other_findings']) ? trim($data['other_findings']) : null;
     $tests = isset($data['tests']) && is_array($data['tests']) ? $data['tests'] : [];
 
     // Check if patient exists
@@ -87,8 +89,8 @@ try {
 
     // Insert lab request
     $sql = "INSERT INTO lab_requests 
-            (request_no, patient_id, doctor_id, diagnosis, xray_findings, utz_findings, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, NOW())";
+            (request_no, patient_id, doctor_id, diagnosis, xray_findings, utz_findings, ct_scan_findings, other_findings, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -97,7 +99,9 @@ try {
         $doctor_id,
         $diagnosis,
         $xray_findings,
-        $utz_findings
+        $utz_findings,
+        $ct_scan_findings,
+        $other_findings
     ]);
 
     $labRequestId = $pdo->lastInsertId();

@@ -14,7 +14,6 @@ export default function Profile({ user, onNavigateToDashboard, onAllowedPagesUpd
 
   
   
-  
   // =============================
   // NAVIGATION
   // =============================
@@ -731,6 +730,16 @@ const handleAddAccountSubmit = async (e) => {
                 <label htmlFor="page-queuegen">Queue Gen</label>
               </div>
 
+                   <div className="option-group">
+                <input 
+                  type="checkbox" 
+                  id="page-reassign" 
+                  checked={selectedPages.includes('reassign')}
+                  onChange={() => handlePageToggle('reassign')}
+                />
+                <label htmlFor="page-reassign">Reassign</label>
+              </div>
+
               {/* NEW: Medical */}
               <div className="option-group">
                 <input 
@@ -834,200 +843,203 @@ const handleAddAccountSubmit = async (e) => {
         </div>
 
         {/* ========== IDENTITY SECTION ========== */}
-        <section className="profile-section identity-section">
+       <section className="profile-card identity-card">
 
-          {/* Section title */}
-          <h2>🔹 Identity</h2>
+  {/* Section title */}
+  <h2 className="section-heading">🔹 Identity</h2>
 
-          <div className="section-content">
+  <div className="card-content">
 
-            {/* Avatar container */}
-            <div className="avatar-container">
+    {/* Avatar container */}
+    <div className="identity-avatar-wrapper">
 
-              {/* Avatar circle */}
-              <div className="avatar">
+      {/* Avatar circle */}
+      <div className="identity-avatar-circle">
+        <span className="identity-avatar-text">
+          {user?.name?.charAt(0).toUpperCase()}
+        </span>
+      </div>
 
-                {/* Displays first letter of user name */}
-                <span className="avatar-initials">
-                  {user?.name?.charAt(0).toUpperCase()}
-                </span>
-              </div>
+      {/* Avatar change button */}
+      {isEditing && (
+        <button className="btn-change-avatar">
+          Change Avatar
+        </button>
+      )}
+    </div>
 
-              {/* Avatar change button (edit mode only) */}
-              {isEditing && (
-                <button className="change-avatar-btn">
-                  Change Avatar
-                </button>
-              )}
-            </div>
+    {/* Full Name */}
+    <div className="info-group">
+      <label className="info-label">Full Name</label>
+      <p className="info-value">{user?.name || "N/A"}</p>
+    </div>
 
-            {/* Full Name (read-only) */}
-            <div className="profile-field">
-              <label>Full Name</label>
-              <p className="field-value">{user?.name || "N/A"}</p>
-            </div>
+    {/* Email */}
+    <div className="info-group">
+      <label className="info-label">Email</label>
+      <p className="info-value">{user?.email || "N/A"}</p>
+    </div>
 
-            {/* Email address (read-only) */}
-            <div className="profile-field">
-              <label>Email</label>
-              <p className="field-value">{user?.email || "N/A"}</p>
-            </div>
+    {/* UUID */}
+    <div className="info-group">
+      <label className="info-label">
+        User ID / UUID <span className="badge-dev">(Dev/Admin)</span>
+      </label>
 
-            {/* User UUID (for dev/admin reference) */}
-            <div className="profile-field">
-              <label>
-                User ID / UUID <span className="dev-badge">(Dev/Admin)</span>
-              </label>
+      <div className="uuid-box">
+        <code className="info-value uuid-text">
+          {user?.uuid || "N/A"}
+        </code>
 
-              <div className="uuid-container">
+        <button
+          className="btn-copy-uuid"
+          onClick={() =>
+            navigator.clipboard.writeText(user?.uuid)
+          }
+        >
+          Copy
+        </button>
+      </div>
+    </div>
 
-                {/* UUID value */}
-                <code className="field-value uuid-value">
-                  {user?.uuid || "N/A"}
-                </code>
-
-                {/* Copy UUID to clipboard */}
-                <button
-                  className="copy-btn"
-                  onClick={() =>
-                    navigator.clipboard.writeText(user?.uuid)
-                  }
-                >
-                  Copy
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </section>
+  </div>
+</section>
 
 
+{/* ========== CONTACT INFO SECTION ========== */}
+<section className="profile-card contact-card">
+  <h2 className="section-heading">🔹 Contact Info</h2>
 
-        {/* ========== CONTACT INFO SECTION ========== */}
-        <section className="profile-section contact-section">
-          <h2>🔹 Contact Info</h2>
+  <div className="card-content">
 
-          <div className="section-content">
+    {editMessage.text && (
+      <div
+        className={`alert-box alert-${editMessage.type}`}
+        style={{ marginBottom: "1rem" }}
+      >
+        {editMessage.type === "error" && "❌ "}
+        {editMessage.type === "success" && "✅ "}
+        {editMessage.text}
+      </div>
+    )}
 
-            {editMessage.text && (
-              <div className={`message-alert message-${editMessage.type}`} style={{ marginBottom: '1rem' }}>
-                {editMessage.type === 'error' && '❌ '}
-                {editMessage.type === 'success' && '✅ '}
-                {editMessage.text}
-              </div>
-            )}
+    {/* Phone */}
+    <div className="info-group">
+      <label className="info-label">Phone Number</label>
 
-            {/* Phone number field */}
-            <div className="profile-field">
-              <label>Phone Number</label>
+      {isEditing ? (
+        <input
+          type="tel"
+          name="phone"
+          value={profileData.phone}
+          onChange={handleInputChange}
+          placeholder="Enter phone number"
+          className="input-control"
+        />
+      ) : (
+        <p className="info-value">
+          {profileData.phone || "Not provided"}
+        </p>
+      )}
+    </div>
 
-              {/* Editable input if editing */}
-              {isEditing ? (
-                <input
-                  type="tel"
-                  name="phone"
-                  value={profileData.phone}
-                  onChange={handleInputChange}
-                  placeholder="Enter phone number"
-                  className="field-input"
-                />
-              ) : (
-                /* Read-only view */
-                <p className="field-value">
-                  {profileData.phone || "Not provided"}
-                </p>
-              )}
-            </div>
+    {/* Address */}
+    <div className="info-group">
+      <label className="info-label">Address</label>
 
-            {/* Address field */}
-            <div className="profile-field">
-              <label>Address</label>
+      {isEditing ? (
+        <textarea
+          name="address"
+          value={profileData.address}
+          onChange={handleInputChange}
+          placeholder="Enter address"
+          className="input-control textarea-control"
+        />
+      ) : (
+        <p className="info-value">
+          {profileData.address || "Not provided"}
+        </p>
+      )}
+    </div>
 
-              {/* Editable textarea if editing */}
-              {isEditing ? (
-                <textarea
-                  name="address"
-                  value={profileData.address}
-                  onChange={handleInputChange}
-                  placeholder="Enter address"
-                  className="field-input address-input"
-                />
-              ) : (
-                /* Read-only view */
-                <p className="field-value">
-                  {profileData.address || "Not provided"}
-                </p>
-              )}
-            </div>
+    {/* Email readonly */}
+    <div className="info-group">
+      <label className="info-label">Email (Read-Only)</label>
+      <p className="info-value value-readonly">
+        {user?.email || "N/A"}
+      </p>
+    </div>
 
-            {/* Email displayed again as read-only */}
-            <div className="profile-field">
-              <label>Email (Read-Only)</label>
-              <p className="field-value readonly">
-                {user?.email || "N/A"}
-              </p>
-            </div>
+    {/* Doctor/Nurse fields */}
+    {(user?.role === "doctor" || user?.role === "nurse") && (
+      <>
+        {/* License */}
+        <div className="info-group">
+          <label className="info-label">
+            License Number <span style={{ color: "#e74c3c" }}>*</span>
+          </label>
 
-            {/* Role-based fields for Doctor and Nurse */}
-            {(user?.role === 'doctor' || user?.role === 'nurse') && (
-              <>
-                {/* License Number */}
-                <div className="profile-field">
-                  <label>License Number <span style={{ color: '#e74c3c' }}>*</span></label>
+          {isEditing ? (
+            <input
+              type="text"
+              name="license_no"
+              value={profileData.license_no}
+              onChange={handleInputChange}
+              placeholder="Enter license number"
+              className="input-control"
+              required
+            />
+          ) : (
+            <p className="info-value">
+              {profileData.license_no || "Not provided"}
+            </p>
+          )}
+        </div>
 
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="license_no"
-                      value={profileData.license_no}
-                      onChange={handleInputChange}
-                      placeholder="Enter license number"
-                      className="field-input"
-                      required
-                    />
-                  ) : (
-                    <p className="field-value">
-                      {profileData.license_no || "Not provided"}
-                    </p>
-                  )}
-                </div>
+        {/* Title */}
+        <div className="info-group">
+          <label className="info-label">
+            Title/Designation <span style={{ color: "#e74c3c" }}>*</span>
+          </label>
 
-                {/* Title/Designation */}
-                <div className="profile-field">
-                  <label>Title/Designation <span style={{ color: '#e74c3c' }}>*</span></label>
+          {isEditing ? (
+            <input
+              type="text"
+              name="title"
+              value={profileData.title}
+              onChange={handleInputChange}
+              placeholder={
+                "Enter title (e.g., " +
+                (user?.role === "doctor"
+                  ? "MD, Rural Health Physician"
+                  : "RN, Nurse") +
+                ")"
+              }
+              className="input-control"
+              required
+            />
+          ) : (
+            <p className="info-value">
+              {profileData.title || "Not provided"}
+            </p>
+          )}
+        </div>
+      </>
+    )}
 
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="title"
-                      value={profileData.title}
-                      onChange={handleInputChange}
-                      placeholder={'Enter title (e.g., ' + (user?.role === 'doctor' ? 'MD, Rural Health Physician' : 'RN, Nurse') + ')'}
-                      className="field-input"
-                      required
-                    />
-                  ) : (
-                    <p className="field-value">
-                      {profileData.title || "Not provided"}
-                    </p>
-                  )}
-                </div>
-              </>
-            )}
-
-          </div>
-        </section>
+  </div>
+</section>
 
         {/* ========== ACCOUNT STATUS SECTION ========== */}
-        <section className="profile-section account-section">
-          <h2>🔹 Account Status</h2>
+        <section className="profile-card account-card">
+          <h2 className="section-heading">🔹 Account Status</h2>
 
-          <div className="section-content">
+          <div className="card-content">
 
             {/* User role */}
-            <div className="profile-field">
-              <label>Role</label>
-              <p className="field-value">
+            <div className="info-group">
+              <label className="info-label">Role</label>
+              <p className="info-value">
                 <span className={`role-badge role-${user?.role?.toLowerCase()}`}>
                   {user?.role || "member"}
                 </span>
@@ -1035,19 +1047,19 @@ const handleAddAccountSubmit = async (e) => {
             </div>
 
             {/* Account status */}
-            <div className="profile-field">
-              <label>Account Status</label>
-              <p className="field-value">
-                <span className={`status-badge status-${user?.status?.toLowerCase()}`}>
+            <div className="info-group">
+              <label className="info-label">Account Status</label>
+              <div className="status-value-wrapper">
+                <span className={`status-badge-item status-${user?.status?.toLowerCase()}`}>
                   {user?.status || "active"}
                 </span>
-              </p>
+              </div>
             </div>
 
             {/* Account creation date */}
-            <div className="profile-field">
-              <label>Member Since</label>
-              <p className="field-value">
+            <div className="info-group">
+              <label className="info-label">Member Since</label>
+              <p className="info-value">
                 {user?.created_at
                   ? new Date(user.created_at).toLocaleDateString("en-US", {
                       year: "numeric",

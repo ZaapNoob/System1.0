@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { searchPatientsQueue, saveMedicalCertificate, getCertificateDetails, updateMedicalCertificate } from '../api/patients';
+import { searchPatientsQueue, saveMedicalCertificate, getCertificateDetails, updateMedicalCertificate, deleteMedicalCertificate } from '../api/patients';
 
 export default function useMedicalCertificate() {
   const [step, setStep] = useState(1);
@@ -145,7 +145,6 @@ export default function useMedicalCertificate() {
           window.open('/printing/medical', '_blank');
         }
         
-        alert('Medical certificate saved successfully!');
         setStep(3); // Move to success step
       } else {
         alert('Error saving certificate: ' + (response?.message || 'Unknown error'));
@@ -212,6 +211,33 @@ export default function useMedicalCertificate() {
     setEditingCertificateId(null);
   };
 
+  // -----------------------
+  // DELETE CERTIFICATE
+  // -----------------------
+  const handleDeleteCertificate = async (certificateId, onDeleteSuccess) => {
+    if (!window.confirm('Are you sure you want to delete this medical certificate? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await deleteMedicalCertificate(certificateId);
+
+      if (response?.success) {
+        if (onDeleteSuccess) {
+          onDeleteSuccess();
+        }
+        return true;
+      } else {
+        alert(response?.message || 'Failed to delete certificate');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error deleting certificate:', error);
+      alert('Error deleting certificate. Please try again.');
+      return false;
+    }
+  };
+
   return {
     // State
     step,
@@ -236,5 +262,6 @@ export default function useMedicalCertificate() {
     handleEditCertificate,
     handleUpdateCertificate,
     handleCancelEdit,
+    handleDeleteCertificate,
   };
 }

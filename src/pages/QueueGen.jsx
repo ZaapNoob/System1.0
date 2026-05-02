@@ -4,6 +4,7 @@ import { useModal } from "../components/modal/ModalProvider";
 import QueueAddPatientModal from "./modal/QueueAddPatientModal";
 import useGenerateQueue from "../hooks/GenerateQueueNo";
 import usePatientSearchQueue from "../hooks/usePatientSearchQueue";
+import { useWebSocketContext } from "../context/WebSocketContext";
 
 import "./queuegen.css";
 
@@ -19,6 +20,7 @@ export default function QueueGen({ user, allowedPages = [], onNavigate }) {
   };
 
   const { openModal } = useModal();
+  const { send: wsSend } = useWebSocketContext();
   const barangayId = 0;
 
   // 🔥 Patient Search Hook
@@ -96,6 +98,16 @@ export default function QueueGen({ user, allowedPages = [], onNavigate }) {
     setShowDuplicateDialog(false);
     // Call handleGenerateQueue with forceGenerate=true to skip the check
     await handleGenerateQueue(vitals, null, true);
+    // Send WebSocket refresh after queue generation
+    wsSend({ type: 'refresh-queue-now' });
+  };
+
+  // Wrap handleGenerateQueue to send WebSocket refresh after successful queue generation
+  const handleQueueGeneration = async (vitalsData = {}, onAlreadyInQueue) => {
+    await handleGenerateQueue(vitalsData, onAlreadyInQueue);
+    // Send WebSocket refresh to update dashboard
+    console.log('📡 Sending WebSocket refresh after queue generation');
+    wsSend({ type: 'refresh-queue-now' });
   };
 
 
@@ -295,7 +307,7 @@ export default function QueueGen({ user, allowedPages = [], onNavigate }) {
               <div className="queue-buttons">
                 <button
                   className="btn-generate"
-                  onClick={() => handleGenerateQueue(vitals, handleAlreadyInQueue)}
+                  onClick={() => handleQueueGeneration(vitals, handleAlreadyInQueue)}
                 >
                   {isManual ? "Send Queue Number" : "Generate Queue Number"}
                 </button>

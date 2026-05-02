@@ -4,10 +4,18 @@ import API from "../../config/api";
 import { apiFetch } from "../../utils/api";
 import { usePrintOPD } from "../../hooks/ViewPatient/usePrintOPD";
 import { useDeleteConsultationRequest } from "../../hooks/useDeleteConsultationRequest";
-import { DEFAULT_AVATAR } from "../../utils/image";
+import { getGenderBasedAvatar } from "../../utils/image";
 import { usePatientImage } from "../../hooks/image display/usePatientImage";
 import { getFullPatientDetails } from "../../api/patients";
+import { useLabHistory } from "../../hooks/useLabHistory";
+import { useMedicalHistory } from "../../hooks/useMedicalHistory";
 import EditConsultationModal from "./EditConsultationModal";
+import PatientHeader from "./ViewPatientModal/PatientHeader";
+import PatientInfo from "./ViewPatientModal/PatientInfo";
+import FamilyMembers from "./ViewPatientModal/FamilyMembers";
+import ConsultationHistory from "./ViewPatientModal/ConsultationHistory";
+import LabHistory from "./ViewPatientModal/LabHistory";
+import MedicalCertificates from "./ViewPatientModal/MedicalCertificates";
 import "./ViewPatientmodal.css";
 
 export default function ViewPatientModal({ patient, showFamily = true }) {
@@ -16,13 +24,22 @@ export default function ViewPatientModal({ patient, showFamily = true }) {
   const { handleDeleteConsultationRequest, deleting: deletingConsultation } = useDeleteConsultationRequest();
 
   // Get patient image using custom hook
-  const { imageUrl, isLoading: imageLoading } = usePatientImage(patient);
+  const { imageUrl, isLoading: imageLoading, fullPatient: fetchedPatient } = usePatientImage(patient);
+
+  // Determine image source - use gender-based avatar if no profile image
+  const displayImageUrl = (!patient?.profile_image && !fetchedPatient?.profile_image) 
+    ? getGenderBasedAvatar(patient.gender) 
+    : imageUrl;
 
   const [familyMembers, setFamilyMembers] = useState([]);
   const [consultationHistory, setConsultationHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [consultLoading, setConsultLoading] = useState(false);
   const [fullPatient, setFullPatient] = useState(null);
+
+  // Fetch lab and medical histories using custom hooks
+  const { labHistory, loadingHistory: labLoading } = useLabHistory(patient?.id);
+  const { medicalHistory, loadingHistory: medicalLoading } = useMedicalHistory(patient?.id);
 
   // STEP 2 TOGGLE
   const [showMore, setShowMore] = useState(false);
@@ -92,6 +109,14 @@ export default function ViewPatientModal({ patient, showFamily = true }) {
         );
 
         if (res.success) {
+          console.log("📊 Consultation history API response:", res.data);
+          if (res.data && res.data.length > 0) {
+            console.log("📋 First consultation - referral fields:");
+            console.log("  - referral_category:", res.data[0]?.referral_category);
+            console.log("  - receiving_personnel:", res.data[0]?.receiving_personnel);
+            console.log("  - reason_for_referral_2:", res.data[0]?.reason_for_referral_2);
+            console.log("📋 All consultation keys:", Object.keys(res.data[0] || {}));
+          }
           setConsultationHistory(res.data || []);
         }
       } catch (err) {
@@ -106,10 +131,22 @@ export default function ViewPatientModal({ patient, showFamily = true }) {
 
   // ================= EDIT CONSULTATION =================
   const handleEditConsultation = (consult) => {
+    // Get current user from localStorage
+    let currentUser = null;
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        currentUser = JSON.parse(userStr);
+      } catch (e) {
+        console.error("Failed to parse user from localStorage");
+      }
+    }
+    
     openModal(
       <EditConsultationModal
         consultation={consult}
         patient={patient}
+        user={currentUser}
         onUpdate={() => setRefreshTrigger(prev => prev + 1)}
       />
     );
@@ -136,285 +173,45 @@ export default function ViewPatientModal({ patient, showFamily = true }) {
         </h3>
 
         {/* PROFILE HEADER */}
-        <div className="patient-header">
+        <PatientHeader patient={patient} displayImageUrl={displayImageUrl} />
 
-          <div className="patient-avatar">
-            <img
-              src={imageUrl}
-              alt="Patient"
-              onLoad={() => console.log("✅ Image loaded successfully")}
-              onError={(e) => {
-                console.error("❌ Image failed to load from:", e.target.src);
-                e.target.src = DEFAULT_AVATAR;
-              }}
-            />
-          </div>
+        {/* BASIC INFO SECTION */}
+        <PatientInfo patient={patient} fullPatient={fullPatient} />
 
-          <div className="patient-basic">
-            <h3>{patient.name}</h3>
-            <p className="patient-meta">
-              {patient.gender} • {patient.age} years old
-            </p>
-          </div>
-
-        </div>
-
-        {/* ================= BASIC PATIENT INFO ================= */}
-        <div className="view-grid">
-          <div><strong>Name:</strong><p>{(fullPatient || patient).name}</p></div>
-          <div><strong>Gender:</strong><p>{(fullPatient || patient).gender}</p></div>
-          <div><strong>Age:</strong><p>{(fullPatient || patient).age}</p></div>
-          <div><strong>Barangay:</strong><p>{(fullPatient || patient).barangay_name || "—"}</p></div>
-          <div><strong>Status:</strong><p>{(fullPatient || patient).status}</p></div>
-          <div><strong>Patient Code:</strong><p>{(fullPatient || patient).patient_code}</p></div>
-          <div><strong>Facility No:</strong><p>{(fullPatient || patient).facility_household_no}</p></div>
-          <div><strong>Household No:</strong><p>{(fullPatient || patient).household_no}</p></div>
-        </div>
-
-        {/* SHOW MORE BUTTON */}
-        <div className="more-toggle">
-          <button
-            className="expand-btn"
-            onClick={() => setShowMore(!showMore)}
-          >
-            {showMore ? "Hide Additional Information" : "Show Additional Information"}
-          </button>
-        </div>
-
-        {/* ================= STEP 2 EXTENDED INFO ================= */}
-        {showMore && (
-          <div className="extended-info">
-
-            <h4>Additional Patient Information</h4>
-
-            <div className="view-grid">
-
-              <div><strong>Date of Birth:</strong><p>{(fullPatient || patient).date_of_birth || "—"}</p></div>
-              <div><strong>Birthplace:</strong><p>{(fullPatient || patient).birthplace || "—"}</p></div>
-
-              <div><strong>Marital Status:</strong><p>{(fullPatient || patient).marital_status || "—"}</p></div>
-              <div><strong>Blood Type:</strong><p>{(fullPatient || patient).blood_type || "—"}</p></div>
-
-              <div><strong>Contact Number:</strong><p>{(fullPatient || patient).contact_number || "—"}</p></div>
-              <div><strong>Education Level:</strong><p>{(fullPatient || patient).education_level || "—"}</p></div>
-
-              <div><strong>Employment Status:</strong><p>{(fullPatient || patient).employment_status || "—"}</p></div>
-              <div><strong>Mother's Name:</strong><p>{(fullPatient || patient).mother_name || "—"}</p></div>
-
-              <div><strong>Spouse Name:</strong><p>{(fullPatient || patient).spouse_name || "—"}</p></div>
-              <div><strong>PhilHealth Member:</strong><p>{(fullPatient || patient).philhealth_member || "—"}</p></div>
-
-              <div><strong>PhilHealth Number:</strong><p>{(fullPatient || patient).philhealth_no || "—"}</p></div>
-              <div><strong>PhilHealth Category:</strong><p>{(fullPatient || patient).philhealth_category || "—"}</p></div>
-
-              <div><strong>4Ps Member:</strong><p>{(fullPatient || patient).member_4ps || "—"}</p></div>
-              <div><strong>DSWD NHTS:</strong><p>{(fullPatient || patient).dswd_nhts || "—"}</p></div>
-
-              <div><strong>Region:</strong><p>{(fullPatient || patient).region || "—"}</p></div>
-              <div><strong>Province:</strong><p>{(fullPatient || patient).province || "—"}</p></div>
-
-              <div><strong>City / Municipality:</strong><p>{(fullPatient || patient).city_municipality || "—"}</p></div>
-              <div><strong>Street:</strong><p>{(fullPatient || patient).street || "—"}</p></div>
-
-            </div>
-
-          </div>
-        )}
-
-        {/* ================= FAMILY MEMBERS ================= */}
+        {/* FAMILY MEMBERS SECTION */}
         {showFamily && (
-          <>
-            <hr />
-            <h4>Household / Family Members</h4>
-
-            {loading ? (
-              <p>Loading family members...</p>
-            ) : familyMembers.length === 0 ? (
-              <p className="muted">No other family members found.</p>
-            ) : (
-              <table className="family-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Relation</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {familyMembers.map((m) => (
-                    <tr key={m.id}>
-                      <td>
-                        {`${m.first_name} ${m.middle_name ?? ""} ${m.last_name} ${m.suffix ?? ""}`}
-                      </td>
-                      <td>{m.family_member_type || "—"}</td>
-                      <td>{m.age}</td>
-                      <td>{m.gender}</td>
-                      <td>
-                        <span className={`status-badge status-${m.status}`}>
-                          {m.status}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          className="view-btn"
-                          onClick={() =>
-                            openModal(
-                              <ViewPatientModal
-                                patient={{
-                                  ...m,
-                                  name: `${m.first_name} ${m.middle_name ?? ""} ${m.last_name} ${m.suffix ?? ""}`.trim(),
-                                }}
-                                showFamily={false}
-                              />
-                            )
-                          }
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-
-              </table>
-            )}
-          </>
+          <FamilyMembers 
+            patient={patient}
+            familyMembers={familyMembers}
+            loading={loading}
+          />
         )}
 
       </div>
 
-      {/* RIGHT SIDE CONSULTATION HISTORY */}
+      {/* RIGHT SIDE - HISTORY RECORDS */}
       <div className="consultation-right">
+        <ConsultationHistory
+          patient={patient}
+          consultationHistory={consultationHistory}
+          consultLoading={consultLoading}
+          onDeleteConsult={handleDeleteConsult}
+          onEditConsult={handleEditConsultation}
+          onPrintOPD={handlePrintOPD}
+          deletingConsultation={deletingConsultation}
+        />
 
-        <h4>Consultation History</h4>
+        <LabHistory
+          patient={patient}
+          labHistory={labHistory}
+          labLoading={labLoading}
+        />
 
-        {consultLoading ? (
-          <p>Loading consultation history...</p>
-        ) : consultationHistory.length === 0 ? (
-          <p className="muted">No consultation history found.</p>
-        ) : (
-          <div className="consult-history">
-            {consultationHistory.map((consult) => (
-              <div key={consult.consultation_id} className="consult-item">
-                <div className="consult-date">
-                  {consult.visit_date || "—"}
-                </div>
-                <div className="consult-body">
-                  <p>
-                    <strong>Doctor:</strong> {consult.doctor_name || "—"}
-                  </p>
-                  {consult.queue_number && (
-                    <p>
-                      <strong>Queue #:</strong> {consult.queue_number}
-                    </p>
-                  )}
-                  {consult.purpose_visit && (
-                    <p>
-                      <strong>Purpose:</strong> {consult.purpose_visit}
-                    </p>
-                  )}
-                  {consult.nature_visit && (
-                    <p>
-                      <strong>Nature:</strong> {consult.nature_visit}
-                    </p>
-                  )}
-                  {consult.chief_complaint && (
-                    <p>
-                      <strong>Chief Complaint:</strong> {consult.chief_complaint}
-                    </p>
-                  )}
-                  {consult.diagnosis && (
-                    <p>
-                      <strong>Diagnosis:</strong> {consult.diagnosis}
-                    </p>
-                  )}
-                  {consult.treatment && (
-                    <p>
-                      <strong>Treatment:</strong> {consult.treatment}
-                    </p>
-                  )}
-                  {(consult.systolic_bp || consult.diastolic_bp) && (
-                    <p>
-                      <strong>BP:</strong> {consult.systolic_bp || "—"}/{consult.diastolic_bp || "—"} mmHg
-                    </p>
-                  )}
-                  {consult.temperature && (
-                    <p>
-                      <strong>Temp:</strong> {consult.temperature}°C
-                    </p>
-                  )}
-                  {consult.pulse_rate && (
-                    <p>
-                      <strong>HR:</strong> {consult.pulse_rate} bpm
-                    </p>
-                  )}
-                  <button
-                    onClick={() => handlePrintOPD(patient, consult)}
-                    className="print-btn"
-                    style={{
-                      marginTop: "10px",
-                      marginRight: "8px",
-                      padding: "6px 12px",
-                      backgroundColor: "#3498db",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "12px",
-                      fontWeight: "600"
-                    }}
-                  >
-                    Print OPD
-                  </button>
-
-                  <button
-                    onClick={() => handleEditConsultation(consult)}
-                    className="update-btn"
-                    style={{
-                      marginTop: "10px",
-                      padding: "6px 12px",
-                      backgroundColor: "#f39c12",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "12px",
-                      fontWeight: "600"
-                    }}
-                  >
-                    Update
-                  </button>
-
-                  <button
-                    onClick={() => handleDeleteConsult(consult.consultation_id)}
-                    className="delete-btn"
-                    disabled={deletingConsultation}
-                    style={{
-                      marginTop: "10px",
-                      marginLeft: "8px",
-                      padding: "6px 12px",
-                      backgroundColor: "#e74c3c",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: deletingConsultation ? "not-allowed" : "pointer",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      opacity: deletingConsultation ? 0.6 : 1
-                    }}
-                  >
-                    {deletingConsultation ? "Deleting..." : "Delete"}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
+        <MedicalCertificates
+          patient={patient}
+          medicalHistory={medicalHistory}
+          medicalLoading={medicalLoading}
+        />
       </div>
 
       {/* ACTIONS */}

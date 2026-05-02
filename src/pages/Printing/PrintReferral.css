@@ -1,0 +1,461 @@
+/* ===============================================
+   PRINT REFERRAL FORM STYLES
+   =============================================== */
+
+@page {
+  size: auto;
+  margin: 0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f5f5;
+}
+
+/* Print Buttons */
+.print-buttons {
+  display: flex;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  background-color: #2c3e50;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #27ae60;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: #229954;
+}
+
+.btn-secondary {
+  background-color: #e74c3c;
+}
+
+.btn-secondary:hover {
+  background-color: #c0392b;
+}
+
+/* Signature Editor */
+.signature-editor {
+  background-color: white;
+  padding: 1rem;
+  margin: 0.8rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 350px;
+}
+
+.signature-editor h3 {
+  margin-bottom: 0.8rem;
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.sig-form-group {
+  margin-bottom: 0.8rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.sig-form-group label {
+  font-weight: 600;
+  min-width: 110px;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.sig-input {
+  flex: 1;
+  padding: 0.4rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* Main Form Container */
+.referral-form {
+  width: 8.5in;
+  height: auto;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  padding: 0.4in;
+  font-size: 11px;
+  line-height: 1.3;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.ref-header {
+  margin-bottom: 0.1in;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ref-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.2in;
+}
+
+.ref-seal-left,
+.ref-seal-right {
+  flex: 0 0 0.95in;
+  text-align: center;
+}
+
+.ref-logo {
+  width: 0.95in;
+  height: 0.95in;
+  object-fit: contain;
+}
+
+.ref-header-center {
+  flex: 1;
+  text-align: center;
+}
+
+.ref-header-center h1 {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 0.02in;
+  letter-spacing: 0.5px;
+}
+
+.ref-header-center h2 {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.ref-header-center h3 {
+  font-size: 11px;
+  font-weight: normal;
+  margin: 0;
+}
+
+.ref-header-divider {
+  border: 1.5px solid #000;
+  margin: 0.08in 0;
+}
+
+/* Body */
+.ref-body {
+  font-size: 10px;
+  line-height: 1.2;
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section */
+.ref-section {
+  margin-bottom: 0.1in;
+  border: 1px solid #000;
+  padding: 0.06in;
+  page-break-inside: avoid;
+}
+
+/* Row Layout */
+.ref-row {
+  display: grid;
+  grid-template-columns: 1.8in 1fr;
+  gap: 0.08in;
+  padding: 0.06in 0;
+  border-bottom: 1px solid #ccc;
+  align-items: flex-start;
+  min-height: auto;
+}
+
+.ref-row:last-child {
+  border-bottom: none;
+}
+
+.ref-row-inline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.08in;
+  padding: 0.06in 0;
+}
+
+.ref-col-half {
+  padding: 0.05in;
+  border-bottom: 1px solid #ccc;
+}
+
+.ref-col-half:nth-child(2) {
+  border-left: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.ref-col-third {
+  flex: 1;
+  padding: 0.05in;
+}
+
+/* Labels and Values */
+.ref-label-bold {
+  font-weight: bold;
+  padding: 0.05in 0.1in;
+  background-color: #f0f0f0;
+  text-align: left;
+  font-size: 10px;
+}
+
+.ref-value,
+.ref-value-bold {
+  padding: 0.05in 0.1in;
+  text-align: left;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+  font-size: 11px;
+}
+
+.ref-value-bold {
+  font-weight: bold;
+}
+
+.ref-value-small {
+  font-size: 10px;
+  padding: 0.05in 0.1in;
+  text-align: left;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* Checkboxes */
+.ref-checkboxes {
+  display: flex;
+  gap: 0.15in;
+  padding: 0.06in;
+}
+
+.ref-checkbox {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 10px;
+}
+
+/* Checklist */
+.ref-checklist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.05in;
+  padding: 0.06in;
+}
+
+.ref-check-item {
+  font-family: monospace;
+  font-size: 9px;
+  padding: 0.03in 0;
+}
+
+/* Divider */
+.ref-divider {
+  border: 0.5px solid #000;
+  margin: 0.08in 0;
+}
+
+/* Footer - Signature */
+.ref-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.2in;
+  margin-top: 0.15in;
+  padding: 0 0.06in;
+  flex-shrink: 0;
+}
+
+.ref-signature-section {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.ref-signature-line {
+  border-top: 1px solid #000;
+  height: 0.35in;
+  margin-bottom: 0.03in;
+}
+
+.ref-signature-date {
+  border-top: 1px solid #000;
+  height: 0.35in;
+  margin-bottom: 0.03in;
+  font-family: monospace;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.ref-signature-label {
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.ref-signature-detail {
+  font-size: 8px;
+  margin-top: 0.05in;
+  font-weight: normal;
+}
+
+/* Print Styles */
+@media print {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    margin: 0;
+    padding: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .referral-form {
+    box-shadow: none;
+    width: 8.5in;
+    height: auto;
+    margin: 0;
+    padding: 0.4in;
+    page-break-after: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .print-buttons {
+    display: none;
+  }
+
+  .signature-editor {
+    display: none;
+  }
+
+  /* Ensure borders print */
+  .ref-section {
+    border: 1px solid #000;
+  }
+
+  .ref-divider {
+    border: 0.5px solid #000 !important;
+  }
+
+  .ref-header-divider {
+    border: 1.5px solid #000 !important;
+  }
+
+  .ref-row {
+    break-inside: avoid;
+  }
+
+  .ref-header {
+    margin-bottom: 0.1in;
+  }
+
+  .ref-body {
+    font-size: 11px;
+  }
+
+  .ref-section {
+    margin-bottom: 0.1in;
+    padding: 0.06in;
+  }
+
+  .ref-footer {
+    margin-top: 0.15in;
+  }
+}
+
+/* Screen Styles */
+@media screen {
+  body {
+    padding: 0.8rem;
+    background-color: #f0f0f0;
+  }
+
+  .referral-form {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Responsive Layout Adjustments */
+@media (max-width: 900px) {
+  .referral-form {
+    max-width: 100%;
+    margin: 0.3rem;
+    padding: 0.3rem;
+    height: auto;
+  }
+
+  .ref-header-content {
+    gap: 0.15in;
+  }
+
+  .ref-seal-left,
+  .ref-seal-right {
+    flex: 0 0 0.65in;
+  }
+
+  .ref-logo {
+    width: 0.65in;
+    height: 0.65in;
+  }
+
+  .ref-header-center h1 {
+    font-size: 12px;
+  }
+
+  .ref-header-center h2 {
+    font-size: 11px;
+  }
+
+  .ref-header-center h3 {
+    font-size: 9px;
+  }
+
+  .ref-row {
+    grid-template-columns: 1.5in 1fr;
+    font-size: 9px;
+  }
+
+  .ref-checklist {
+    grid-template-columns: 1fr;
+  }
+}

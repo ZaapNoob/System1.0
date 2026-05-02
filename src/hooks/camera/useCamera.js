@@ -75,24 +75,28 @@ export default function useCamera(newPatient, handleSavePatient) {
       if (capturedImageBlob) {
         try {
           console.log("📤 Auto-uploading captured image for patient:", patientId);
+          console.log("   Blob details:", {
+            type: capturedImageBlob.type,
+            size: capturedImageBlob.size,
+            isBlob: capturedImageBlob instanceof Blob
+          });
+          
           const res = await uploadPatientImage({
             patient_id: patientId,
             file: capturedImageBlob
           });
 
-        if (res.success && res.imageUrl) {
-  console.log("✅ Image uploaded automatically:", res.imageUrl);
-
-  setPatientImage(null); // clear preview
-  setCapturedImageBlob(null);
-  setShowCamera(false);
-
-  alert("Patient created and photo saved successfully!");
-} else {
-            console.error("❌ Auto-upload failed:", res.error);
+          if (res.success && res.imageUrl) {
+            console.log("✅ Image uploaded automatically:", res.imageUrl);
+            setPatientImage(null); // clear preview
+            setCapturedImageBlob(null);
+            setShowCamera(false);
+            alert("Patient created and photo saved successfully!");
+          } else {
+            console.error("❌ Auto-upload failed:", res);
             // Ask user if they want to retry
             const retry = window.confirm(
-              "Photo upload failed. Would you like to try again?"
+              `Photo upload failed. Would you like to try again?\n\nError: ${res.error || 'Unknown error'}`
             );
             if (retry) {
               // Clear states before reopening camera
@@ -103,7 +107,16 @@ export default function useCamera(newPatient, handleSavePatient) {
           }
         } catch (err) {
           console.error("❌ Auto-upload error:", err);
-          alert("Photo upload failed: " + err.message);
+          const retry = window.confirm(
+            `Photo upload failed: ${err.message}\n\nWould you like to try again?`
+          );
+          if (retry) {
+            setShowCamera(true);
+          } else {
+            setPatientImage(null);
+            setCapturedImageBlob(null);
+            setShowCamera(false);
+          }
         }
       } else {
         // Fix #1: No image captured - clear preview and show confirmation

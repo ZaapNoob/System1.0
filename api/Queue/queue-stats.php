@@ -11,6 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 require_once '../../config/db.php';
 
+// Set timezone to Philippines (UTC+8)
+date_default_timezone_set('Asia/Manila');
+
 // Get user_id from query params
 $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
 
@@ -37,10 +40,14 @@ try {
     // 3️⃣ TODAY COMPLETED (Done patients administered by this user today)
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as count
-        FROM patient_queue
-        WHERE administered_by = :user_id
-          AND status = 'done'
-          AND DATE(created_at) = :today
+        FROM patient_queue pq
+        LEFT JOIN consultations c ON pq.id = c.queue_id
+        WHERE pq.administered_by = :user_id
+          AND pq.status = 'done'
+          AND (
+            (c.id IS NOT NULL AND DATE(c.created_at) = :today)
+            OR (c.id IS NULL AND DATE(pq.created_at) = :today)
+          )
     ");
     $stmt->execute(['user_id' => $userId, 'today' => $today]);
     $todayCompleted = $stmt->fetch(PDO::FETCH_ASSOC)['count'];

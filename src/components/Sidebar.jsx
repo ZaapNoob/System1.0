@@ -1,5 +1,5 @@
 import React from "react";
-import "./Sidebar.css";
+import "./sidebar.css";
 import MHO from "../assets/MHO.jpg";
 
 const Sidebar = ({ allowedPages = [], currentPage, onNavigate }) => {
@@ -41,6 +41,17 @@ const Sidebar = ({ allowedPages = [], currentPage, onNavigate }) => {
               </button>
             </li>
           )}
+
+
+
+{allowedPages.includes("reassign") && (
+            <li className={currentPage === "reassign" ? "active" : ""}>
+              <button onClick={() => onNavigate("reassign")}>
+                🔄 Reassign
+              </button>
+            </li>
+          )}
+
 
           {allowedPages.includes("medical") && (
             <li className={currentPage === "medical" ? "active" : ""}>

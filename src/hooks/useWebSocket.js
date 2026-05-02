@@ -9,10 +9,11 @@ export default function useWebSocket() {
   const [encoderQueue, setEncoderQueue] = useState([]);
 
   useEffect(() => {
-    // Connect to WebSocket via Apache on the standard port (443)
-    // Apache proxies /ws to ws://localhost:8080
+    // Connect to WebSocket through Apache proxy
+    // Apache terminates SSL (443) and forwards to plain WS backend (8080)
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.hostname}/ws`;
+    const hostname = window.location.hostname || 'localhost';
+    const wsUrl = `${protocol}//${hostname}/ws`;
 
     console.log(`📡 Connecting to WebSocket: ${wsUrl}`);
     const ws = new WebSocket(wsUrl);
@@ -20,6 +21,14 @@ export default function useWebSocket() {
     ws.onopen = () => {
       setConnected(true);
       console.log("✅ WebSocket connected");
+    };
+
+    ws.onerror = (error) => {
+      console.error("❌ WebSocket error:", error);
+      console.error("Error details:", {
+        readyState: ws.readyState,
+        url: ws.url
+      });
     };
 
     ws.onmessage = (event) => {

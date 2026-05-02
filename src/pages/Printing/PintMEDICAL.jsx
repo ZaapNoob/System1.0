@@ -95,21 +95,21 @@ export default function MedicalCertificate({ patient, mc, onClose }) {
 <img src={LGULogo} alt="LGU Logo" className="seal seal-left1" />
 
                     <div className="header-center">
-                      <div className="hospital-name">Rural Health Unit - Gubat</div>
-                      <div className="doh-line">MUNICIPAL HEALTH OFFICE</div>
+                      <div className="hospital-name" style={{ fontSize: "18px", fontWeight: "bold" }}>Rural Health Unit - Gubat</div>
+                      <div className="doh-line" style={{ fontSize: "16px", fontWeight: "bold" }}>MUNICIPAL HEALTH OFFICE</div>
 
-                      <div className="license-line" style={{ fontStyle: "italic" }}>
+                      <div className="license-line" style={{ fontStyle: "italic", fontSize: "13px" }}>
                         Municipal Compound, Manook St, Pinontingan, Gubat, Sorsogon
                       </div>
 
-                      <div className="license-line" style={{ fontStyle: "italic" }}>
+                      <div className="license-line" style={{ fontStyle: "italic", fontSize: "13px" }}>
                         <span style={{ color: "#007bff", textDecoration: "underline" }}>
                           health@gubat.gov.ph
                         </span>
                         ; CP Nos: 09496432073; 09455087495
                       </div>
 
-                      <div className="license-line" style={{ fontStyle: "italic" }}>
+                      <div className="license-line" style={{ fontStyle: "italic", fontSize: "13px" }}>
                         LTO No.: 05-014-2527-PCF-1; PCF - P05032656; MCP - M05003089; TB-DOTS - T05005774
                       </div>
                     </div>
@@ -148,7 +148,11 @@ export default function MedicalCertificate({ patient, mc, onClose }) {
                   <div style={{ marginBottom: "18px" }}>
                     <div style={{ fontWeight: "bold", marginBottom: "6px" }}>Impression:</div>
                     <div style={{ marginLeft: "80px" }}>
-                      ➤ {mcData.impression}
+                      {mcData.impression.split('\n').filter(line => line.trim()).map((line, index) => (
+                        <div key={index} style={{ marginBottom: "6px" }}>
+                          ➤ {line.trim()}
+                        </div>
+                      ))}
                     </div>
                   </div>
 
@@ -156,7 +160,11 @@ export default function MedicalCertificate({ patient, mc, onClose }) {
                   <div style={{ marginBottom: "28px" }}>
                     <div style={{ fontWeight: "bold", marginBottom: "6px" }}>Remark:</div>
                     <div style={{ marginLeft: "80px" }}>
-                      ➤ {mcData.remarks}
+                      {mcData.remarks.split('\n').filter(line => line.trim()).map((line, index) => (
+                        <div key={index} style={{ marginBottom: "6px" }}>
+                          ➤ {line.trim()}
+                        </div>
+                      ))}
                     </div>
                   </div>
 

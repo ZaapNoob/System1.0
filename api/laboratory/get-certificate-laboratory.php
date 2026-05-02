@@ -43,6 +43,8 @@ try {
                 lr.diagnosis,
                 lr.xray_findings,
                 lr.utz_findings,
+                lr.ct_scan_findings,
+                lr.other_findings,
                 lr.created_at,
                 p.first_name,
                 p.middle_name,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { searchPatientsForLab, saveLabRequest, updateLabRequest } from "../api/laboratory";
+import { searchPatientsForLab, saveLabRequest, updateLabRequest, deleteLabRequest } from "../api/laboratory";
 
 /**
  * Custom hook for managing lab request form
@@ -145,6 +145,8 @@ export default function useLabRequest() {
       diagnosis: historyItem.diagnosis,
       xray_findings: historyItem.xray_findings,
       utz_findings: historyItem.utz_findings,
+      ct_scan_findings: historyItem.ct_scan_findings,
+      other_findings: historyItem.other_findings,
       tests: historyItem.tests || []
     };
   };
@@ -200,6 +202,33 @@ export default function useLabRequest() {
     setPrintPreviewId(null);
   };
 
+  // -----------------------
+  // DELETE LAB REQUEST
+  // -----------------------
+  const handleDeleteLabRequest = async (requestId, onDeleteSuccess) => {
+    if (!window.confirm('Are you sure you want to delete this laboratory request? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const response = await deleteLabRequest(requestId);
+
+      if (response?.success) {
+        if (onDeleteSuccess) {
+          onDeleteSuccess();
+        }
+        return true;
+      } else {
+        alert(response?.message || 'Failed to delete laboratory request');
+        return false;
+      }
+    } catch (error) {
+      console.error('Error deleting lab request:', error);
+      alert('Error deleting laboratory request. Please try again.');
+      return false;
+    }
+  };
+
   const clearPrintPreviewId = () => {
     setPrintPreviewId(null);
   };
@@ -229,6 +258,7 @@ export default function useLabRequest() {
     handleEditLabRequest,
     handleUpdateLabRequest,
     handleCancelEditLab,
+    handleDeleteLabRequest,
     clearPrintPreviewId,
     clearUpdateSuccess,
   };

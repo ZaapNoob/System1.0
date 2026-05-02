@@ -28,6 +28,9 @@ export default function BarGraph({ data = [], reportType = "consultations" }) {
       ? Math.max(...chartData.map((item) => item.value))
       : 1;
 
+  // Calculate total
+  const total = chartData.reduce((sum, item) => sum + item.value, 0);
+
   // Dynamic Y-axis
   const steps = 5;
   const yAxis = [];
@@ -90,6 +93,13 @@ export default function BarGraph({ data = [], reportType = "consultations" }) {
           )}
         </div>
       </div>
+
+      {/* TOTAL SUMMARY */}
+      {chartData.length > 0 && (
+        <div className="bargraph-total">
+          <strong>Total:</strong> <span className="total-value">{total}</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -360,6 +360,9 @@ try {
             $params[':patientStatus'] = $patientStatus;
         }
 
+        // Exclude deleted patients
+        $conditions[] = "p.deleted_at IS NULL";
+
         switch ($ageGroup) {
             case "0-5":
                 $conditions[] = "TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) BETWEEN 0 AND 5";
@@ -381,7 +384,7 @@ try {
         $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
-                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                CONCAT_WS(' ', p.first_name, p.middle_name, p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,
@@ -472,7 +475,7 @@ try {
         $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
-                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                CONCAT_WS(' ', p.first_name, p.middle_name, p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,
@@ -556,7 +559,7 @@ try {
         $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
-                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                CONCAT_WS(' ', p.first_name, p.middle_name, p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,
@@ -636,7 +639,7 @@ try {
         $sql = "
             SELECT DISTINCT
                 p.id AS patient_id,
-                CONCAT(p.first_name,' ',p.middle_name,' ',p.last_name) AS patient_name,
+                CONCAT_WS(' ', p.first_name, p.middle_name, p.last_name) AS patient_name,
                 p.gender,
                 TIMESTAMPDIFF(YEAR,p.date_of_birth,CURDATE()) AS age,
                 p.status,

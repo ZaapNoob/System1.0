@@ -29,6 +29,8 @@ export default function PatientDetailsModal({ barangayId, barangayName, reportTy
           barangay: barangayId
         };
 
+        console.log("👥 PatientDetailsModal - fetching with filters:", mergedFilters);
+
         let data;
 
         // Choose the correct API function based on report type
@@ -42,6 +44,10 @@ export default function PatientDetailsModal({ barangayId, barangayName, reportTy
           // consultations
           data = await fetchPatientsWithConsultations(mergedFilters);
         }
+
+        console.log("👥 PatientDetailsModal - received data:", data);
+        console.log("👥 PatientDetailsModal - first patient object keys:", data?.[0] ? Object.keys(data[0]) : 'no data');
+        console.log("👥 PatientDetailsModal - first patient patient_name value:", data?.[0]?.patient_name);
 
         setPatients(data || []);
       } catch (err) {

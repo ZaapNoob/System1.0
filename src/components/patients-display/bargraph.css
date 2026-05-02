@@ -124,3 +124,24 @@
   color:#777;
   font-size:14px;
 }
+/* SIMPLE TOTAL SUMMARY */
+
+.bargraph-total {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 16px;
+  color: #555;
+  padding-right: 15px;
+}
+
+.bargraph-total strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.bargraph-total .total-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c7be5; /* Keeps your theme blue for the number */
+  margin-left: 6px;
+}

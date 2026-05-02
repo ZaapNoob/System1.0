@@ -8,16 +8,26 @@ import API from "../config/api";
 export const searchPatientsForLab = async (query) => {
   try {
     const response = await fetch(
-      `${API}/patients/search-patients-Global.php?barangay_id=0&search=${encodeURIComponent(query)}`
+      `${API}/patients/search-patients-GLobal.php?barangay_id=0&search=${encodeURIComponent(query)}`
     );
     const text = await response.text();
+    
+    // Log raw response for debugging
+    console.log("Raw API response:", text);
     
     let data;
     try {
       data = JSON.parse(text);
     } catch (parseError) {
-      console.error("Failed to parse response as JSON:", text);
-      throw new Error(`Invalid JSON response`);
+      console.error("Failed to parse response as JSON. Raw response:", text);
+      console.error("Response status:", response.status);
+      console.error("Response headers:", response.headers);
+      
+      // Provide more helpful error message
+      if (!response.ok) {
+        throw new Error(`API Error (${response.status}): The server returned an invalid response. Check browser console for details.`);
+      }
+      throw new Error(`Invalid JSON response from server. Check browser console for the raw response.`);
     }
 
     if (!response.ok || !data.success) {
@@ -109,6 +119,8 @@ export const saveLabRequest = async (requestData, selectedTests, doctorId) => {
       diagnosis: requestData.diagnosis,
       xray_findings: requestData.xray_findings || null,
       utz_findings: requestData.utz_findings || null,
+      ct_scan_findings: requestData.ct_scan_findings || null,
+      other_findings: requestData.other_findings || null,
       tests: selectedTests
     };
 
@@ -157,6 +169,8 @@ export const updateLabRequest = async (requestData, selectedTests) => {
       diagnosis: requestData.diagnosis,
       xray_findings: requestData.xray_findings || null,
       utz_findings: requestData.utz_findings || null,
+      ct_scan_findings: requestData.ct_scan_findings || null,
+      other_findings: requestData.other_findings || null,
       tests: selectedTests
     };
 
@@ -188,6 +202,48 @@ export const updateLabRequest = async (requestData, selectedTests) => {
     return data.data;
   } catch (error) {
     console.error("Error updating lab request:", error);
+    throw error;
+  }
+};
+
+
+
+
+/**
+ * Delete a laboratory request
+ * @param {number} requestId - Request ID to delete
+ * @returns {Promise} Deletion response
+ */
+export const deleteLabRequest = async (requestId) => {
+  try {
+    const response = await fetch(
+      `${API}/laboratory/delete-certificate.php`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ request_id: requestId })
+      }
+    );
+
+    const text = await response.text();
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseError) {
+      console.error("Failed to parse response as JSON:", text);
+      throw new Error(`Invalid JSON response`);
+    }
+
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || `Failed to delete lab request`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error deleting lab request:", error);
     throw error;
   }
 };

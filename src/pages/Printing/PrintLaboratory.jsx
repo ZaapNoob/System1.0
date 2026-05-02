@@ -184,11 +184,13 @@ const PrintLaboratory = () => {
             )}
 
             <br />
-            <strong>Diagnosis:</strong>{" "}
-            {labRequestData?.diagnosis || "N/A"}
+            <strong style={{ fontSize: "14px" }}>Diagnosis:</strong>{" "}
+            <span style={{ fontSize: "14px" }}>
+              {labRequestData?.diagnosis || "N/A"}
+            </span>
           </div>
 
-          {/* CARDIOLOGY + BACTERIOLOGY */}
+          {/* CARDIOLOGY + BACTERIOLOGY + URINALYSIS */}
           <div className="lab-col">
             <strong>Cardiology:</strong>
             {renderCheck("Cardiology", "2D Echo")}
@@ -204,19 +206,52 @@ const PrintLaboratory = () => {
             <strong>Bacteriology:</strong>
             {renderCheck("Bacteriology", "Gen Expert")}
             {renderCheck("Bacteriology", "AFB Stain")}
+            {renderCheck("Bacteriology", "Covid 19 Test")}
             {renderCheck("Bacteriology", "Others")}
             {getOtherValue("Bacteriology") && (
               <div style={{ marginLeft: "20px", fontSize: "11px" }}>
                 {getOtherValue("Bacteriology")}
               </div>
             )}
+
+            <br />
+            {(() => {
+              const fecalysisChecked = labRequestData?.tests?.some(
+                (t) => t.category === "Urinalysis & Others" && t.test_name === "Fecalysis"
+              );
+              const urinalysisChecked = labRequestData?.tests?.some(
+                (t) => t.category === "Urinalysis & Others" && t.test_name === "Urinalysis"
+              );
+              
+              if (!fecalysisChecked && !urinalysisChecked) return null;
+              
+              const items = [];
+              if (fecalysisChecked) items.push("Fecalysis");
+              if (urinalysisChecked) items.push("Urinalysis");
+              
+              return (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "4px" }}>
+                  {items.map((test) => (
+                    <div key={test}>
+                      <strong style={{ fontSize: "11px" }}>☑ {test}</strong>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
 
-          {/* HEMATOLOGY */}
+          {/* HEMATOLOGY + IMAGING */}
           <div className="lab-col">
             <strong>Hematology:</strong>
-            {renderCheck("Hematology", "CBC")}
-            {renderCheck("Hematology", "PC")}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginTop: "4px" }}>
+              <div>
+                {renderCheck("Hematology", "CBC")}
+              </div>
+              <div>
+                {renderCheck("Hematology", "PC")}
+              </div>
+            </div>
             {renderCheck("Hematology", "Blood Typing")}
             {renderCheck("Hematology", "Others")}
             {getOtherValue("Hematology") && (
@@ -226,24 +261,26 @@ const PrintLaboratory = () => {
             )}
 
             <br />
-            <strong>Urinalysis & Others:</strong>
-            {renderCheck("Urinalysis & Others", "Fecalysis")}
-            {renderCheck("Urinalysis & Others", "Urinalysis")}
-            {renderCheck("Urinalysis & Others", "Covid 19 Test")}
-            {renderCheck("Urinalysis & Others", "Others")}
-            {getOtherValue("Urinalysis & Others") && (
-              <div style={{ marginLeft: "20px", fontSize: "11px" }}>
-                {getOtherValue("Urinalysis & Others")}
-              </div>
-            )}
+            <strong>Imaging:</strong>
+            <div>
+              {labRequestData?.xray_findings ? "☑" : "☐"} <strong style={{ fontSize: "11px" }}>X-Ray:</strong>{" "}
+              {labRequestData?.xray_findings || ""}
+            </div>
 
-            <br />
-            <strong>X-Ray:</strong>{" "}
-            {labRequestData?.xray_findings || ""}
+            <div>
+              {labRequestData?.utz_findings ? "☑" : "☐"} <strong style={{ fontSize: "11px" }}>Ultrasound (UTZ):</strong>{" "}
+              {labRequestData?.utz_findings || ""}
+            </div>
 
-            <br />
-            <strong>Ultrasound (UTZ):</strong>{" "}
-            {labRequestData?.utz_findings || ""}
+            <div>
+              {labRequestData?.ct_scan_findings ? "☑" : "☐"} <strong style={{ fontSize: "11px" }}>CT Scan:</strong>{" "}
+              {labRequestData?.ct_scan_findings || ""}
+            </div>
+
+            <div>
+              {labRequestData?.other_findings ? "☑" : "☐"} <strong style={{ fontSize: "11px" }}>Others:</strong>{" "}
+              {labRequestData?.other_findings || ""}
+            </div>
           </div>
         </div>
       </div>
@@ -280,6 +317,7 @@ const PrintLaboratory = () => {
         <button
           className="btn btn-secondary"
           onClick={onClose}
+          type="button"
         >
           ✕ Close
         </button>
@@ -287,6 +325,7 @@ const PrintLaboratory = () => {
         <button
           className="btn"
           onClick={() => window.print()}
+          type="button"
         >
           🖨️ Print
         </button>

@@ -49,6 +49,9 @@ FROM (
         dpq.created_at,
         p.first_name,
         p.last_name,
+        p.date_of_birth,
+        p.gender,
+        p.age,
         u.name AS doctor_name,
         (SELECT COUNT(*) 
          FROM consultations c 

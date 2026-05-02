@@ -11,7 +11,7 @@ import API from "../config/api";
 // Import Sidebar component
 import Sidebar from "../components/Sidebar";
 
-// Import PatientsTable component
+// Import Patie ntsTable component
 import PatientsTable from "../components/patients-display/PatientsTable";
 
 // Import custom hook for fetching/filtering patients
@@ -20,6 +20,8 @@ import usePatients from "../hooks/usePatients";
 // Import custom hook for adding patients
 import useAddPatient from "../hooks/useAddPatient";
 
+import useLogout from "../hooks/useLogout";
+ 
 // Import API fetch utility
 import { apiFetch } from "../utils/api";
 
@@ -62,7 +64,6 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
   const { openModal } = useModal();
 
   
-
   // =======================
   // Patients Add Form (hook)
   // =======================
@@ -95,34 +96,22 @@ export default function Patient({ user, onNavigateToProfile, allowedPages = [], 
   // =======================
   // LOGOUT
   // =======================
-  const handleLogout = async (e) => {
-    e.stopPropagation();
-    const token = localStorage.getItem("token");
+  const { handleLogout } = useLogout();
 
-    try {
-      await fetch(`${API}/auth/logout.php`, {
-        method: "POST",
-        headers: { Authorization: token }
-      });
-    } catch (err) {
-      console.error("Logout error:", err);
-    } finally {
-      localStorage.removeItem("token");
-      window.location.reload();
-    }
-  };
-const {
-  showCamera,
-  patientImage,
-  currentPatientId,
-  handleOpenCamera,
-  handleCloseCamera,
-  handleImageUpload,
-  handleCaptureImage,
-  handleSavePatientWithCamera,
-  clearPatientImage
-} = useCamera(newPatient, handleSavePatient);
-  
+  // =======================
+  // CAMERA HOOK
+  // =======================
+  const {
+    showCamera,
+    patientImage,
+    currentPatientId,
+    handleOpenCamera,
+    handleCloseCamera,
+    handleImageUpload,
+    handleCaptureImage,
+    handleSavePatientWithCamera,
+    clearPatientImage,
+  } = useCamera(newPatient, handleSavePatient);
 
   // =======================
   // Patients Listing (hook)

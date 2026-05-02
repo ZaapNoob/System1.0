@@ -13,8 +13,16 @@ export const useEncoderQueue = (initialDate = null) => {
   const [encoderFilterDate, setEncoderFilterDate] = useState(() => {
     // Initialize with provided date or today's date in YYYY-MM-DD format
     if (initialDate) return initialDate;
+    
+    // Get LOCAL date (not UTC) to avoid timezone offset issues
     const today = new Date();
-    return today.toISOString().split('T')[0];
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const localDate = `${year}-${month}-${day}`;
+    
+    console.log('🧾 [ENCODER-INIT] Initialized date:', localDate, '(System date:', today.toDateString(), ')');
+    return localDate;
   });
 
   const [encoderQueue, setEncoderQueue] = useState([]);
@@ -28,21 +36,32 @@ export const useEncoderQueue = (initialDate = null) => {
 
       try {
         const url = `${API}/consultation/encoder/get-encoder-queue.php?queue_date=${encoderFilterDate}`;
+        console.log('🧾 [ENCODER-FETCH] Requesting URL:', url);
         const response = await fetch(url, {
           method: "GET",
           credentials: "include"
         });
 
         const data = await response.json();
+        console.log('🧾 [ENCODER-RESPONSE] API Response:', data);
 
         if (data.success && Array.isArray(data.data)) {
+          console.log('🧾 [ENCODER-SUCCESS] Fetched', data.data.length, 'patients for date:', encoderFilterDate);
+          console.log('🧾 [ENCODER-DATA] Patient details:', data.data.map(p => ({
+            name: p.patient_name,
+            queue_num: p.queue_number,
+            status: p.status,
+            has_consultation: p.has_consultation,
+            queue_date: p.queue_date
+          })));
           setEncoderQueue(data.data);
         } else {
+          console.warn('🧾 [ENCODER-ERROR] No data or success=false:', data.message);
           setEncoderQueue([]);
           setError(data.message || "Failed to fetch encoder queue");
         }
       } catch (err) {
-        console.error("Error fetching encoder queue:", err);
+        console.error("🧾 [ENCODER-CATCH] Error fetching encoder queue:", err);
         setEncoderQueue([]);
         setError(err.message);
       } finally {

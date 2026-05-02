@@ -126,10 +126,26 @@ try {
     $filename = 'patient_' . $patient_id . '_' . time() . '.' . $ext;
     $filepath = $upload_dir . $filename;
 
+    // Debug logging
+    error_log("📸 Upload debug: tmp_name=" . $file['tmp_name'] . ", target=" . $filepath);
+    error_log("📸 File exists at tmp: " . (file_exists($file['tmp_name']) ? "yes" : "no"));
+    error_log("📸 Upload dir writable: " . (is_writable($upload_dir) ? "yes" : "no"));
+    error_log("📸 Upload dir perms: " . substr(sprintf('%o', fileperms($upload_dir)), -4));
+
     // Move uploaded file
     if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-        throw new Exception("Failed to save file");
+        $error_msg = "Failed to save file. Temp: " . $file['tmp_name'] . ", Target: " . $filepath;
+        error_log("❌ " . $error_msg);
+        throw new Exception("Failed to save file to server");
     }
+
+    // Verify file was written
+    if (!file_exists($filepath)) {
+        unlink($filepath) || true; // Try to clean up
+        throw new Exception("File was moved but cannot be verified");
+    }
+
+    error_log("✅ File saved successfully: " . $filepath);
 
     // Store image path in database
     $relative_path = 'upload/' . $filename;

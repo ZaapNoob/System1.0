@@ -7,7 +7,7 @@ import { usePatientImage } from "../../hooks/image display/usePatientImage";
 import { getImageUrl } from "../../utils/image.js";
 import "./EditConsultationModal.css";
 
-export default function EditConsultationModal({ consultation, patient, onUpdate }) {
+export default function EditConsultationModal({ consultation, patient, onUpdate, user }) {
   const { closeModal } = useModal();
   const { doctors } = useDoctors();
   const { imageUrl } = usePatientImage(patient); // Auto-fetch if profile_image missing
@@ -16,7 +16,8 @@ export default function EditConsultationModal({ consultation, patient, onUpdate 
   useEffect(() => {
     console.log("📋 [EditConsultation] Consultation object received:", consultation);
     console.log("👤 [EditConsultation] Patient object received:", patient);
-  }, [consultation, patient]);
+    console.log("👤 [EditConsultation] User object received:", user);
+  }, [consultation, patient, user]);
 
   // Determine consultation ID - accept both 'id' and 'consultation_id'
   const consultationId = consultation?.consultation_id || consultation?.id;
@@ -40,7 +41,13 @@ export default function EditConsultationModal({ consultation, patient, onUpdate 
     diagnosis: consultation?.diagnosis || "",
     treatment: consultation?.treatment || "",
     patient_illness: consultation?.patient_illness || "",
-    remarks: consultation?.remarks || ""
+    remarks: consultation?.remarks || "",
+    // Referral fields
+    receiving_facility: consultation?.receiving_facility || "",
+    receiving_personnel: consultation?.receiving_personnel || "",
+    referral_category: consultation?.referral_category || "",
+    reason_for_referral_2: consultation?.reason_for_referral_2 || "",
+    identity_number_manual: consultation?.identity_number_manual || ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -54,21 +61,75 @@ export default function EditConsultationModal({ consultation, patient, onUpdate 
     }));
   };
 
+  // Handle reason for referral checkboxes
+  const handleReferralReasonChange = (reason) => {
+    setFormData(prev => {
+      let reasons = [];
+      
+      // Parse existing reasons from JSON string
+      if (prev.reason_for_referral_2) {
+        try {
+          if (typeof prev.reason_for_referral_2 === 'string') {
+            reasons = JSON.parse(prev.reason_for_referral_2);
+          } else if (Array.isArray(prev.reason_for_referral_2)) {
+            reasons = prev.reason_for_referral_2;
+          }
+        } catch (e) {
+          reasons = [];
+        }
+      }
+
+      // Toggle the reason
+      if (reasons.includes(reason)) {
+        reasons = reasons.filter(r => r !== reason);
+      } else {
+        reasons.push(reason);
+      }
+
+      // Store as JSON string
+      return {
+        ...prev,
+        reason_for_referral_2: JSON.stringify(reasons)
+      };
+    });
+  };
+
+  // Parse reason_for_referral_2 to get selected reasons
+  const getSelectedReasons = () => {
+    try {
+      if (typeof formData.reason_for_referral_2 === 'string' && formData.reason_for_referral_2) {
+        return JSON.parse(formData.reason_for_referral_2);
+      } else if (Array.isArray(formData.reason_for_referral_2)) {
+        return formData.reason_for_referral_2;
+      }
+    } catch (e) {
+      return [];
+    }
+    return [];
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    // DEBUG: Log form data before sending
-    console.log("📝 [EditConsultation] Form data before submit:", formData);
+// DEBUG: Log form data before sending (moved after encoded_by addition)
 
     try {
+      // Add encoded_by from current user
+      const submitData = {
+        ...formData,
+        encoded_by: user?.id || null
+      };
+
+      console.log("📝 [EditConsultation] Submit data with encoded_by:", submitData);
+
       const res = await apiFetch(
         `${API}/consultation/update-consultation.php`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(submitData)
         }
       );
 
@@ -217,6 +278,86 @@ export default function EditConsultationModal({ consultation, patient, onUpdate 
         className="form-input"
         rows="3"
       />
+    </div>
+
+    {/* REFERRAL SECTION */}
+    <div className="referral-section">
+      <h4>Referral Information</h4>
+      
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="receiving_facility">Receiving Facility/Hospital:</label>
+          <input
+            type="text"
+            id="receiving_facility"
+            name="receiving_facility"
+            value={formData.receiving_facility}
+            onChange={handleInputChange}
+            placeholder="e.g., Hospital X, District Hospital"
+            className="form-input"
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="receiving_personnel">Receiving Personnel/Doctor:</label>
+          <input
+            type="text"
+            id="receiving_personnel"
+            name="receiving_personnel"
+            value={formData.receiving_personnel}
+            onChange={handleInputChange}
+            placeholder="e.g., Dr. Juan Dela Cruz"
+            className="form-input"
+          />
+        </div>
+      </div>
+
+      <div className="form-row">
+        <div className="form-group">
+          <label htmlFor="referral_category">Referral Category:</label>
+          <select
+            id="referral_category"
+            name="referral_category"
+            value={formData.referral_category}
+            onChange={handleInputChange}
+            className="form-input"
+          >
+            <option value="">-- Select --</option>
+            <option value="Emergency">Emergency</option>
+            <option value="Outpatient">Outpatient</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="identity_number_manual">Identity Number (Manual):</label>
+          <input
+            type="text"
+            id="identity_number_manual"
+            name="identity_number_manual"
+            value={formData.identity_number_manual}
+            onChange={handleInputChange}
+            placeholder={`Patient ID: ${patient?.patient_id}`}
+            className="form-input"
+          />
+        </div>
+      </div>
+
+      <div className="form-group">
+        <label>Reason for Referral:</label>
+        <div className="referral-checklist">
+          {['Diagnostics', 'No Available Doctor', 'No Equipment Available', 'No Laboratory Available', 'No Treatment/Procedure Available', 'No Room Available', 'Seek Advice/Second Opinion', 'Seek Further Treatment Appropriate to the Case', 'Seek Specialized Evaluation/Consultation'].map((reason, idx) => (
+            <div key={idx} className="checkbox-item">
+              <input
+                type="checkbox"
+                id={`reason-${idx}`}
+                checked={getSelectedReasons().includes(reason)}
+                onChange={() => handleReferralReasonChange(reason)}
+              />
+              <label htmlFor={`reason-${idx}`} className="checkbox-label">{reason}</label>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
 
     {/* VITALS */}

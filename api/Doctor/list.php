@@ -20,18 +20,44 @@ require_once '../../config/db.php'; // Make sure this sets up $pdo (PDO instance
 // }
 
 try {
-    // Fetch active doctors only
-    $stmt = $pdo->prepare("
-        SELECT id, name
-        FROM users
-        WHERE role = 'doctor'
-          AND status = 'active'
-        ORDER BY name ASC
-    ");
+    // Check if a specific doctor ID was requested
+    $doctorId = $_GET['id'] ?? null;
+
+    if ($doctorId) {
+        // Fetch specific doctor by ID with profile info
+        $stmt = $pdo->prepare("
+            SELECT 
+                u.id, 
+                u.name,
+                up.license_no,
+                up.title
+            FROM users u
+            LEFT JOIN user_profiles up ON u.id = up.user_id
+            WHERE u.id = :id
+              AND u.role = 'doctor'
+              AND u.status = 'active'
+            LIMIT 1
+        ");
+        $stmt->execute([':id' => $doctorId]);
+    } else {
+        // Fetch all active doctors with profile info
+        $stmt = $pdo->prepare("
+            SELECT 
+                u.id, 
+                u.name,
+                up.license_no,
+                up.title
+            FROM users u
+            LEFT JOIN user_profiles up ON u.id = up.user_id
+            WHERE u.role = 'doctor'
+              AND u.status = 'active'
+            ORDER BY u.name ASC
+        ");
+        $stmt->execute();
+    }
 
     // Debug: If no results, check what role code exists for doctors
     // Uncomment to debug: SELECT DISTINCT role FROM users;
-    $stmt->execute();
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode([

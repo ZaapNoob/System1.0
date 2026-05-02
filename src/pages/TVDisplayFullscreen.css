@@ -5,10 +5,11 @@
   height: 100vh;
   margin: 0;
   padding: 0;
-  background-color: #0a0e27;
+  background: #ffffff;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-family: 'Arial', sans-serif;
   overflow: hidden;
   position: relative;
@@ -20,80 +21,289 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1a1f3a, #0a0e27);
+  background: #ffffff;
 }
 
 .tv-no-queue-message {
   font-size: 8vw;
-  color: #ffffff;
+  color: #357ABD;
   text-align: center;
   font-weight: bold;
   letter-spacing: 2px;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tv-logo-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5vw 3vw;
+  background: linear-gradient(135deg, #357ABD 0%, #2E5BA8 100%);
+  border-bottom: 3px solid #1E3A5F;
+  z-index: 100;
+}
+
+.tv-title-text {
+  font-size: 3vw;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1px;
+}
+
+.tv-logo-header img {
+  height: 8vh;
+  max-height: 80px;
+  width: auto;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .tv-fullscreen-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(25vw, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));
   gap: 2vw;
-  padding: 3vw;
+  padding: 2vw;
+  margin-top: 8vw;
   width: 100%;
-  height: 100%;
+  flex: 1;
   overflow: auto;
-  background: linear-gradient(135deg, #1a1f3a, #0a0e27);
+  background: #ffffff;
 }
 
-.tv-fullscreen-slot {
+/* Doctor Slot - Main Container */
+.tv-fullscreen-doctor-slot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #ffffff;
+  border-radius: 2vw;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 4px solid #4A90E2;
+  transition: all 0.3s ease;
+  min-height: 60vh;
+}
+
+.tv-fullscreen-doctor-slot:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 40px rgba(74, 144, 226, 0.3);
+}
+
+/* Left Section - Active Patient */
+.tv-doctor-left-section {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-right: 3px solid #4A90E2;
+}
+
+/* Doctor Header */
+.tv-doctor-header {
+  background: linear-gradient(135deg, #357ABD 0%, #2E5BA8 100%);
+  padding: 0.8vw 1.5vw;
+  font-size: 1.2vw;
+  font-weight: 700;
+  color: #000000;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+  border-bottom: 2px solid #1E3A5F;
+  text-align: center;
+}
+
+/* Active Section - NOW SERVING */
+.tv-active-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  min-height: 15vh;
+}
+
+.tv-active-section-header {
+  width: 100%;
+  text-align: center;
+  padding: 0.3vw 1.5vw;
+  background: linear-gradient(135deg, #357ABD 0%, #2E5BA8 100%);
+  border-bottom: 2px solid #1E3A5F;
+}
+
+.tv-active-section-content {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  border-radius: 2vw;
-  padding: 2vw;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  border: 3px solid #3d5afe;
-  transition: all 0.3s ease;
-  min-height: 30vh;
+  width: 100%;
+  padding: 0.3vw;
 }
 
-.tv-fullscreen-slot:hover {
-  transform: scale(1.05);
-  box-shadow: 0 12px 40px rgba(61, 94, 254, 0.6);
+.tv-status-label {
+  font-size: 1vw;
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
 }
 
 .tv-fullscreen-number {
-  font-size: 15vw;
+  font-size: 5vw;
   font-weight: 900;
-  color: #00ff00;
-  text-shadow: 0 0 20px rgba(0, 255, 0, 0.8), 0 0 40px rgba(0, 255, 0, 0.4);
-  letter-spacing: 5px;
-  line-height: 1;
-  margin-bottom: 1.5vw;
+  color: #8B0000;
+  text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+  letter-spacing: 2px;
+  line-height: 1.1;
+  margin-bottom: 0.2vw;
   font-family: 'Courier New', monospace;
   text-align: center;
+  white-space: nowrap;
 }
 
 .tv-fullscreen-type-badge {
-  font-size: 2vw;
-  color: #00ff00;
+  font-size: 1.8vw;
+  color: #000000;
   font-weight: 700;
-  text-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
   letter-spacing: 1px;
-  margin: 1vw 0;
   padding: 0.5vw 1vw;
-  background-color: rgba(0, 255, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 0.5vw;
-  border: 2px solid rgba(0, 255, 0, 0.4);
+  border: 2px solid #357ABD;
 }
 
-.tv-fullscreen-doctor {
+.tv-no-current {
   font-size: 2.5vw;
-  color: #ffffff;
-  text-align: center;
+  color: #000000;
   font-weight: 600;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-  margin-top: 1vw;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.2);
+}
+
+/* Left Section - Active Patient */
+.tv-doctor-left-section {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-right: 3px solid #4A90E2;
+}
+
+/* Right Section - Waiting Patients */
+.tv-doctor-right-section {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  padding: 1vw;
+  overflow-y: auto;
+}
+
+.tv-no-waiting {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5vw;
+  color: #999999;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Waiting Section */
+.tv-waiting-section {
+  background: #ffffff;
+  padding: 0.5vw;
+  border-top: 2px solid #4A90E2;
+}
+
+.tv-waiting-header {
+  font-size: 1.8vw;
+  color: #000000;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+  margin-bottom: 0.3vw;
+  text-align: center;
+  border-bottom: 1px solid #357ABD;
+  padding-bottom: 0.3vw;
+}
+
+.tv-waiting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4vw;
+  overflow-y: auto;
+  max-height: 50vh;
+  padding-right: 0.3vw;
+}
+
+.tv-waiting-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2vw;
+  padding: 0.5vw;
+  background: #f0f8ff;
+  border-radius: 0.5vw;
+  border-left: 3px solid #4A90E2;
+}
+
+.tv-waiting-rank {
+  font-size: 1.4vw;
+  color: #000000;
+  font-weight: 700;
+}
+
+.tv-waiting-queue {
+  font-size: 2vw;
+  color: #CC6600;
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.2);
+  letter-spacing: 2px;
+}
+
+/* Active Patient Time Display */
+.tv-active-time {
+  font-size: 0.9vw;
+  color: #666666;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.5vw;
+  letter-spacing: 0.5px;
+}
+
+/* Waiting Time Display */
+.tv-waiting-time {
+  display: flex;
+  align-items: center;
+  gap: 0.4vw;
+  margin-left: auto;
+  font-size: 1.3vw;
+  color: #555555;
+  font-weight: 600;
+}
+
+.tv-time-icon {
+  font-size: 1vw;
+}
+
+.tv-time-text {
+  white-space: nowrap;
+}
+
+.tv-waiting-more {
+  font-size: 1vw;
+  color: #000000;
+  font-weight: 600;
+  text-align: center;
+  padding: 0.2vw;
+  font-style: italic;
 }
 
 /* Close button */
@@ -101,24 +311,27 @@
   position: fixed;
   top: 2vw;
   right: 2vw;
-  width: 5vw;
-  height: 5vw;
-  background-color: rgba(255, 0, 0, 0.8);
+  width: 3vw;
+  height: 3vw;
+  background-color: rgba(220, 53, 69, 0.9);
   border: none;
   border-radius: 50%;
-  font-size: 2.5vw;
+  font-size: 1.5vw;
   color: white;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 1000;
-  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tv-fullscreen-close:hover {
-  background-color: rgba(255, 0, 0, 1);
+  background-color: rgba(220, 53, 69, 1);
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(255, 0, 0, 0.8);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.8);
 }
 
 .tv-fullscreen-close:active {
@@ -128,20 +341,24 @@
 /* Responsive for different screen sizes */
 @media (max-width: 1920px) {
   .tv-fullscreen-number {
-    font-size: 12vw;
+    font-size: 10vw;
   }
   
-  .tv-fullscreen-doctor {
-    font-size: 2vw;
+  .tv-waiting-header {
+    font-size: 1.3vw;
   }
 }
 
 @media (max-width: 1280px) {
   .tv-fullscreen-number {
-    font-size: 10vw;
+    font-size: 8vw;
   }
   
-  .tv-fullscreen-doctor {
+  .tv-doctor-header {
     font-size: 1.5vw;
+  }
+  
+  .tv-waiting-header {
+    font-size: 1vw;
   }
 }

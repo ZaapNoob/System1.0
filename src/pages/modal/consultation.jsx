@@ -8,7 +8,7 @@ import { useFollowUpConsultation } from "../../hooks/useFollowUpConsultation";
 import { updateConsultation } from "../../api/consultation";
 import "./consultation.css";
 
-export default function Consultation({ patient, consultation, isEditing = false, isQuickEntry = false, onClose, onConsultationSaved, onSaved }) {
+export default function Consultation({ patient, consultation, isEditing = false, isQuickEntry = false, onClose, onConsultationSaved, onSaved, user }) {
   const today = new Date().toISOString().split("T")[0];
   const { doctors, loading: loadingDoctors } = useDoctors();
   
@@ -106,6 +106,7 @@ export default function Consultation({ patient, consultation, isEditing = false,
         // Update existing consultation
         const updateData = {
           id: consultation.id,
+          encoded_by: user?.id || null,
           chiefComplaint: formData.chiefComplaint,
           diagnosis: formData.diagnosis,
           treatment: formData.treatment,
@@ -124,12 +125,18 @@ export default function Consultation({ patient, consultation, isEditing = false,
         }
       } else {
         // Save new consultation
+        // Add encoded_by from current user
+        const consultationWithEncoder = {
+          ...formData,
+          encoded_by: user?.id || null
+        };
+        
         if (withPrint) {
           // Save and print
-          handleSaveConsultation(patient, formData);
+          handleSaveConsultation(patient, consultationWithEncoder);
         } else {
           // Save only - use the new hook
-          handleSaveConsultationOnly(patient, formData);
+          handleSaveConsultationOnly(patient, consultationWithEncoder);
         }
       }
     } catch (err) {

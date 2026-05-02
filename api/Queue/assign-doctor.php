@@ -52,6 +52,24 @@ try {
     error_log("[ASSIGN-DOCTOR] 🟡 Processing assignment for queue_id={$patientQueueId}, patient_id={$patientId}, doctor_id={$doctorId}");
     $pdo->beginTransaction();
 
+
+
+/* =========================
+       REMOVE OLD ASSIGNMENTS
+       Delete any existing active assignments for this patient
+    ========================= */
+    $stmt = $pdo->prepare("
+        DELETE FROM doctor_patient_queue
+        WHERE patient_id = ?
+          AND doctor_id != ?
+          AND status IN ('waiting', 'serving')
+    ");
+    $stmt->execute([$patientId, $doctorId]);
+    $deletedRows = $stmt->rowCount();
+    error_log("[ASSIGN-DOCTOR] 🗑️ Removed old assignments: {$deletedRows} rows deleted");
+
+
+
     /* =========================
        Get next queue number
     ========================= */

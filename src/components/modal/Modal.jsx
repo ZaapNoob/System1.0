@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+import "./Modal.css";
 
 export default function Modal({ children, onClose, zIndex = 1000 }) {
   return createPortal(

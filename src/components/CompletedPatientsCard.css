@@ -1,0 +1,47 @@
+/* ========================================
+   COMPLETED PATIENTS CARD STYLES
+   Maroon Theme - Dashboard Card
+   ======================================== */
+
+.completed-card-clickable {
+  cursor: pointer;
+  background: linear-gradient(135deg, #f5e6e6 0%, #ffe6e6 100%) !important;
+  border: 2px solid #d4a5a5 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.completed-card-clickable:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 24px rgba(139, 58, 58, 0.15) !important;
+  border-color: #8B3A3A !important;
+  background: linear-gradient(135deg, #f0d9d9 0%, #ffd9d9 100%) !important;
+}
+
+.completed-card-clickable:active {
+  transform: translateY(-2px) !important;
+}
+
+.completed-card-clickable .stat-icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.completed-card-clickable .stat-content h3 {
+  color: #8B3A3A;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.completed-card-clickable .stat-number {
+  color: #6B2C2C;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.stat-description {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px !important;
+  font-weight: 500;
+}

@@ -22,7 +22,7 @@ export const fetchBarangays = async () => {
 export const searchPatientsQueue = async (barangayId = 0, query) => {
   // If barangayId = 0, it will search all barangays
   return apiFetch(
-    `${API}/patients/search-patients-Global.php?barangay_id=${barangayId}&search=${encodeURIComponent(query)}`
+    `${API}/patients/search-patients-GLobal.php?barangay_id=${barangayId}&search=${encodeURIComponent(query)}`
   );
 };
 
@@ -131,5 +131,19 @@ export const deletePatient = async (patientId) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ patient_id: patientId }),
+  });
+};
+
+
+
+
+
+export const deleteMedicalCertificate = async (certificateId) => {
+  return apiFetch(`${API}/medical/delete-certificate.php`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ certificate_id: certificateId }),
   });
 };

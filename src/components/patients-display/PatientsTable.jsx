@@ -1,7 +1,9 @@
 import { useModal } from "../modal/ModalProvider";
 import ViewPatientModal from "./ViewPatientModal";
 import EditPatientModal from "./EditPatientModal";
+import { getImageUrl, getGenderBasedAvatar } from "../../utils/image";
 import "./PatientsTable.css";
+
 
 
 
@@ -13,36 +15,15 @@ export default function PatientsTable({
 }) {
   const { openModal, closeModal } = useModal();
 
-  // Status color mapping
-  const getStatusColor = (status) => {
-    if (!status) return "";
-    const normalizedStatus = status.toLowerCase();
-    switch (normalizedStatus) {
-      case "admitted": return "status-admitted";
-      case "discharged": return "status-discharged";
-      case "under observation": return "status-observation";
-      case "active": return "status-active";
-      case "inactive": return "status-inactive";
-      case "deceased": return "status-deceased";
-      default: return "";
-    }
-  };
-
-  // Status display formatting
-  const formatStatusDisplay = (status) => {
-    if (!status) return "";
-    return status;
-  };
-
   return (
     <table className="patient-table">
       <thead>
         <tr>
+          <th>Image</th>
           <th>Name</th>
           <th>Age</th>
           <th>Gender</th>
           <th>Barangay-Code</th>
-          <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -59,16 +40,17 @@ export default function PatientsTable({
         ) : (
           patients.map((patient) => (
             <tr key={patient.id}>
-              <td>{patient.name}</td>
-              <td>{patient.age}</td>
-              <td>{patient.gender}</td>
-              <td>{patient.patient_code || "—"}</td>
-
               <td>
-                <span className={`status-badge ${getStatusColor(patient.status)}`}>
-                  {formatStatusDisplay(patient.status)}
-                </span>
+                {patient.profile_image ? (
+                  <img src={getImageUrl(patient.profile_image)} alt={patient.name} className="patient-avatar" />
+                ) : (
+                  <img src={getGenderBasedAvatar(patient.gender)} alt="No image" className="patient-avatar" />
+                )}
               </td>
+              <td className="patient-name">{patient.name}</td>
+              <td className="patient-age">{patient.age}</td>
+              <td className="patient-gender">{patient.gender}</td>
+              <td className="patient-code">{patient.patient_code || "—"}</td>
 
               <td>
                 <button

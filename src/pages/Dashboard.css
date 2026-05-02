@@ -490,19 +490,19 @@
 }
 
 .queue-group-title.regular {
-  background: #fff9d6;
-  color: #a67f00;
-  border: 1px solid #f5e1a4;
-  box-shadow: inset 0 0 0 1px rgba(250, 207, 88, 0.3);
+  background: #F5F5F5;
+  color: #333333;
+  border: 1px solid #E0E0E0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
   display: inline-block;
   width: fit-content;
 }
 
 .queue-group-title.priority {
-  background: #ffe3e8;
-  color: #d1424b;
-  border: 1px solid #f7b7bf;
-  box-shadow: inset 0 0 0 1px rgba(255, 111, 121, 0.25);
+  background: #E3F2FD;
+  color: #0D47A1;
+  border: 1px solid #90CAF9;
+  box-shadow: inset 0 0 0 1px rgba(25, 118, 210, 0.2);
   display: inline-block;
   width: fit-content;
 }
@@ -530,8 +530,8 @@
 ================================ */
 .queue-item {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  gap: 10px;
   padding: 14px 16px;
   border-radius: 12px;
   border: 1px solid #E6E6E6;
@@ -545,24 +545,75 @@
 }
 
 .queue-item.priority-high {
-  border-left: 5px solid #ED985F;
-  background: #fff7f2;
+  border-left: 5px solid #1976D2 !important;
+  background: #E3F2FD !important;
 }
 
 .queue-item.priority-low {
-  border-left: 5px solid #F7B980;
-  background: #fffaf6;
+  border-left: 5px solid #CCCCCC !important;
+  background: #F5F5F5 !important;
+}
+
+/* Override text colors in priority queue (excluding buttons) */
+.queue-item.priority-high span,
+.queue-item.priority-high div {
+  color: #0D47A1 !important;
+}
+
+/* Override text colors in regular queue (excluding buttons) */
+.queue-item.priority-low span,
+.queue-item.priority-low div {
+  color: #333 !important;
+}
+
+/* Queue Row 1: Queue Number + Accept Button */
+.queue-row-1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Queue Row 2: Patient Name + Wait Time */
+.queue-row-2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 /* Queue number */
 .queue-number {
   font-weight: 800;
-  color: #ED985F;
-  font-size: 1.4rem;
-  min-width: 80px;
+  color: #333 !important;
+  font-size: 1.4rem !important;
+  min-width: auto;
+}
+
+.queue-item.priority-high .queue-number {
+  color: #0D47A1 !important;
+}
+
+.queue-item.priority-low .queue-number {
+  color: #333 !important;
 }
 
 /* Patient name */
+.patient-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333 !important;
+  flex: 1;
+}
+
+.queue-item.priority-high .patient-name {
+  color: #0D47A1 !important;
+}
+
+.queue-item.priority-low .patient-name {
+  color: #333 !important;
+}
+
 .patient-info {
   flex: 1;
   font-size: 14px;
@@ -572,39 +623,50 @@
 
 /* Wait badge */
 .wait-time {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #E6E6E6;
-  color: #7a4f2a;
-  white-space: nowrap;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 6px 10px !important;
+  border-radius: 999px !important;
+  background: #E6E6E6 !important;
+  color: #333 !important;
+  white-space: nowrap !important;
+}
+
+.queue-item.priority-high .wait-time {
+  background: #BBDEFB !important;
+  color: #0D47A1 !important;
+}
+
+.queue-item.priority-low .wait-time {
+  background: #E0E0E0 !important;
+  color: #333 !important;
 }
 
 /* ================================
    ACCEPT BUTTON
 ================================ */
 .accept-btn {
-  background: linear-gradient(135deg, #F7B980, #ED985F);
-  color: white;
-  border: none;
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  background: #FF9800 !important;
+  color: white !important;
+  border: none !important;
+  padding: 7px 14px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
 }
 
 .accept-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(237, 152, 95, 0.35);
+  background: #F57C00 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 10px rgba(255, 152, 0, 0.35) !important;
 }
 
 .accept-btn:disabled {
-  background: #cfcfcf;
-  cursor: not-allowed;
-  box-shadow: none;
+  background: #cfcfcf !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
 }
 
 /* ================================
@@ -617,20 +679,24 @@
 }
 
 .cancel-waiting-action-btn {
-  width: 100%;
-  background: #E6E6E6;
-  color: #7a4f2a;
+  width: fit-content;
+  padding: 10px 20px;
+  background: #EA3E3E;
+  color: white;
   border: none;
-  padding: 14px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 .cancel-waiting-action-btn:hover {
-  background: #ED985F;
-  color: white;
+  background: #D32F2F;
+}
+
+.cancel-waiting-action-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(234, 62, 62, 0.3);
 }
 
 /* ================================
@@ -756,9 +822,9 @@
    Queue List Container
 ============================ */
 .queue-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 /* ============================
@@ -1144,7 +1210,7 @@
 .tv-widget-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   padding: 20px;
 }
@@ -1156,6 +1222,130 @@
   padding: 20px;
   text-align: center;
   box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+/* New Modular Widget Doctor Slot */
+.tv-widget-doctor-slot {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #0f0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.tv-widget-doctor-name {
+  background: #0f0;
+  color: #000;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tv-widget-active {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 140px;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+}
+
+.tv-widget-status-label {
+  font-size: 12px;
+  color: #0f0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border: 1px solid #0f0;
+  border-radius: 4px;
+}
+
+.tv-widget-queue-id {
+  font-size: 56px;
+  font-weight: 900;
+  color: #0f0;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+.tv-widget-type-badge {
+  font-size: 11px;
+  color: #0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #0f0;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.tv-widget-no-current {
+  font-size: 14px;
+  color: #ffaa00;
+  font-weight: 600;
+}
+
+.tv-widget-waiting {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.tv-widget-waiting-label {
+  font-size: 11px;
+  color: #ffd700;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+  padding-bottom: 6px;
+}
+
+.tv-widget-waiting-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tv-widget-waiting-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  background: rgba(0, 255, 0, 0.05);
+  border-radius: 4px;
+  border-left: 2px solid #ffd700;
+}
+
+.tv-widget-waiting-rank {
+  font-size: 10px;
+  color: #ffd700;
+  font-weight: 700;
+  min-width: 18px;
+  text-align: center;
+}
+
+.tv-widget-waiting-queue {
+  font-size: 13px;
+  color: #ffffff;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  flex: 1;
+}
+
+.tv-widget-waiting-more {
+  font-size: 10px;
+  color: #ffaa00;
+  font-weight: 600;
+  padding: 4px;
+  font-style: italic;
+  text-align: center;
 }
 
 .tv-doctor-label {
@@ -1268,16 +1458,16 @@
 ============================== */
 
 .widget-encoder-new {
-  background: #FBF9D1;
+  background: #F5F5F5;
   border-radius: 16px;
-  border: 1px solid #E6CFA9;
+  border: 1px solid #CCCCCC;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,0.05);
 }
 
 /* HEADER */
 .encoder-header {
-  background: linear-gradient(135deg, #C1856D, #9A3F3F);
+  background: linear-gradient(135deg, #808080, #555555);
   color: white;
   padding: 18px 22px;
 }
@@ -1308,19 +1498,19 @@
 .encoder-filters input {
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid #E6CFA9;
-  background: #fffdf5;
+  border: 1px solid #CCCCCC;
+  background: #FAFAFA;
   font-size: 14px;
 }
 
 .encoder-filters input:focus {
   outline: none;
-  border-color: #C1856D;
+  border-color: #808080;
 }
 
 /* CLEAR BTN */
 .clear-btn {
-  background: #E6CFA9;
+  background: #CCCCCC;
   border: none;
   padding: 8px 12px;
   border-radius: 8px;
@@ -1328,14 +1518,14 @@
 }
 
 .clear-btn:hover {
-  background: #C1856D;
+  background: #808080;
   color: white;
 }
 
 /* INFO TEXT */
 .encoder-info {
   font-size: 12px;
-  color: #7a5c4d;
+  color: #666666;
   margin-bottom: 10px;
 }
 
@@ -1351,8 +1541,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fffdf5;
-  border: 1px solid #E6CFA9;
+  background: #FAFAFA;
+  border: 1px solid #CCCCCC;
   padding: 14px;
   border-radius: 12px;
   transition: 0.2s ease;
@@ -1370,12 +1560,12 @@
 
 .patient-name {
   font-weight: 600;
-  color: #5a2e2e;
+  color: #333333;
 }
 
 .queue-meta {
   font-size: 12px;
-  color: #9a7b6f;
+  color: #888888;
 }
 
 /* STATUS */
@@ -1392,13 +1582,13 @@
 }
 
 .status-pill.pending {
-  background: #ffe5d9;
-  color: #9A3F3F;
+  background: #E8E8E8;
+  color: #555555;
 }
 
 /* BUTTON */
 .encode-btn {
-  background: #9A3F3F;
+  background: #555555;
   color: white;
   border: none;
   padding: 8px 14px;
@@ -1408,7 +1598,7 @@
 }
 
 .encode-btn:hover {
-  background: #7a2f2f;
+  background: #333333;
 }
 
 /* TOP BAR */
@@ -1421,14 +1611,14 @@
 
 .selected-patient {
   font-weight: 600;
-  color: #5a2e2e;
+  color: #333333;
 }
 
 /* EMPTY STATE */
 .empty-state {
   text-align: center;
   padding: 30px;
-  color: #9a7b6f;
+  color: #888888;
 }
 
 

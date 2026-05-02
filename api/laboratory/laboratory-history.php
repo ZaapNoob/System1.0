@@ -54,6 +54,8 @@ try {
                 lr.diagnosis,
                 lr.xray_findings,
                 lr.utz_findings,
+                lr.ct_scan_findings,
+                lr.other_findings,
                 lr.created_at,
                 u.name as doctor_name
             FROM lab_requests lr

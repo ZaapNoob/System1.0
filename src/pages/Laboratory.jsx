@@ -1,19 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import Sidebar from "../components/Sidebar";
-import "./laboratory.css"; // you can rename later if you want
+import "./Laboratory.css"; // you can rename later if you want
+import useLogout from "../hooks/useLogout";
+
 import useLabRequest from "../hooks/useLabRequest";
 import { useLabHistory } from "../hooks/useLabHistory";
 import { usePrintLaboratory } from "../hooks/usePrintLaboratory";
 import { usePatientImage } from "../hooks/image display/usePatientImage";
 import { DEFAULT_AVATAR } from "../utils/image";
+import QueueAddPatientModal from "./modal/QueueAddPatientModal";
+
+
 
 export default function LabRequest({
   user,
   onNavigateToProfile,
   allowedPages,
   onNavigate,
-  handleLogout,
+  handleLogout: propHandleLogout,
 }) {
+  const { handleLogout } = useLogout();
   const {
     step,
     setStep,
@@ -35,6 +41,7 @@ export default function LabRequest({
     handleEditLabRequest,
     handleUpdateLabRequest,
     handleCancelEditLab,
+    handleDeleteLabRequest,
     clearPrintPreviewId,
     clearUpdateSuccess,
   } = useLabRequest();
@@ -67,6 +74,8 @@ export default function LabRequest({
     diagnosis: "",
     xray_findings: "",
     utz_findings: "",
+    ct_scan_findings: "",
+    other_findings: "",
   });
 
   const [selectedTests, setSelectedTests] = useState([]);
@@ -74,6 +83,8 @@ export default function LabRequest({
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const [showLabHistory, setShowLabHistory] = useState(true);
+
+  const [showAddPatientModal, setShowAddPatientModal] = useState(false);
 
   const diagnosisRef = useRef(null);
 
@@ -138,11 +149,22 @@ const olderRequests = labHistory.filter(
       diagnosis: "",
       xray_findings: "",
       utz_findings: "",
+      ct_scan_findings: "",
+      other_findings: "",
     });
   };
 
   const handleSelectPatient = (patient) => {
     handleSelectPatientForm(patient, setFormData);
+  };
+
+  const handlePatientAdded = (newPatient) => {
+    // Close the modal
+    setShowAddPatientModal(false);
+    // Auto-select the newly created patient
+    handleSelectPatient(newPatient);
+    // Clear search query and results
+    setSearchQuery("");
   };
 
   const renderTestSection = (category, tests) => (
@@ -174,6 +196,9 @@ const olderRequests = labHistory.filter(
         <input
           type="text"
           placeholder="Specify other test..."
+          value={selectedTests.find(
+            (t) => t.category === category && t.test_name === "Others"
+          )?.other_value || ""}
           onChange={(e) =>
             handleOtherChange(category, e.target.value)
           }
@@ -284,6 +309,21 @@ const olderRequests = labHistory.filter(
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+
+                {searchQuery && searchResults.length === 0 && !loading && (
+                  <div className="search-results">
+                    <p style={{ textAlign: "center", color: "#666", marginBottom: "16px" }}>
+                      No patient found matching "{searchQuery}"
+                    </p>
+                    <button
+                      className="btn-outline"
+                      onClick={() => setShowAddPatientModal(true)}
+                      style={{ width: "100%" }}
+                    >
+                      + Add New Patient
+                    </button>
                   </div>
                 )}
               </div>
@@ -404,6 +444,8 @@ const olderRequests = labHistory.filter(
                           diagnosis: editData.diagnosis || "",
                           xray_findings: editData.xray_findings || "",
                           utz_findings: editData.utz_findings || "",
+                          ct_scan_findings: editData.ct_scan_findings || "",
+                          other_findings: editData.other_findings || "",
                         }));
 
                         if (editData.tests && editData.tests.length > 0) {
@@ -420,6 +462,19 @@ const olderRequests = labHistory.filter(
                       title="Edit lab request"
                     >
                       ✏️
+                    </button>
+
+                    <button
+                      type="button"
+                      className="history-edit-btn"
+                      onClick={() =>
+                        handleDeleteLabRequest(item.id, () => {
+                          setRefreshTrigger(refreshTrigger + 1);
+                        })
+                      }
+                      title="Delete lab request"
+                    >
+                      🗑️
                     </button>
                   </div>
                 </li>
@@ -467,6 +522,8 @@ const olderRequests = labHistory.filter(
                           diagnosis: editData.diagnosis || "",
                           xray_findings: editData.xray_findings || "",
                           utz_findings: editData.utz_findings || "",
+                          ct_scan_findings: editData.ct_scan_findings || "",
+                          other_findings: editData.other_findings || "",
                         }));
 
                         if (editData.tests && editData.tests.length > 0) {
@@ -483,6 +540,19 @@ const olderRequests = labHistory.filter(
                       title="Edit lab request"
                     >
                       ✏️
+                    </button>
+
+                    <button
+                      type="button"
+                      className="history-edit-btn"
+                      onClick={() =>
+                        handleDeleteLabRequest(item.id, () => {
+                          setRefreshTrigger(refreshTrigger + 1);
+                        })
+                      }
+                      title="Delete lab request"
+                    >
+                      🗑️
                     </button>
                   </div>
                 </li>
@@ -608,6 +678,38 @@ const olderRequests = labHistory.filter(
                     />
                   </div>
 
+                  {/* CT SCAN */}
+                  <div className="form-group">
+                    <label>CT Scan Findings (Optional)</label>
+                    <textarea
+                      name="ct_scan_findings"
+                      value={formData.ct_scan_findings}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          ct_scan_findings: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter CT scan findings..."
+                    />
+                  </div>
+
+                  {/* OTHERS */}
+                  <div className="form-group">
+                    <label>Others (Optional)</label>
+                    <textarea
+                      name="other_findings"
+                      value={formData.other_findings}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          other_findings: e.target.value,
+                        }))
+                      }
+                      placeholder="Enter any other findings or notes..."
+                    />
+                  </div>
+
                   {/* TEST SECTIONS */}
                   {renderTestSection("Chemistry", [
                     "BUN",
@@ -632,6 +734,7 @@ const olderRequests = labHistory.filter(
                   {renderTestSection("Bacteriology", [
                     "Gen Expert",
                     "AFB Stain",
+                    "Covid 19 Test",
                     "Others",
                   ])}
 
@@ -645,8 +748,6 @@ const olderRequests = labHistory.filter(
                   {renderTestSection("Urinalysis & Others", [
                     "Fecalysis",
                     "Urinalysis",
-                    "Covid 19 Test",
-                    "Others",
                   ])}
 
                   {editingLabRequestId ? (
@@ -678,6 +779,8 @@ const olderRequests = labHistory.filter(
                             diagnosis: "",
                             xray_findings: "",
                             utz_findings: "",
+                            ct_scan_findings: "",
+                            other_findings: "",
                           });
                           setSelectedTests([]);
                         }}
@@ -709,6 +812,18 @@ const olderRequests = labHistory.filter(
           </div>
         </main>
       </div>
+
+      {/* Add Patient Modal */}
+      {showAddPatientModal && (
+        <div className="modal-overlay" onClick={() => setShowAddPatientModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <QueueAddPatientModal 
+              onPatientAdded={handlePatientAdded}
+              onClose={() => setShowAddPatientModal(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

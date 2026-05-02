@@ -55,7 +55,10 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
 
   // ✅ Effect 1: Handle WebSocket data when connected
   useEffect(() => {
-    if (!connected || !Array.isArray(sourceData)) return;
+    if (!connected || !Array.isArray(sourceData)) {
+      console.log(`[useAutoFetchStable] WebSocket not ready: connected=${connected}, hasData=${Array.isArray(sourceData)}`);
+      return;
+    }
 
     const statusArray = statusFilter ? (Array.isArray(statusFilter) ? statusFilter : [statusFilter]) : null;
 
@@ -68,6 +71,8 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
         wsData = wsData.filter(item => statusArray.includes(item.status));
       }
     }
+
+    console.log(`[useAutoFetchStable] ${dataType}: Got ${wsData.length} items from WebSocket (after filtering)`);
 
     // ✅ Only update if data actually changed
     const newSignature = getDataSignature(wsData);
@@ -98,27 +103,37 @@ export default function useAutoFetchStable(dataType, url, fallbackInterval = 200
     // Prevent duplicate polling intervals
     if (timerRef.current) return;
 
+    console.log(`[useAutoFetchStable] ${dataType}: WebSocket not connected, starting fallback polling...`);
     setIsUsingWebSocket(false);
 
     const fetchData = async () => {
       try {
         const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        
         const json = await res.json();
         
         if (json?.success) {
           const newData = normalizeData(json.data || []);
           setData(newData);
+          console.log(`[useAutoFetchStable] ${dataType}: Fetched ${newData.length} items via fallback`);
+        } else {
+          console.warn(`[useAutoFetchStable] ${dataType}: API returned success=false`);
         }
       } catch (err) {
-        console.error(`Fallback polling error for ${dataType}:`, err);
+        console.error(`[useAutoFetchStable] ${dataType} fallback polling error:`, err.message);
       }
     };
 
-    // Immediate first fetch
+    // Immediate first fetch (don't wait for interval)
+    console.log(`[useAutoFetchStable] ${dataType}: Doing immediate first fetch...`);
     fetchData();
 
-    // Set up polling interval
-    timerRef.current = setInterval(fetchData, fallbackInterval);
+    // Set up polling interval for subsequent fetches
+    timerRef.current = setInterval(() => {
+      console.log(`[useAutoFetchStable] ${dataType}: Polling interval triggered`);
+      fetchData();
+    }, fallbackInterval);
 
     return () => {
       if (timerRef.current) {

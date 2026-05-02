@@ -19,6 +19,9 @@ import Medical from "./pages/Medical";
 
 import Laboratory from "./pages/Laboratory";
 
+// Import Reassign page component
+import Reassign from "./pages/Reassign";
+
 // Import QueueGen page component
 import QueueGen from "./pages/QueueGen";
 
@@ -31,6 +34,8 @@ import Profile from "./pages/Profile";
 // Import PrintOPD page component
 import PrintOPD from "./pages/Printing/PrintOPD";
 
+// Import PrintReferral page component
+import PrintReferral from "./pages/Printing/PrintReferral";
 // Import PintMEDICAL page component
 import PintMEDICAL from "./pages/Printing/PintMEDICAL";
 
@@ -162,6 +167,11 @@ if (path.includes("print-opd")) {
   return <PrintOPD />;
 }
 
+  // If URL is /print-referral → render PrintReferral page in new tab
+if (path.includes("print-referral")) {
+  return <PrintReferral />;
+}
+
   // If URL is /printing/medical → render PintMEDICAL page in new tab
 if (path.includes("printing/medical")) {
   return <PintMEDICAL />;
@@ -242,6 +252,21 @@ if (search.includes("view=tv-display")) {
       <WebSocketProvider>
         <ModalProvider>
           <Laboratory
+            user={user}
+            onNavigateToProfile={() => setCurrentPage("profile")}
+            allowedPages={allowedPages}
+            onNavigate={setCurrentPage}
+          />
+        </ModalProvider>
+      </WebSocketProvider>
+    );
+  }
+
+  if (currentPage === "reassign") {
+    return (
+      <WebSocketProvider>
+        <ModalProvider>
+          <Reassign
             user={user}
             onNavigateToProfile={() => setCurrentPage("profile")}
             allowedPages={allowedPages}

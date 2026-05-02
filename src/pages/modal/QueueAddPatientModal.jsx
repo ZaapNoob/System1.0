@@ -3,11 +3,12 @@ import useAddPatient from "../../hooks/useAddPatient";
 import { calculateAge } from "../../hooks/DOBAuto-Age";
 import Camera from "../../components/Camera";
 import useCamera from "../../hooks/camera/useCamera";
+import { useEffect } from "react";
 
 import "./QueueAddPatientModal.css";
 
 
-export default function QueueAddPatientModal({ onPatientAdded }) {
+export default function QueueAddPatientModal({ onPatientAdded, onClose }) {
   const {
     newPatient,
     setNewPatient,
@@ -50,13 +51,39 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
     clearPatientImage
   } = useCamera(newPatient, handleSavePatient);
 
+  // =======================
+  // AUTO-CLOSE ON SUCCESS
+  // =======================
+  useEffect(() => {
+    if (successMessage) {
+      // Delay slightly to ensure UI updates
+      const timer = setTimeout(() => {
+        // Call the callback from parent component (if provided)
+        if (onPatientAdded) {
+          onPatientAdded(newPatient);
+        }
+        // Close the ModalProvider modal (if available)
+        closeModal();
+      }, 800);
+
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, newPatient, onPatientAdded, closeModal]);
+
   const handleCancel = () => {
     setShowAdditionalInfo(false);
     setShowCreatePurok(false);
     setIsFamilyMember(false);
     setNewPatient(initialPatientState);
     clearPatientImage();
-    closeModal();
+    
+    // Priority: Use onClose callback first (for custom overlays)
+    if (onClose) {
+      onClose();
+    } else {
+      // Fallback to ModalProvider closeModal
+      closeModal();
+    }
   };
 
   return (
@@ -91,9 +118,7 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
   </div>
 
 </div>
-    <h2>Add Patient</h2>
-    <p>Fill in the patient’s basic information</p>
-          <button className="cancel-btn" onClick={handleCancel}>
+            <button className="cancel-btn" onClick={handleCancel}>
             Cancel
           </button>
         </div>
@@ -368,7 +393,7 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
           {!isFamilyMember && (
             <button
               type="button"
-              className="save-btn"
+              className="generate-household-btn"
               disabled={!newPatient.barangay_id || loading}
               onClick={handleGenerateHouseholdClick}
             >
@@ -403,7 +428,7 @@ export default function QueueAddPatientModal({ onPatientAdded }) {
         <div className="additional-toggle">
           <button
             type="button"
-            className="additional-btn"
+            className="additional-info-toggle-btn"
             onClick={() => setShowAdditionalInfo(!showAdditionalInfo)}
           >
             {showAdditionalInfo ? "− Hide Additional Information" : "+ Additional Information"}

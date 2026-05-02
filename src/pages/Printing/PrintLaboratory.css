@@ -29,6 +29,44 @@ body {
   height: 13in;
 }
 
+/* Print Buttons & Toolbar */
+.print-buttons {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  display: flex !important;
+  gap: 10px !important;
+  width: fit-content !important;
+}
+
+.print-buttons button {
+  margin-right: 10px !important;
+  padding: 8px 16px !important;
+  background-color: #007bff !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+.print-buttons button.btn-secondary {
+  background-color: #6c757d !important;
+}
+
+.print-buttons button:hover {
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
+}
+
+.print-buttons button:active {
+  transform: translateY(0) !important;
+}
+
 
 .half-form {
   flex: 1;              /* auto split equally */
@@ -51,8 +89,8 @@ body {
 
 .header {
    border-bottom: 2px solid #000;
-  margin-bottom: 3px;
-  padding-bottom: 3px;
+  margin-bottom: 2px;
+  padding-bottom: 2px;
 }
   
 
@@ -60,13 +98,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 45px;
+  gap: 30px;
   width: 100%;
 }
 
 .seal {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   object-fit: contain;
 }
 
@@ -76,19 +114,22 @@ body {
 }
 
 .hospital-name {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
   text-transform: uppercase;
+  margin: 2px 0;
 }
 
 .doh-line {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
+  margin: 1px 0;
 }
 
 .license-line {
-  font-size: 9px;
-  line-height: 1.3;
+  font-size: 8px;
+  line-height: 1.2;
+  margin: 1px 0;
 }
 
 .email {
@@ -106,16 +147,14 @@ body {
 @media print {
 
   @page {
-    size: 8.5in 13in;
-    margin: 0;
+    margin: 0.5in;
     padding: 0;
   }
 
   html, body {
     margin: 0;
     padding: 0;
-    width: 8.5in;
-    height: 13in;
+    width: 100%;
   }
 
   body {
@@ -123,9 +162,7 @@ body {
   }
 
   .print-page {
-
-    width: 8.5in;
-    height: 13in;
+    width: 100%;
     margin: 0;
     padding: 0;
     display: block;
@@ -136,8 +173,8 @@ body {
 
 
   .half-form {
-  height: 6.5in;
-    width: 8.5in;
+    height: auto;
+    width: 100%;
     margin: 0;
     padding: 0;
     display: flex;
@@ -154,26 +191,56 @@ body {
 
   .med-form {
     margin: 0;
-    padding: 0.1in 0.12in;
-    width: 7.8in;
+    padding: 3mm 4mm;
+    width: 100%;
+    max-width: 100%;
     box-sizing: border-box;
   }
 
   .lab-body {
     padding: 4px;
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .form-title {
-    font-size: 13px;
+    font-size: 14px;
     margin: 2px 0 3px 0;
   }
 
   .lab-3col-fixed {
-    width: 100%;
-    margin: 2px auto;
+    width: 95%;
+    margin: 8px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    justify-content: center;
   }
 
+  .section {
+    display: flex;
+    justify-content: center;
+    margin: 3px 0;
+  }
+
+  .doctor {
+    margin-top: 10px !important;
+  }
+
+  .doctor-name {
+    margin-top: 20px;
+    margin-bottom: 3px;
+    font-size: 10px;
+  }
+
+  .doctor-license {
+    margin: 0;
+    font-size: 9px;
+  }
+
+  .doctor p {
+    margin: 1px 0;
+    font-size: 9px;
+  }
 
   .doctor-name .doctor-title{
     font-weight: bold;
@@ -232,13 +299,28 @@ body {
 
 /* DOCTOR */
 .doctor {
-  margin-top: -30px!important;
+  margin-top: -20px;
   text-align: center;
+  padding: 8px 0;
 }
 
 .doctor-name {
   font-weight: bold;
-  margin-top: 40px;
+  margin-top: 30px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.doctor-license {
+  margin: 2px 0;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.doctor p {
+  margin: 2px 0;
+  font-size: 10px;
 }
 
 
@@ -247,14 +329,14 @@ body {
 
 .patient-header {
   border: none;           /* remove box border */
-  margin-bottom: -15px!important; /* pull up to overlap with header */
+  margin-bottom: -10px !important; /* pull up to overlap with header */
   background-color: transparent;  /* remove background color */
 }
 
 .patient-header .lab-col {
   border-right: none;     /* remove vertical lines */
-  font-size: 12px;
-  line-height: 1.8;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 .patient-header .lab-col div {
@@ -279,16 +361,15 @@ body {
 .lab-3col-fixed {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  margin-top: -15px!important;
-    margin: 15px auto;   /* 👈 THIS centers it */
+  margin-top: -10px !important;
+  margin: 8px auto;   /* 👈 reduced from 15px */
   width: 95%;          /* adjust width if needed */
-
 }
 
 .lab-col {
-  padding: 10px 15px;
-  font-size: 12px;
-  line-height: 1.6;
+  padding: 6px 10px;
+  font-size: 11px;
+  line-height: 1.5;
   
 }
 

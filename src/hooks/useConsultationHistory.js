@@ -16,12 +16,18 @@ export const useConsultationHistory = (patient_id, refreshTrigger = 0) => {
 
   useEffect(() => {
     console.log('🎣 useConsultationHistory - Hook triggered with patient_id:', patient_id, 'Type:', typeof patient_id);
+    console.log('🎣 useConsultationHistory - RefreshTrigger:', refreshTrigger);
     if (patient_id) {
       setLoadingHistory(true);
+      console.log('🎣 Calling getLatestConsultations with patient_id:', patient_id);
       getLatestConsultations(patient_id)
         .then((data) => {
           console.log('✅ useConsultationHistory - Data received:', data);
           console.log('📊 Total consultations loaded:', data?.length || 0);
+          if (data && data.length > 0) {
+            console.log('📋 First consultation:', data[0]);
+            console.log('✅ Sample referral fields - category:', data[0]?.referral_category, 'personnel:', data[0]?.receiving_personnel, 'reason:', data[0]?.reason_for_referral_2);
+          }
           setConsultHistory(data || []);
         })
         .catch((err) => {

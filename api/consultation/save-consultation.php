@@ -48,8 +48,9 @@ try {
             chief_complaint,
             diagnosis,
             treatment,
-            patient_illness
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            patient_illness,
+            encoded_by
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
     // Map form fields to database columns
@@ -75,7 +76,8 @@ try {
         $data['chiefComplaint'] ?? null,
         $data['diagnosis'] ?? null,
         $data['treatment'] ?? null,
-        $data['patientIllness'] ?? null
+        $data['patientIllness'] ?? null,
+        $data['encoded_by'] ?? null
     ]);
 
     if ($result) {

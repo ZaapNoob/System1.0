@@ -52,7 +52,9 @@ try {
             b.name AS barangay_name,
             p.purok_id,
             p.facility_household_no,
-            p.household_no
+             p.household_no,
+            p.profile_image
+
         FROM patients_db p
         LEFT JOIN barangays b 
             ON p.barangay_id = b.id

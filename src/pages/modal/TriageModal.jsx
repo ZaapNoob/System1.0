@@ -8,6 +8,8 @@ import { useAssignDoctorWithBroadcast } from "../../hooks/useAssignDoctorWithBro
 import { useModal } from "../../components/modal/ModalProvider";
 import ConfirmationModal from "../../components/modal/ConfirmationModal";
 import Consultation from "./consultation";
+import maleIcon from "../../assets/OIP (1).jpeg";
+import femaleIcon from "../../assets/OIP.jpeg";
 import "./TriageModal.css";
 
 export default function TriageModal({ patient, triggerPollingReset, onAssign, onClose }) {
@@ -29,6 +31,19 @@ export default function TriageModal({ patient, triggerPollingReset, onAssign, on
   console.log('📋 TriageModal opened with patient object:', patient);
   console.log('   - patient.patient_id:', patient?.patient_id);
   console.log('   - patient.id:', patient?.id);
+
+  // Get default image based on gender
+  const getDefaultImage = () => {
+    if (patient?.gender?.toLowerCase() === 'male') {
+      return maleIcon;
+    }
+    if (patient?.gender?.toLowerCase() === 'female') {
+      return femaleIcon;
+    }
+    return maleIcon; // Default to male if gender is unknown
+  };
+
+  const profileImage = patient?.profile_image || getDefaultImage();
   
   const { consultHistory, loadingHistory } = useConsultationHistory(patient?.patient_id, refreshTrigger);
 
@@ -108,135 +123,110 @@ const handleAddConsultation = () => {
 
         {/* Body */}
         <div className="triage-modal-body-wrapper">
-          {/* Top Section: Patient Info + Vital Signs */}
-          <div className="triage-patient-section">
-            {/* Patient Profile */}
-            <div className="triage-patient-image">
+          {/* Top Section: Patient Image + Patient Info (Side by Side) */}
+          <div className="triage-top-section">
+            {/* Left: Patient Profile Image */}
+            <div className="triage-patient-image-section">
               <img
-                src={patient?.profile_image || "/default-profile.png"}
+                src={profileImage}
                 alt="Patient Profile"
+                className="patient-profile-img"
               />
             </div>
 
-            {/* Patient Info + Vital Signs */}
-            <div className="triage-patient-info-grid">
-              {/* Patient Information */}
-             <div className="patient-info-column">
-   <div className="patient-info-card">
-      <div className="card-header">
-        <h3>Patient Information</h3>
-    <div className="patient-info-card">
-      <table className="patient-info-table">
-        <tbody>
-          <tr>
-            <td className="label">Name:</td>
-            <td className="value">
-              {patient?.first_name || "—"}{" "}
-              {patient?.middle_name || ""}{" "}
-              {patient?.last_name || "—"}{" "}
-              {patient?.suffix || ""}
-            </td>
-          </tr>
+            {/* Right: Patient Info Table */}
+            <div className="triage-patient-info-section">
+              <div className="patient-info-card">
+                <h3>Patient Information</h3>
+                <table className="patient-info-table">
+                  <tbody>
+                    <tr>
+                      <td className="label">Name:</td>
+                      <td className="value">
+                        {patient?.first_name || "—"}{" "}
+                        {patient?.middle_name || ""}{" "}
+                        {patient?.last_name || "—"}{" "}
+                        {patient?.suffix || ""}
+                      </td>
+                    </tr>
 
-          <tr>
-            <td className="label">Queue Code:</td>
-            <td className="value">{patient?.queue_code || "—"}</td>
-          </tr>
+                    <tr>
+                      <td className="label">Queue Code:</td>
+                      <td className="value">{patient?.queue_code || "—"}</td>
+                    </tr>
 
-          <tr>
-            <td className="label">Gender:</td>
-            <td className="value">{patient?.gender || "—"}</td>
-          </tr>
+                    <tr>
+                      <td className="label">Gender:</td>
+                      <td className="value">{patient?.gender || "—"}</td>
+                    </tr>
 
-          <tr>
-            <td className="label">Date of Birth:</td>
-            <td className="value">{patient?.date_of_birth || "—"}</td>
-          </tr>
+                    <tr>
+                      <td className="label">Date of Birth:</td>
+                      <td className="value">{patient?.date_of_birth || "—"}</td>
+                    </tr>
 
-          <tr>
-            <td className="label">Age:</td>
-            <td className="value">{patient?.age || "—"}</td>
-          </tr>
+                    <tr>
+                      <td className="label">Age:</td>
+                      <td className="value">{patient?.age || "—"}</td>
+                    </tr>
 
-          <tr>
-            <td className="label">Blood Type:</td>
-            <td className="value">{patient?.blood_type || "—"}</td>
-          </tr>
+                    <tr>
+                      <td className="label">Blood Type:</td>
+                      <td className="value">{patient?.blood_type || "—"}</td>
+                    </tr>
 
-          <tr>
-            <td className="label">Contact Number:</td>
-            <td className="value">{patient?.contact_number || "—"}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  </div>
-  </div>
-             {/* Vital Signs */}
-  <div className="vital-signs-column">
-    <div className="patient-info-card">
-      <div className="card-header">
-    <h3>Vital Signs</h3>
+                    <tr>
+                      <td className="label">Contact Number:</td>
+                      <td className="value">{patient?.contact_number || "—"}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
 
-    <div className="vital-signs-card">
-      <table className="vital-signs-table">
-        <tbody>
-          <tr>
-            <td className="label">Blood Pressure:</td>
-            <td className="value">
-              {patient?.systolic_bp || "—"}/{patient?.diastolic_bp || "—"} mmHg
-            </td>
-          </tr>
-
-          <tr>
-            <td className="label">Heart Rate:</td>
-            <td className="value">
-              {patient?.heart_rate || "—"} bpm
-            </td>
-          </tr>
-
-          <tr>
-            <td className="label">Respiratory Rate:</td>
-            <td className="value">
-              {patient?.respiratory_rate || "—"} breaths/min
-            </td>
-          </tr>
-
-          <tr>
-            <td className="label">Temperature:</td>
-            <td className="value">
-              {patient?.temperature || "—"}°C
-            </td>
-          </tr>
-
-          <tr>
-            <td className="label">Oxygen Saturation:</td>
-            <td className="value">
-              {patient?.oxygen_saturation || "—"}%
-            </td>
-          </tr>
-
-          <tr>
-            <td className="label">Weight:</td>
-            <td className="value">
-              {patient?.weight || "—"} kg
-            </td>
-          </tr>
-
-          <tr>
-            <td className="label">Height:</td>
-            <td className="value">
-              {patient?.height || "—"} cm
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-      </div>
-      </div>
-      
+          {/* Vital Signs Section (Below) */}
+          <div className="triage-vital-signs-section">
+            <div className="patient-info-card">
+              <h3>Vital Signs</h3>
+              <table className="vital-signs-table">
+                <thead>
+                  <tr>
+                    <th>Blood Pressure</th>
+                    <th>Heart Rate</th>
+                    <th>Respiratory Rate</th>
+                    <th>Temperature</th>
+                    <th>Oxygen Saturation</th>
+                    <th>Weight</th>
+                    <th>Height</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      {patient?.systolic_bp || "—"}/{patient?.diastolic_bp || "—"} mmHg
+                    </td>
+                    <td>
+                      {patient?.heart_rate || "—"} bpm
+                    </td>
+                    <td>
+                      {patient?.respiratory_rate || "—"} breaths/min
+                    </td>
+                    <td>
+                      {patient?.temperature || "—"}°C
+                    </td>
+                    <td>
+                      {patient?.oxygen_saturation || "—"}%
+                    </td>
+                    <td>
+                      {patient?.weight || "—"} kg
+                    </td>
+                    <td>
+                      {patient?.height || "—"} cm
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 

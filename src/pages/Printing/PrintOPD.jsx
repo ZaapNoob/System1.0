@@ -22,6 +22,11 @@ export default function PrintOPD() {
 
     if (stored) {
       const data = JSON.parse(stored);
+      console.log("📋 PrintOPD - Retrieved sessionStorage data keys:", Object.keys(data));
+      console.log("📋 PrintOPD - complaint field:", data.complaint);
+      console.log("📋 PrintOPD - chief_complaint field:", data.chief_complaint);
+      console.log("📋 PrintOPD - history field:", data.history);
+      console.log("📋 PrintOPD - patient_illness field:", data.patient_illness);
       setPatient(data);
 
       // Build record object (same structure as your PHP)
@@ -36,8 +41,8 @@ export default function PrintOPD() {
         bpDiastolic: data.diastolic_bp || "",
         respiratoryRate: data.respiratory_rate || "",
         oxygenSaturation: data.oxygen_saturation || "",
-        complaint: data.complaint || "",
-        history: data.history || "",
+        complaint: data.complaint || data.chief_complaint || "",
+        history: data.history || data.patient_illness || "",
         diagnosis: data.diagnosis || "",
         treatment: data.treatment || "",
         // ✅ Load consulting doctor from multiple possible field names
