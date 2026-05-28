@@ -27,9 +27,11 @@ try {
                 p.last_name,
                 IFNULL(CONCAT(' ', p.suffix), '')
             ) AS name,
-            b.name AS barangay_name
+            b.name AS barangay_name,
+            pr.purok_name AS purok_name
         FROM patients_db p
         LEFT JOIN barangays b ON b.id = p.barangay_id
+        LEFT JOIN puroks pr ON pr.id = p.purok_id
         WHERE p.id = ? AND p.deleted_at IS NULL
     ";
 

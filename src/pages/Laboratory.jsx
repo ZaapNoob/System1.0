@@ -648,7 +648,7 @@ const olderRequests = labHistory.filter(
 
                   {/* X-Ray */}
                   <div className="form-group">
-                    <label>X-Ray Findings (Optional)</label>
+                    <label>Imaging X-Ray</label>
                     <textarea
                       name="xray_findings"
                       value={formData.xray_findings}
@@ -664,7 +664,7 @@ const olderRequests = labHistory.filter(
 
                   {/* ULTRASOUND */}
                   <div className="form-group">
-                    <label>Ultrasound Findings (Optional)</label>
+                    <label>Imaging Ultrasound</label>
                     <textarea
                       name="utz_findings"
                       value={formData.utz_findings}
@@ -680,7 +680,7 @@ const olderRequests = labHistory.filter(
 
                   {/* CT SCAN */}
                   <div className="form-group">
-                    <label>CT Scan Findings (Optional)</label>
+                    <label>Imaging CT Scan</label>
                     <textarea
                       name="ct_scan_findings"
                       value={formData.ct_scan_findings}
@@ -696,7 +696,7 @@ const olderRequests = labHistory.filter(
 
                   {/* OTHERS */}
                   <div className="form-group">
-                    <label>Others (Optional)</label>
+                    <label>Imaging Others</label>
                     <textarea
                       name="other_findings"
                       value={formData.other_findings}

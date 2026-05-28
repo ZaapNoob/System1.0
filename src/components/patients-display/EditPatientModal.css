@@ -555,6 +555,62 @@
     margin:10px 0;
   }
 
+  /* ===== RESIDENTIAL SECTION (BARANGAY + PUROK) ===== */
+  .residential-section {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #e6f9ff 0%, #f0f9ff 100%);
+    border: 2px solid #5adaff;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 12px 0;
+    box-shadow: 0 4px 12px rgba(90, 218, 255, 0.15);
+  }
+
+  .residential-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0278a1;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .residential-section-title::before {
+    content: "📍";
+    font-size: 16px;
+  }
+
+  .residential-section-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* When showing address fields, use different layout */
+  .residential-section-grid > .form-group:nth-child(n+2) {
+    grid-column: auto;
+  }
+
+  .residential-section .form-group label {
+    color: #0278a1;
+    font-weight: 700;
+  }
+
+  .residential-section .form-group input,
+  .residential-section .form-group select {
+    border-color: #5adaff;
+    background: #ffffff;
+  }
+
+  .residential-section .form-group input:focus,
+  .residential-section .form-group select:focus {
+    border-color: #0278a1;
+    box-shadow: 0 0 0 3px rgba(90, 218, 255, 0.25);
+  }
+
 
 
 

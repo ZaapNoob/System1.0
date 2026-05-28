@@ -18,6 +18,14 @@ export default function EditPatientModal({ patient, onClose, onSave }) {
     profileImage,
     barangays,
     selectedBarangayId,
+    puroks,
+    selectedPurokId,
+    setSelectedPurokId,
+    showCreatePurok,
+    setShowCreatePurok,
+    newPurokName,
+    setNewPurokName,
+    purokLoading,
     householdNo,
     facilityHouseholdNo,
     householdType,
@@ -40,6 +48,7 @@ export default function EditPatientModal({ patient, onClose, onSave }) {
     handleInputChange,
     handleHouseholdTypeChange,
     handleBarangayChange,
+    handleCreatePurok,
     searchExistingHouseholdsHandler,
     generateNewHouseholdHandler,
     moveHouseholdHandler,
@@ -532,6 +541,130 @@ export default function EditPatientModal({ patient, onClose, onSave }) {
         />
       </div>
 
+      {/* Residential Section - Highlighted */}
+      <div className="residential-section">
+        <div className="residential-section-title">Residential Details</div>
+        <div className="residential-section-grid">
+          <div className="form-group">
+            <label>Barangay *</label>
+            <select
+              value={selectedBarangayId}
+              onChange={(e) => {
+                handleBarangayChange(e.target.value);
+                setSelectedPurokId(""); // Clear purok when barangay changes
+              }}
+              required
+            >
+              <option value="">Select Barangay</option>
+              {barangays.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Show Purok only for local barangays (is_special !== 1) */}
+          {barangays.find(b => b.id == selectedBarangayId)?.is_special !== 1 && (
+            <div className="form-group" style={{ position: "relative" }}>
+              <label>Purok</label>
+              <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
+                <select
+                  value={selectedPurokId}
+                  onChange={(e) => setSelectedPurokId(e.target.value)}
+                  disabled={!selectedBarangayId}
+                  style={{ flex: 1 }}
+                >
+                  <option value="">Select Purok</option>
+                  {puroks.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.purok_name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="create-purok-btn"
+                  onClick={() => setShowCreatePurok(true)}
+                  disabled={!selectedBarangayId}
+                  title="Create new purok for this barangay"
+                  style={{
+                    padding: "8px 12px",
+                    background: "#10b981",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: selectedBarangayId ? "pointer" : "not-allowed",
+                    opacity: selectedBarangayId ? 1 : 0.5,
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    whiteSpace: "nowrap",
+                    transition: "all 0.2s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedBarangayId) e.target.style.background = "#059669";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = "#10b981";
+                  }}
+                >
+                  + Add Purok
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Show address fields for outside barangays (is_special === 1) */}
+          {barangays.find(b => b.id == selectedBarangayId)?.is_special === 1 && (
+            <>
+              <div className="form-group">
+                <label>Region</label>
+                <input
+                  type="text"
+                  name="region"
+                  value={formData.region}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Region IV-A"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Province</label>
+                <input
+                  type="text"
+                  name="province"
+                  value={formData.province}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Quezon"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>City/Municipality</label>
+                <input
+                  type="text"
+                  name="city_municipality"
+                  value={formData.city_municipality}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Quezon City"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Street</label>
+                <input
+                  type="text"
+                  name="street"
+                  value={formData.street}
+                  onChange={handleInputChange}
+                  placeholder="e.g. Main St, Purok 1"
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -807,6 +940,60 @@ export default function EditPatientModal({ patient, onClose, onSave }) {
           onCapture={handleCaptureImage}
           onUpload={() => console.log("Image uploaded")}
         />
+      )}
+
+      {/* Create Purok Modal */}
+      {showCreatePurok && (
+        <div className="modal-overlay" onClick={() => setShowCreatePurok(false)}>
+          <div
+            className="edit-patient-modal"
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: "min(95vw, 500px)" }}
+          >
+            <div className="modal-header">
+              <h3>Create New Purok</h3>
+            </div>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCreatePurok();
+              }}
+            >
+              {error && <div className="alert alert-error">{error}</div>}
+              {successMessage && (
+                <div className="alert alert-success">{successMessage}</div>
+              )}
+
+              <div className="form-group" style={{ marginBottom: "20px" }}>
+                <label>Purok Name *</label>
+                <input
+                  type="text"
+                  value={newPurokName}
+                  onChange={(e) => setNewPurokName(e.target.value)}
+                  placeholder="e.g. Purok 1, Sitio San Isidro"
+                  required
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowCreatePurok(false);
+                    setNewPurokName("");
+                    setError("");
+                  }}
+                  disabled={purokLoading}
+                >
+                  Cancel
+                </button>
+                <button type="submit" disabled={purokLoading}>
+                  {purokLoading ? "Creating..." : "Create Purok"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   </div>

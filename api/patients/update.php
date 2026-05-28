@@ -39,6 +39,7 @@ try {
         'gender',
         'marital_status',
         'barangay_id',
+        'purok_id',
         'birthplace',
         'blood_type',
         'mother_name',
@@ -54,6 +55,10 @@ try {
         'philhealth_status_type',
         'philhealth_no',
         'philhealth_category',
+        'region',
+        'province',
+        'city_municipality',
+        'street',
         'status',
         'deleted_at' // ✅ Allow soft delete timestamp
 

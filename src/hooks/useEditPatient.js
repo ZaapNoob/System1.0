@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API from "../config/api";
 import {
   fetchBarangays,
   searchHouseholds,
@@ -36,7 +37,11 @@ export default function useEditPatient(patient, onSave, onClose) {
     philhealth_status_type: "",
     philhealth_no: "",
     philhealth_category: "",
-      status: "Active"   // ✅ NEW
+    region: "",
+    province: "",
+    city_municipality: "",
+    street: "",
+    status: "Active"   // ✅ NEW
   });
 
   /* =========================
@@ -47,6 +52,8 @@ export default function useEditPatient(patient, onSave, onClose) {
 
   const [barangays, setBarangays] = useState([]);
   const [selectedBarangayId, setSelectedBarangayId] = useState("");
+  const [puroks, setPuroks] = useState([]);
+  const [selectedPurokId, setSelectedPurokId] = useState("");
 
   const [householdNo, setHouseholdNo] = useState("");
   const [facilityHouseholdNo, setFacilityHouseholdNo] = useState("");
@@ -75,6 +82,13 @@ export default function useEditPatient(patient, onSave, onClose) {
   ========================= */
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
+  /* =========================
+     CREATE PUROK
+  ========================= */
+  const [showCreatePurok, setShowCreatePurok] = useState(false);
+  const [newPurokName, setNewPurokName] = useState("");
+  const [purokLoading, setPurokLoading] = useState(false);
 
   /* =========================
      🔑 SYNC PATIENT → STATE
@@ -116,12 +130,17 @@ export default function useEditPatient(patient, onSave, onClose) {
           philhealth_status_type: data.philhealth_status_type || "",
           philhealth_no: data.philhealth_no || "",
           philhealth_category: data.philhealth_category || "",
+          region: data.region || "",
+          province: data.province || "",
+          city_municipality: data.city_municipality || "",
+          street: data.street || "",
           status: data.status || "active"
         });
          if (data.status === "inactive" || data.deleted_at) {
         setWarnings(["This patient has been soft-deleted or inactive."]);
       }
         setSelectedBarangayId(data.barangay_id ? String(data.barangay_id) : "");
+        setSelectedPurokId(data.purok_id ? String(data.purok_id) : "");
         setHouseholdNo(data.household_no || "");
         setFacilityHouseholdNo(data.facility_household_no || "");
 
@@ -164,6 +183,31 @@ export default function useEditPatient(patient, onSave, onClose) {
   }, []);
 
   /* =========================
+     FETCH PUROKS WHEN BARANGAY CHANGES
+  ========================= */
+  useEffect(() => {
+    if (!selectedBarangayId) {
+      setPuroks([]);
+      return;
+    }
+
+    const loadPuroks = async () => {
+      try {
+        const res = await fetch(
+          `${API}/patients/puroks/by_barangay.php?barangay_id=${selectedBarangayId}`
+        );
+        const data = await res.json();
+        setPuroks(data?.data || []);
+      } catch (err) {
+        console.error("Failed to fetch puroks", err);
+        setPuroks([]);
+      }
+    };
+
+    loadPuroks();
+  }, [selectedBarangayId]);
+
+  /* =========================
      HANDLERS
   ========================= */
   const handleInputChange = (e) => {
@@ -186,6 +230,66 @@ export default function useEditPatient(patient, onSave, onClose) {
     setFacilityHouseholdNo("");
     setSearchTerm("");
     setSearchResults([]);
+  };
+
+  /* =========================
+     CREATE PUROK HANDLER
+  ========================= */
+  const handleCreatePurok = async () => {
+    if (!newPurokName.trim()) {
+      setError("Purok name is required");
+      return;
+    }
+    if (!selectedBarangayId) {
+      setError("Please select a barangay first");
+      return;
+    }
+
+    try {
+      setPurokLoading(true);
+      setError("");
+
+      // Normalize purok name
+      const normalizedName = newPurokName
+        .trim()
+        .replace(/\s+/g, " ")
+        .split(" ")
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(" ");
+
+      const response = await fetch(`${API}/patients/puroks/create.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          barangay_id: Number(selectedBarangayId),
+          purok_name: normalizedName,
+        }),
+      });
+
+      const data = await response.json();
+      if (!data.success) {
+        throw new Error(data.error || "Failed to create purok");
+      }
+
+      // Refresh puroks list
+      const res = await fetch(
+        `${API}/patients/puroks/by_barangay.php?barangay_id=${selectedBarangayId}`
+      );
+      const purokData = await res.json();
+      setPuroks(purokData?.data || []);
+
+      // Set the newly created purok as selected
+      setSelectedPurokId(String(data.data.id));
+
+      setNewPurokName("");
+      setShowCreatePurok(false);
+      setSuccessMessage("Purok created successfully");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPurokLoading(false);
+    }
   };
 
   /* =========================
@@ -303,6 +407,7 @@ export default function useEditPatient(patient, onSave, onClose) {
       const cleanedData = {
         ...formData,
         barangay_id: selectedBarangayId,
+        purok_id: selectedPurokId || null,
       };
 
       // For ENUM fields, convert empty strings to null to avoid MySQL truncation warnings
@@ -346,6 +451,14 @@ export default function useEditPatient(patient, onSave, onClose) {
     profileImage,
     barangays,
     selectedBarangayId,
+    puroks,
+    selectedPurokId,
+    setSelectedPurokId,
+    showCreatePurok,
+    setShowCreatePurok,
+    newPurokName,
+    setNewPurokName,
+    purokLoading,
     householdNo,
     facilityHouseholdNo,
     householdType,
@@ -368,6 +481,7 @@ export default function useEditPatient(patient, onSave, onClose) {
     handleInputChange,
     handleHouseholdTypeChange,
     handleBarangayChange,
+    handleCreatePurok,
     searchExistingHouseholdsHandler,
     generateNewHouseholdHandler,
     moveHouseholdHandler,
